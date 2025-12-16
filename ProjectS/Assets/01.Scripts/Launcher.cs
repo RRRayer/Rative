@@ -100,7 +100,7 @@ namespace PS
             // 새로운 룸 생성
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = maxPlayersPerRoom;
-            PhotonNetwork.CreateRoom(fixedRoomName, roomOptions);
+            PhotonNetwork.JoinOrCreateRoom(fixedRoomName, roomOptions, TypedLobby.Default);
         }
 
         /// <summary>

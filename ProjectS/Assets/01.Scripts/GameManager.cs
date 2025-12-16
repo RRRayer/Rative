@@ -17,7 +17,7 @@ namespace PS.Manager
         {
             if (Instance == null)
             {
-                Instance = this;
+                Instance = this; 
             }
         }
 

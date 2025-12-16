@@ -2,6 +2,7 @@ using Photon.Pun;
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem; // Added
 
 namespace PS.Manager
 {
@@ -19,6 +20,23 @@ namespace PS.Manager
 
         private void Awake()
         {
+            if (photonView.IsMine)
+            {
+                LocalPlayerInstance = gameObject;
+            }
+            else
+            {
+                // It's a remote player. Disable input, character controller, camera and audio listener.
+                GetComponent<PlayerInput>().enabled = false;
+                GetComponent<ThirdPersonController>().enabled = false;
+
+                Camera camera = GetComponentInChildren<Camera>();
+                if (camera != null) camera.enabled = false;
+
+                AudioListener listener = GetComponentInChildren<AudioListener>();
+                if (listener != null) listener.enabled = false;
+            }
+            
             input = GetComponent<StarterAssetsInputs>();
 
             if (beams == null)
@@ -29,12 +47,7 @@ namespace PS.Manager
             {
                 beams.SetActive(false);
             }
-
-            if (photonView.IsMine)
-            {
-                LocalPlayerInstance = gameObject;
-            }
-
+            
             // 게임 매니저는 모든 씬에 존재
             DontDestroyOnLoad(gameObject);
         }
