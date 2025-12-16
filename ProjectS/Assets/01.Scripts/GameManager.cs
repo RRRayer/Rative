@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -7,6 +9,53 @@ namespace PS.Manager
 {
     public class GameManager : MonoBehaviourPunCallbacks
     {
+        public static GameManager Instance { get; private set; }
+        [Tooltip("The prefab to use for representing the player")]
+        [SerializeField] private GameObject playerPrefab;
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+        }
+
+        private void Start()
+        {
+            if (playerPrefab == null)
+            {
+                Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+            }
+            else
+            {
+                if (PlayerManager.LocalPlayerInstance == null)
+                {
+                    // 방에 입장하기 전까지 기다렸다가 플레이어 오브젝트를 생성한다.
+                    StartCoroutine(InstantiatePlayerWhenInRoom());
+                }
+                else
+                {
+                    Debug.LogFormat("Ignoring scene load for {0}", SceneManager.GetActiveScene().name);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 방에 입장할 때까지 대기 후 플레이어 오브젝트를 생성한다.(Race Condition 방지)
+        /// </summary>
+        private IEnumerator InstantiatePlayerWhenInRoom()
+        {
+            // Wait until the client is in a room
+            while (!PhotonNetwork.InRoom)
+            {
+                yield return null;
+            }
+
+            Debug.LogFormat("[GameManager] LocalPlayer 객체 생성 from {0}", SceneManager.GetActiveScene().name);
+            PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+        }
+
         /// <summary>
         /// Called when local player left the room
         /// </summary>
@@ -20,50 +69,15 @@ namespace PS.Manager
         /// </summary>
         public void LeaveRoom()
         {
-            PhotonNetwork.LeaveRoom();
-        }
-
-        /// <summary>
-        /// 플레이어가 룸에 들어올 때 실행되는 이벤트
-        /// </summary>
-        public override void OnPlayerEnteredRoom(Player newPlayer)
-        {
-            Debug.Log($"OnPlayerEnteredRoom: {newPlayer.NickName}");
-            
-            // 만약 마스터 클라이언트라면, 레벨 로드
-            if (PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.InRoom)
             {
-                Debug.Log($"OnPlayerEnteredRoom IsMasterClient: {PhotonNetwork.IsMasterClient}");
-                LoadArena();
+                PhotonNetwork.LeaveRoom();
             }
         }
 
-        public override void OnPlayerLeftRoom(Player otherPlayer)
-        {
-            Debug.Log($"OnPlayerLeftRoom: {otherPlayer.NickName}");
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                Debug.Log($"OnPlayerLeftRoom IsMasterClient: {PhotonNetwork.IsMasterClient}");
-                
-                LoadArena();
-            }
-        }
-
-        /// <summary>
-        /// PhotonNetwork.automaticallySyncScene을 사용하기 때문에 모든 접속한 클라이언트에 대해
-        /// 레벨 로드를 유니티가 하는게 아닌 포톤이 한다.
-        /// </summary>
-        private void LoadArena()
-        {
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
-                return;
-            }
-            Debug.Log($"PhotonNetwork : Loading Level : {PhotonNetwork.CurrentRoom.PlayerCount}");
-            PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
-        }
+        // OnPlayerEnteredRoom, OnPlayerLeftRoom, and LoadArena are no longer needed.
+        // Scene loading is now handled by the Launcher, and instantiation is handled by this GameManager's Start method.
+        // This avoids all race conditions related to scene loading and player instantiation.
     }
 }
 

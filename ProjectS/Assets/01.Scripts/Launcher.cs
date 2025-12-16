@@ -7,6 +7,9 @@ namespace PS
 {
     /// <summary>
     /// MonoBehaviourPunCallbacks: OnEnable, OnDisable 호출 없이 콜백 넣고 빼줌
+    /// 서버 접속 및 방 입장, 관리: 포톤 마스터 서버 접속, 방 입장
+    /// 방 이장 후 자신이 마스터 클라이언트라면 게임 씬 로드.
+    /// 다른 클라이언트들도 자동으로 같은 씬으로 동기화
     /// </summary>
     public class Launcher : MonoBehaviourPunCallbacks
     {
@@ -20,7 +23,8 @@ namespace PS
         [SerializeField] private GameObject progressLabel;
         [SerializeField] private GameObject controlPanel;
         
-        [SerializeField] private int maxPlayersPerRoom = 4;
+        [SerializeField] private int maxPlayersPerRoom = 3;
+        [SerializeField] private string fixedRoomName = "Room1"; // Added fixed room name
 
         private bool isConnecting;
 
@@ -39,12 +43,7 @@ namespace PS
         }
 
         /// <summary>
-        /// # Room
-        /// '룸 기반 게임'으로 구축. 경기 당 제한된 플레이어 수가 있다.
-        /// 룸 안의 모든 사람은 다른 사람이 보낸 것을 수신하며, 룸 밖에서는 통신이 안 된다.
-        /// # Robby
-        /// 로비는 마스터 서버에 존재하며 '게임의 룸 목록'을 제공
-        /// # 게임 플레이 버튼과 바인딩
+        /// 게임 플레이 버튼과 바인딩
         /// </summary>
         public void Connect()
         {
@@ -54,11 +53,13 @@ namespace PS
             progressLabel.SetActive(true);
             controlPanel.SetActive(false);
             
+            // 포톤 서버와 연결 됐다면 '룸'에 들어간다.
             if (PhotonNetwork.IsConnected)
             {
-                // Random room에 들어가기 위한 시도. 실패시 OnJoinRandomFailed()로 Notify 후 새로 Room 만든다.
-                PhotonNetwork.JoinRandomRoom();
+                // 특정 Room에 들어가기 위한 시도. 실패시 OnJoinRoomFailed()로 Notify 후 새로 Room 만든다.
+                PhotonNetwork.JoinRoom(fixedRoomName);
             }
+            // 포톤 서버 접속부터 한다.
             else
             {
                 // Photon 온라인 서버와 연결
@@ -68,52 +69,61 @@ namespace PS
             }
         }
 
-        /// <summary>
-        /// Master server에 연결되는 시점에 실행
-        /// 씬이 로드되면 OnEnable에서 OnConnectedToMaster() 메서드를 실행한다.
-        /// </summary>
         public override void OnConnectedToMaster()
         {
             if (isConnecting)
             {
-                Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN");
-                PhotonNetwork.JoinRandomRoom();    
+                Debug.Log("[Launcher]: OnConnectedToMaster() was called by PUN");
+                // Random room에 들어가는 대신 고정된 Room에 들어간다.
+                PhotonNetwork.JoinRoom(fixedRoomName);    
             }
         }
 
+        /// <summary>
+        /// 서버와 연결 해제되는 시점에 실행
+        /// </summary>
         public override void OnDisconnected(DisconnectCause cause)
         {
             // UI 초기화
             progressLabel.SetActive(false);
             controlPanel.SetActive(true);
-            Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
+            Debug.LogWarningFormat("[Launcher]: OnDisconnected() was called by PUN with reason {0}", cause);
         }
 
         /// <summary>
-        /// PhotonNetwork.JoinRandomRoom() 의 실패 시 콜백
+        /// PhotonNetwork.JoinRoom() 의 실패 시 콜백
         /// </summary>
-        public override void OnJoinRandomFailed(short returnCode, string message)
+        public override void OnJoinRoomFailed(short returnCode, string message)
         {
-            Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
+            Debug.LogFormat("[Launcher]: OnJoinRoomFailed() was called by PUN. DebugMessage: {0}", message);
 
-            // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
+            // 새로운 룸 생성
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = maxPlayersPerRoom;
-            PhotonNetwork.CreateRoom(null, roomOptions);
+            PhotonNetwork.CreateRoom(fixedRoomName, roomOptions);
         }
 
         /// <summary>
-        /// PhotonNetwork.JoinRandomRoom() 의 성공 시 콜백
+        /// 룸 입장 시 콜백
         /// </summary>
         public override void OnJoinedRoom()
         {
-            Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
+            Debug.Log("OnJoinedRoom() called by PUN. This client is now in a room.");
 
-            if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            // Only the master client should load the level. Others will sync automatically.
+            if (PhotonNetwork.IsMasterClient)
             {
-                Debug.Log("We load the 'Room for 1'");
-                PhotonNetwork.LoadLevel("RoomFor1");
+                LoadLevel("RoomFor1");
             }
+        }
+
+        /// <summary>
+        /// 마스터 클라이언트는 레벨을 로드한다.(씬 로딩)
+        /// </summary>
+        private void LoadLevel(string sceneName)
+        {
+            Debug.Log("[Launcher] OnJoinedRoom: As Master Client, loading 'RoomFor1' scene.");
+            PhotonNetwork.LoadLevel(sceneName);
         }
     }
 }

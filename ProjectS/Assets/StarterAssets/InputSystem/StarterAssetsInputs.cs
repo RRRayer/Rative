@@ -48,11 +48,9 @@ namespace StarterAssets
 		public void OnFire(InputValue value)
 		{
 			FireInput(value.isPressed);
-			Debug.Log($"입력: {value.isPressed}");
 		}
 #endif
-
-
+		
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;

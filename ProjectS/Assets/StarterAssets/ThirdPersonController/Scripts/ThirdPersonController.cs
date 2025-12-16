@@ -1,4 +1,5 @@
-﻿ using UnityEngine;
+﻿ using Cinemachine;
+ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -105,6 +106,7 @@ namespace StarterAssets
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
+        private Photon.Pun.PhotonView photonView;
 
         private const float _threshold = 0.01f;
 
@@ -125,8 +127,10 @@ namespace StarterAssets
 
         private void Awake()
         {
+            photonView = GetComponent<Photon.Pun.PhotonView>();
+
             // get a reference to our main camera
-            if (_mainCamera == null)
+            if ((photonView == null || photonView.IsMine) && _mainCamera == null)
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
@@ -134,6 +138,17 @@ namespace StarterAssets
 
         private void Start()
         {
+            // Dynamically assign the Cinemachine camera to the local player
+            if (TryGetComponent<Photon.Pun.PhotonView>(out var photonView) && photonView.IsMine)
+            {
+                var virtualCamera = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+                if (virtualCamera != null)
+                {
+                    virtualCamera.Follow = CinemachineCameraTarget.transform;
+                    virtualCamera.LookAt = CinemachineCameraTarget.transform;
+                }
+            }
+
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
@@ -154,6 +169,24 @@ namespace StarterAssets
 
         private void Update()
         {
+            // 이 스크립트가 원격 플레이어의 것이라면 아무것도 실행하지 않는다.
+            if (photonView != null && !photonView.IsMine)
+            {
+                return;
+            }
+
+#if ENABLE_INPUT_SYSTEM
+            // ESC 키를 누르면 마우스 커서 잠금 해제
+            if (UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                if (Cursor.lockState == CursorLockMode.Locked)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                }
+            }
+#endif
+            
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
@@ -163,6 +196,12 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
+            if (photonView != null && !photonView.IsMine)
+            {
+                return;
+            }
+
+            
             CameraRotation();
         }
 
@@ -255,8 +294,12 @@ namespace StarterAssets
             // if there is a move input rotate player when the player is moving
             if (_input.move != Vector2.zero)
             {
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                  _mainCamera.transform.eulerAngles.y;
+                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
+                if (_mainCamera != null)
+                {
+                    _targetRotation += _mainCamera.transform.eulerAngles.y;
+                }
+                
                 float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                     RotationSmoothTime);
 
