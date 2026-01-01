@@ -1,0 +1,31 @@
+﻿{
+    "name":  "ProjectS.Systems",
+    "references":  [
+                       "ProjectS.Core",
+                       "ProjectS.Data",
+                       "ProjectS.Gameplay",
+                       "ProjectS.AI",
+                       "ProjectS.Progression",
+                       "ProjectS.Classes",
+                       "ProjectS.Networking"
+                   ],
+    "includePlatforms":  [
+
+                         ],
+    "excludePlatforms":  [
+
+                         ],
+    "allowUnsafeCode":  false,
+    "overrideReferences":  false,
+    "precompiledReferences":  [
+
+                              ],
+    "autoReferenced":  true,
+    "defineConstraints":  [
+
+                          ],
+    "versionDefines":  [
+
+                       ],
+    "noEngineReferences":  false
+}
