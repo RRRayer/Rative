@@ -1,0 +1,27 @@
+﻿{
+    "name":  "ProjectS.UI",
+    "references":  [
+                       "ProjectS.Core",
+                       "ProjectS.Data",
+                       "ProjectS.Gameplay"
+                   ],
+    "includePlatforms":  [
+
+                         ],
+    "excludePlatforms":  [
+
+                         ],
+    "allowUnsafeCode":  false,
+    "overrideReferences":  false,
+    "precompiledReferences":  [
+
+                              ],
+    "autoReferenced":  true,
+    "defineConstraints":  [
+
+                          ],
+    "versionDefines":  [
+
+                       ],
+    "noEngineReferences":  false
+}
