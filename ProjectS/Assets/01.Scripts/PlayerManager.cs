@@ -6,6 +6,7 @@ using ProjectS.Data.Definitions;
 using ProjectS.Gameplay.Skills;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 using UnityEngine.InputSystem; // Added
 
 namespace PS.Manager
@@ -33,12 +34,13 @@ namespace PS.Manager
             if (photonView.IsMine)
             {
                 LocalPlayerInstance = gameObject;
+                AssignLocalCameraTarget();
             }
             else
             {
                 // It's a remote player. Disable input, character controller, camera and audio listener.
                 GetComponent<PlayerInput>().enabled = false;
-                GetComponent<ThirdPersonController>().enabled = false;
+                GetComponent<StarterAssets.FirstPersonController>().enabled = false;
 
                 Camera camera = GetComponentInChildren<Camera>();
                 if (camera != null) camera.enabled = false;
@@ -63,6 +65,24 @@ namespace PS.Manager
             DontDestroyOnLoad(gameObject);
         }
 
+        private void AssignLocalCameraTarget()
+        {
+            var controller = GetComponent<StarterAssets.FirstPersonController>();
+            if (controller == null || controller.CinemachineCameraTarget == null)
+            {
+                return;
+            }
+
+            var virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            if (virtualCamera == null)
+            {
+                return;
+            }
+
+            virtualCamera.Follow = controller.CinemachineCameraTarget.transform;
+            virtualCamera.LookAt = controller.CinemachineCameraTarget.transform;
+        }
+
         private void Start()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -79,12 +99,17 @@ namespace PS.Manager
             }
         }
 
-         private void OnSceneLoaded(Scene scene, LoadSceneMode loadingMode)
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadingMode)
         {
             // After a scene load, check if the local player is in a valid position.
             if (!Physics.Raycast(transform.position, -Vector3.up, 5f))
             {
                 transform.position = new Vector3(0, 5, 0);
+            }
+
+            if (photonView.IsMine)
+            {
+                AssignLocalCameraTarget();
             }
         }
 

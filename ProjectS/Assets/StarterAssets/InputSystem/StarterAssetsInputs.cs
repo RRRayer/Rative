@@ -68,7 +68,8 @@ namespace StarterAssets
 			Skill3Input(value.isPressed);
 		}
 #endif
-		
+
+
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
@@ -88,6 +89,7 @@ namespace StarterAssets
 		{
 			sprint = newSprintState;
 		}
+
 		public void FireInput(bool newFireState)
 		{
 			fire = newFireState;
@@ -107,7 +109,7 @@ namespace StarterAssets
 		{
 			skill3 = newSkillState;
 		}
-
+		
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
