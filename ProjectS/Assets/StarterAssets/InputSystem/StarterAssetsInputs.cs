@@ -13,6 +13,9 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool fire;
+		public bool skill1;
+		public bool skill2;
+		public bool skill3;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -49,6 +52,21 @@ namespace StarterAssets
 		{
 			FireInput(value.isPressed);
 		}
+
+		public void OnSkill1(InputValue value)
+		{
+			Skill1Input(value.isPressed);
+		}
+
+		public void OnSkill2(InputValue value)
+		{
+			Skill2Input(value.isPressed);
+		}
+
+		public void OnSkill3(InputValue value)
+		{
+			Skill3Input(value.isPressed);
+		}
 #endif
 		
 		public void MoveInput(Vector2 newMoveDirection)
@@ -73,6 +91,21 @@ namespace StarterAssets
 		public void FireInput(bool newFireState)
 		{
 			fire = newFireState;
+		}
+
+		public void Skill1Input(bool newSkillState)
+		{
+			skill1 = newSkillState;
+		}
+
+		public void Skill2Input(bool newSkillState)
+		{
+			skill2 = newSkillState;
+		}
+
+		public void Skill3Input(bool newSkillState)
+		{
+			skill3 = newSkillState;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)
