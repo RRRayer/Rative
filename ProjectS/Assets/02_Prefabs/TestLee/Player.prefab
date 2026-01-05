@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 7616067550364612472}
   - component: {fileID: 3339546879788051830}
   - component: {fileID: 7554071718408456911}
+  - component: {fileID: 4451090815080352664}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -133,7 +134,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PS.Manager.PlayerManager
   Health: 1
   beams: {fileID: 195884045183694039, guid: cae1b3b3fe9baf945bd44c741a0854f7, type: 3}
-  classDefinitionOverride: {fileID: 0}
+  classDefinitionOverride: {fileID: 11400000, guid: 4134332d39138884589e9e676269e31c, type: 2}
+  classCatalogOverride: {fileID: 0}
 --- !u!114 &4211861607631022431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: 16b689df8308b1341b3930a07cff0741, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -184,7 +186,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &7616067550364612472
@@ -203,7 +205,7 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
-  fire: 0
+  attack: 0
   skill1: 0
   skill2: 0
   skill3: 0
@@ -228,8 +230,8 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 0.5
-  m_Radius: 0.5
+  m_Height: 0.4
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -256,7 +258,7 @@ MonoBehaviour:
   JumpTimeout: 0.1
   FallTimeout: 0.15
   Grounded: 1
-  GroundedOffset: -0.14
+  GroundedOffset: 0
   GroundedRadius: 0.5
   GroundLayers:
     serializedVersion: 2
@@ -264,6 +266,20 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 2156601530557571903}
   TopClamp: 90
   BottomClamp: -90
+--- !u!114 &4451090815080352664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183320563215330989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3fa340111bfe8742a66f68660debf69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnOrigin: {fileID: 8920527509303004843}
+  logSkillUsage: 1
 --- !u!1 &2156601530557571903
 GameObject:
   m_ObjectHideFlags: 0
