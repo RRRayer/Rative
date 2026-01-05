@@ -26,6 +26,7 @@ namespace ProjectS.Gameplay.Combat
             }
 
             Health = Mathf.Max(0f, Health - info.Amount);
+            DamageEvents.Raise(info);
 
             if (!IsAlive && destroyOnDeath)
             {

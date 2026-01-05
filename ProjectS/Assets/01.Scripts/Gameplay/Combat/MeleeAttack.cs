@@ -1,4 +1,5 @@
 using ProjectS.Core.Combat;
+using ProjectS.Core.Skills;
 using UnityEngine;
 
 namespace ProjectS.Gameplay.Combat
@@ -39,7 +40,9 @@ namespace ProjectS.Gameplay.Combat
                     {
                         Amount = attackDamage,
                         Point = hit.ClosestPoint(center),
-                        Direction = attackOrigin.forward
+                        Direction = attackOrigin.forward,
+                        SourceId = 0,
+                        Slot = SkillSlot.Basic
                     };
                     combatant.ApplyDamage(info);
                 }

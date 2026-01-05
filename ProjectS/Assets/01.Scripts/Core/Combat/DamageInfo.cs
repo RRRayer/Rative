@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ProjectS.Core.Skills;
+using UnityEngine;
 
 namespace ProjectS.Core.Combat
 {
@@ -8,5 +9,6 @@ namespace ProjectS.Core.Combat
         public Vector3 Point;
         public Vector3 Direction;
         public int SourceId;
+        public SkillSlot Slot;
     }
 }

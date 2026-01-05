@@ -1,8 +1,10 @@
 ﻿using Photon.Pun;
 using StarterAssets;
 using ProjectS.Classes;
+using ProjectS.Core.Combat;
 using ProjectS.Core.Skills;
 using ProjectS.Data.Definitions;
+using ProjectS.Gameplay.Stats;
 using ProjectS.Gameplay.Skills;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,6 +29,11 @@ namespace PS.Manager
         private bool wasSkill3Held;
         private PlayerClassState classState;
         private PlayerSkillExecutor skillExecutor;
+        private PlayerStats stats;
+        private StarterAssets.FirstPersonController firstPersonController;
+        private float baseMoveSpeed;
+        private float baseSprintSpeed;
+        private bool hasMovementBaseline;
     #if ENABLE_INPUT_SYSTEM
         private StarterAssetsInputs input;
     #endif
@@ -52,6 +59,8 @@ namespace PS.Manager
             }
             
             input = GetComponent<StarterAssetsInputs>();
+            stats = GetComponent<PlayerStats>() ?? gameObject.AddComponent<PlayerStats>();
+            firstPersonController = GetComponent<StarterAssets.FirstPersonController>();
             InitializeClassAndSkills();
 
             if (beams == null)
@@ -87,11 +96,13 @@ namespace PS.Manager
         private void Start()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
+            DamageEvents.DamageApplied += OnDamageApplied;
         }
 
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            DamageEvents.DamageApplied -= OnDamageApplied;
 
             // If this was the local player instance, clean up the static reference
             if (photonView.IsMine && LocalPlayerInstance == gameObject)
@@ -118,6 +129,12 @@ namespace PS.Manager
         {
             if (photonView.IsMine)
             {
+                if (stats != null && input != null)
+                {
+                    bool isSprinting = input.sprint && input.move.sqrMagnitude > 0.01f;
+                    stats.TickStamina(Time.deltaTime, isSprinting);
+                }
+
                 ProcessInput();
                 // Health handling.
 
@@ -195,8 +212,11 @@ namespace PS.Manager
         {
             if (input.attack && !wasAttackHeld)
             {
-                TryUseSkill(SkillSlot.Basic);
-                Debug.Log("Basic attack triggered.");
+                if (stats == null || stats.TryConsumeStamina(stats.BasicAttackStaminaCost))
+                {
+                    TryUseSkill(SkillSlot.Basic);
+                    Debug.Log("Basic attack triggered.");
+                }
             }
 
             if (input.attack)
@@ -233,7 +253,22 @@ namespace PS.Manager
 
             if (input.skill2 && !wasSkill2Held)
             {
-                TryUseSkill(SkillSlot.E);
+                if (skillExecutor != null && skillExecutor.IsChannelSkill(SkillSlot.E))
+                {
+                    skillExecutor.BeginChannel(SkillSlot.E);
+                }
+                else
+                {
+                    TryUseSkill(SkillSlot.E);
+                }
+            }
+
+            if (!input.skill2 && wasSkill2Held)
+            {
+                if (skillExecutor != null && skillExecutor.IsChannelSkill(SkillSlot.E))
+                {
+                    skillExecutor.EndChannel(SkillSlot.E);
+                }
             }
 
             if (input.skill3 && !wasSkill3Held)
@@ -261,6 +296,24 @@ namespace PS.Manager
                 this.Health = (float)stream.ReceiveNext();
             }
 
+        }
+
+        private void OnDamageApplied(DamageInfo info)
+        {
+            if (!photonView.IsMine)
+            {
+                return;
+            }
+
+            if (info.SourceId != gameObject.GetInstanceID())
+            {
+                return;
+            }
+
+            if (info.Slot == SkillSlot.Basic)
+            {
+                skillExecutor?.ReduceCooldown(SkillSlot.Q, 1f);
+            }
         }
 
         private void InitializeClassAndSkills()
@@ -320,6 +373,35 @@ namespace PS.Manager
                 classState.CurrentClass.skillQ,
                 classState.CurrentClass.skillE,
                 classState.CurrentClass.skillR);
+
+            ApplyClassStats();
+        }
+
+        private void ApplyClassStats()
+        {
+            if (stats == null || classState == null || classState.CurrentClass == null)
+            {
+                return;
+            }
+
+            stats.SetBaseStats(classState.CurrentClass.stats);
+            Health = stats.MaxHealth;
+
+            if (firstPersonController == null)
+            {
+                return;
+            }
+
+            if (!hasMovementBaseline)
+            {
+                baseMoveSpeed = firstPersonController.MoveSpeed;
+                baseSprintSpeed = firstPersonController.SprintSpeed;
+                hasMovementBaseline = true;
+            }
+
+            float moveMultiplier = stats.GetMoveSpeedMultiplier();
+            firstPersonController.MoveSpeed = baseMoveSpeed * moveMultiplier;
+            firstPersonController.SprintSpeed = baseSprintSpeed * moveMultiplier;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace ProjectS.Data.Definitions
         public string id;
         public string displayName;
         public string description;
+        public StatBlock stats;
 
         public SkillDefinition basicAttack;
         public SkillDefinition skillQ;

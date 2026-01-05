@@ -9,6 +9,6 @@ namespace ProjectS.Data.Definitions
         public string displayName;
         public float cooldown;
         public Sprite icon;
-        public GameObject prefab;
+        public SkillBehaviour behaviour;
     }
 }

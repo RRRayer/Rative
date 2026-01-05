@@ -24,6 +24,15 @@ namespace ProjectS.Classes
             classDefinition.id = "test_class";
             classDefinition.displayName = "Test Class";
             classDefinition.description = "Temporary class for early skill testing.";
+            classDefinition.stats = new StatBlock
+            {
+                str = 5,
+                intel = 5,
+                luk = 5,
+                agi = 5,
+                vit = 5,
+                spi = 5
+            };
 
             classDefinition.basicAttack = CreateSkill("test_basic", "Test Basic", 0.3f);
             classDefinition.skillQ = CreateSkill("test_q", "Test Q", 3f);
@@ -41,7 +50,7 @@ namespace ProjectS.Classes
             skillDefinition.displayName = displayName;
             skillDefinition.cooldown = cooldown;
             skillDefinition.icon = null;
-            skillDefinition.prefab = null;
+            skillDefinition.behaviour = null;
             return skillDefinition;
         }
     }
