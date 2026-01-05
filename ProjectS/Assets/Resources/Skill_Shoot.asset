@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Skill_Shoot
   m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.SkillDefinition
   id: skill_shoot
-  displayName: Projectile Shot
-  cooldown: 2
+  displayName: Wind Tunnel
+  cooldown: 6
   icon: {fileID: 0}
-  prefab: {fileID: 2460012345678901234, guid: d5e0c06d2c0e4a7fbad57f51a41c1d92, type: 3}
+  behaviour: {fileID: 11400000, guid: f2b3c4d5e60718293a4b5c6d7e8f901a, type: 2}

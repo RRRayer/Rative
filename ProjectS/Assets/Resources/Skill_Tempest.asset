@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b419c67bd3d6424eac2495c8767761c, type: 3}
-  m_Name: Skill_Slash
+  m_Name: Skill_Tempest
   m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.SkillDefinition
-  id: skill_slash
-  displayName: Rough Breath
-  cooldown: 0.35
+  id: skill_tempest
+  displayName: Tempest Edge
+  cooldown: 18
   icon: {fileID: 0}
-  behaviour: {fileID: 11400000, guid: f1a2b3c4d5e60718293a4b5c6d7e8f90, type: 2}
+  behaviour: {fileID: 11400000, guid: f4d5e60718293a4b5c6d7e8f901a2bcd, type: 2}
