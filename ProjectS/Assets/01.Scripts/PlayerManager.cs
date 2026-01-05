@@ -18,8 +18,10 @@ namespace PS.Manager
 
         [SerializeField] private GameObject beams;
         [SerializeField] private ClassDefinition classDefinitionOverride;
+        [SerializeField] private ClassCatalog classCatalogOverride;
         private bool isFiring;
         private bool isDead;
+        private bool wasAttackHeld;
         private bool wasSkill1Held;
         private bool wasSkill2Held;
         private bool wasSkill3Held;
@@ -60,9 +62,8 @@ namespace PS.Manager
             {
                 beams.SetActive(false);
             }
-            
-            // 寃뚯엫 留ㅻ땲???紐⑤뱺 ?ъ뿉 議댁옱
-            DontDestroyOnLoad(gameObject);
+            // Keep the player manager across scene loads.
+
         }
 
         private void AssignLocalCameraTarget()
@@ -118,16 +119,15 @@ namespace PS.Manager
             if (photonView.IsMine)
             {
                 ProcessInput();
+                // Health handling.
 
-                // ?꾩옱 泥대젰 愿由?
-                if (Health <= 0f && !isDead)
                 {
                     isDead = true;
                     GameManager.Instance.LeaveRoom();
                 }
             }
-
-            // Beam ?쒖꽦??            if (beams != null && isFiring != beams.activeInHierarchy)
+            // Keep beam active state in sync with firing.
+            if (beams != null && isFiring != beams.activeInHierarchy)
             {
                 beams.SetActive(isFiring);
             }
@@ -193,15 +193,21 @@ namespace PS.Manager
 
         private void ProcessInput()
         {
-            if (input.fire)
+            if (input.attack && !wasAttackHeld)
+            {
+                TryUseSkill(SkillSlot.Basic);
+                Debug.Log("Basic attack triggered.");
+            }
+
+            if (input.attack)
             {
                 if (!isFiring)
                 {
-                    Debug.Log("?덊엳 諛쒖궗");
+                    Debug.Log("Firing started.");
                     isFiring = true;
                 }
             }
-            else if (!input.fire)
+            else if (!input.attack)
             {
                 if (isFiring)
                 {
@@ -210,6 +216,7 @@ namespace PS.Manager
             }
 
             HandleSkillInput();
+            wasAttackHeld = input.attack;
         }
 
         private void HandleSkillInput()
@@ -243,14 +250,14 @@ namespace PS.Manager
         {
             if (stream.IsWriting)
             {
-                // ?닿쾶 ?먯떊?대떎. ?먯떊???곗씠?곕? ?ㅻⅨ ?щ엺?먭쾶 ?꾩넚
-                stream.SendNext(isFiring);
+                // Local player: send state to others.
+
                 stream.SendNext(Health);
             }
             else
             {
-                // ?곗씠???섏떊
-                this.isFiring = (bool)stream.ReceiveNext();
+                // Remote player: receive state.
+
                 this.Health = (float)stream.ReceiveNext();
             }
 
@@ -267,10 +274,38 @@ namespace PS.Manager
             }
             else if (classState.CurrentClass == null)
             {
-                classState.SetClass(TestClassFactory.GetOrCreate());
+                ClassDefinition resolved = ResolveDefaultClass();
+                if (resolved != null)
+                {
+                    classState.SetClass(resolved);
+                }
             }
 
             ApplyClassSkills();
+        }
+
+        private ClassDefinition ResolveDefaultClass()
+        {
+            ClassCatalog catalog = classCatalogOverride;
+            if (catalog == null)
+            {
+                catalog = Resources.Load<ClassCatalog>("ClassCatalog");
+            }
+
+            if (catalog != null)
+            {
+                if (catalog.defaultClass != null)
+                {
+                    return catalog.defaultClass;
+                }
+
+                if (catalog.classes != null && catalog.classes.Length > 0)
+                {
+                    return catalog.classes[0];
+                }
+            }
+
+            return TestClassFactory.GetOrCreate();
         }
 
         private void ApplyClassSkills()
@@ -281,10 +316,10 @@ namespace PS.Manager
             }
 
             skillExecutor.SetSkills(
+                classState.CurrentClass.basicAttack,
                 classState.CurrentClass.skillQ,
                 classState.CurrentClass.skillE,
                 classState.CurrentClass.skillR);
         }
     }
 }
-

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -12,7 +12,7 @@ namespace PS.UI
 
         private void Start()
         {
-            // 닉네임 세이브, 로드
+            // Load and apply the stored nickname, if any.
             string defaultName = string.Empty;
             TMP_InputField inputfield = GetComponent<TMP_InputField>();
             if (inputfield != null)
@@ -27,7 +27,7 @@ namespace PS.UI
         }
 
         /// <summary>
-        /// Input Field의 Check 버튼을 누르면 String 인자로 받음
+        /// Called by the input field submit/check action.
         /// </summary>
         /// <param name="value"></param>
         public void SetPlayerName(string value)
@@ -40,6 +40,5 @@ namespace PS.UI
             PhotonNetwork.NickName = value;
             PlayerPrefs.SetString(playerNamePrefKey, value);
         }
-    }    
+    }
 }
-

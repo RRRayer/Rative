@@ -9,6 +9,7 @@ namespace ProjectS.Data.Definitions
         public string displayName;
         public string description;
 
+        public SkillDefinition basicAttack;
         public SkillDefinition skillQ;
         public SkillDefinition skillE;
         public SkillDefinition skillR;

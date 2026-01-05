@@ -25,6 +25,7 @@ namespace ProjectS.Classes
             classDefinition.displayName = "Test Class";
             classDefinition.description = "Temporary class for early skill testing.";
 
+            classDefinition.basicAttack = CreateSkill("test_basic", "Test Basic", 0.3f);
             classDefinition.skillQ = CreateSkill("test_q", "Test Q", 3f);
             classDefinition.skillE = CreateSkill("test_e", "Test E", 5f);
             classDefinition.skillR = CreateSkill("test_r", "Test R", 8f);

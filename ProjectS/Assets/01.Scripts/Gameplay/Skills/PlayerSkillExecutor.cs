@@ -21,8 +21,9 @@ namespace ProjectS.Gameplay.Skills
             }
         }
 
-        public void SetSkills(SkillDefinition skillQ, SkillDefinition skillE, SkillDefinition skillR)
+        public void SetSkills(SkillDefinition basic, SkillDefinition skillQ, SkillDefinition skillE, SkillDefinition skillR)
         {
+            SetSkill(SkillSlot.Basic, basic);
             SetSkill(SkillSlot.Q, skillQ);
             SetSkill(SkillSlot.E, skillE);
             SetSkill(SkillSlot.R, skillR);
