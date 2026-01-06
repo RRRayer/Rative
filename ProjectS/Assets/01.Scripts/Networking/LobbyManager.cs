@@ -16,7 +16,7 @@ namespace ProjectS.Networking
         [Header("View")]
         [SerializeField] private MonoBehaviour lobbyViewBehaviour;
         [Header("Scenes")]
-        [SerializeField] private string waitingRoomSceneName = "WaitingRoom";
+        [SerializeField] private string waitingRoomSceneName = "GameRoom";
 
         private ILobbyView lobbyView;
         private readonly Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -43,19 +43,24 @@ namespace ProjectS.Networking
 
         public void JoinLobby()
         {
-            if (PhotonNetwork.IsConnectedAndReady)
-            {
-                PhotonNetwork.JoinLobby();
-            }
-            else
+            if (!PhotonNetwork.IsConnectedAndReady)
             {
                 Debug.LogWarning("[Lobby] Cannot join lobby. Not connected to Photon.");
+                return;
             }
+
+            ClientState state = PhotonNetwork.NetworkClientState;
+            if (state == ClientState.JoinedLobby || state == ClientState.JoiningLobby)
+            {
+                return;
+            }
+
+            PhotonNetwork.JoinLobby();
         }
 
         public override void OnConnectedToMaster()
         {
-            PhotonNetwork.JoinLobby();
+            // Main+Lobby flow triggers JoinLobby from UI, so avoid auto-joining here.
         }
 
         public override void OnJoinedLobby()

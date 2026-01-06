@@ -12,6 +12,7 @@ namespace ProjectS.Networking
         private void Awake()
         {
             PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.EnableCloseConnection = true;
         }
 
         private void Start()

@@ -7,7 +7,8 @@
         "ProjectS.Gameplay",
         "ProjectS.Networking",
         "Unity.TextMeshPro",
-        "PhotonUnityNetworking"
+        "PhotonUnityNetworking",
+        "PhotonRealtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
