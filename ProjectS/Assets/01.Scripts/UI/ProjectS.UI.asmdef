@@ -1,27 +1,22 @@
-﻿{
-    "name":  "ProjectS.UI",
-    "references":  [
-                       "ProjectS.Core",
-                       "ProjectS.Data",
-                       "ProjectS.Gameplay"
-                   ],
-    "includePlatforms":  [
-
-                         ],
-    "excludePlatforms":  [
-
-                         ],
-    "allowUnsafeCode":  false,
-    "overrideReferences":  false,
-    "precompiledReferences":  [
-
-                              ],
-    "autoReferenced":  true,
-    "defineConstraints":  [
-
-                          ],
-    "versionDefines":  [
-
-                       ],
-    "noEngineReferences":  false
+{
+    "name": "ProjectS.UI",
+    "rootNamespace": "",
+    "references": [
+        "ProjectS.Core",
+        "ProjectS.Data",
+        "ProjectS.Gameplay",
+        "ProjectS.Networking",
+        "Unity.TextMeshPro",
+        "PhotonUnityNetworking",
+        "PhotonRealtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

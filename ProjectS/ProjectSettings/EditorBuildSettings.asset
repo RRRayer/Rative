@@ -6,17 +6,27 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/00.Scenes/MainMenu.unity
+    guid: decfc6dbfa361f14fad3b1014bdd60a7
+  - enabled: 1
+    path: Assets/00.Scenes/GameRoom.unity
+    guid: 56b939c988b01994aa94e5cd82f000d7
+  - enabled: 1
+    path: Assets/00.Scenes/InGame.unity
+    guid: 30ad4d626d2562c489fbbc42738629b2
+  - enabled: 0
     path: Assets/00.Scenes/Launcher.unity
     guid: 898f2cf076e648a4f8d5266278367d18
-  - enabled: 1
+  - enabled: 0
     path: Assets/00.Scenes/RoomFor1.unity
-    guid: 01b70577cf8466048b154cabc16618be
-  - enabled: 1
+    guid: 1b7026a3c5dcdfb4e912c8de595129fe
+  - enabled: 0
     path: Assets/00.Scenes/RoomFor2.unity
-    guid: 96c63662cc7d2eb44aadaa46c37f8539
-  - enabled: 1
+    guid: c0d98dd89ef99604ba68f37af1f3716c
+  - enabled: 0
     path: Assets/00.Scenes/RoomFor3.unity
-    guid: 51675bec176f0f847945e12215f511e0
+    guid: 29a30374ad372684f98fc2e5b8738bf7
   m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
