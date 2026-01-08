@@ -1,11 +1,14 @@
 ﻿using Photon.Pun;
 using StarterAssets;
 using ProjectS.Classes;
+using ProjectS.Core.Combat;
 using ProjectS.Core.Skills;
 using ProjectS.Data.Definitions;
+using ProjectS.Gameplay.Stats;
 using ProjectS.Gameplay.Skills;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 using UnityEngine.InputSystem; // Added
 
 namespace PS.Manager
@@ -17,13 +20,20 @@ namespace PS.Manager
 
         [SerializeField] private GameObject beams;
         [SerializeField] private ClassDefinition classDefinitionOverride;
+        [SerializeField] private ClassCatalog classCatalogOverride;
         private bool isFiring;
         private bool isDead;
+        private bool wasAttackHeld;
         private bool wasSkill1Held;
         private bool wasSkill2Held;
         private bool wasSkill3Held;
         private PlayerClassState classState;
         private PlayerSkillExecutor skillExecutor;
+        private PlayerStats stats;
+        private StarterAssets.FirstPersonController firstPersonController;
+        private float baseMoveSpeed;
+        private float baseSprintSpeed;
+        private bool hasMovementBaseline;
     #if ENABLE_INPUT_SYSTEM
         private StarterAssetsInputs input;
     #endif
@@ -33,12 +43,13 @@ namespace PS.Manager
             if (photonView.IsMine)
             {
                 LocalPlayerInstance = gameObject;
+                AssignLocalCameraTarget();
             }
             else
             {
                 // It's a remote player. Disable input, character controller, camera and audio listener.
                 GetComponent<PlayerInput>().enabled = false;
-                GetComponent<ThirdPersonController>().enabled = false;
+                GetComponent<StarterAssets.FirstPersonController>().enabled = false;
 
                 Camera camera = GetComponentInChildren<Camera>();
                 if (camera != null) camera.enabled = false;
@@ -48,6 +59,8 @@ namespace PS.Manager
             }
             
             input = GetComponent<StarterAssetsInputs>();
+            stats = GetComponent<PlayerStats>() ?? gameObject.AddComponent<PlayerStats>();
+            firstPersonController = GetComponent<StarterAssets.FirstPersonController>();
             InitializeClassAndSkills();
 
             if (beams == null)
@@ -58,19 +71,38 @@ namespace PS.Manager
             {
                 beams.SetActive(false);
             }
-            
-            // 寃뚯엫 留ㅻ땲???紐⑤뱺 ?ъ뿉 議댁옱
-            DontDestroyOnLoad(gameObject);
+            // Keep the player manager across scene loads.
+
+        }
+
+        private void AssignLocalCameraTarget()
+        {
+            var controller = GetComponent<StarterAssets.FirstPersonController>();
+            if (controller == null || controller.CinemachineCameraTarget == null)
+            {
+                return;
+            }
+
+            var virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            if (virtualCamera == null)
+            {
+                return;
+            }
+
+            virtualCamera.Follow = controller.CinemachineCameraTarget.transform;
+            virtualCamera.LookAt = controller.CinemachineCameraTarget.transform;
         }
 
         private void Start()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
+            DamageEvents.DamageApplied += OnDamageApplied;
         }
 
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            DamageEvents.DamageApplied -= OnDamageApplied;
 
             // If this was the local player instance, clean up the static reference
             if (photonView.IsMine && LocalPlayerInstance == gameObject)
@@ -79,12 +111,17 @@ namespace PS.Manager
             }
         }
 
-         private void OnSceneLoaded(Scene scene, LoadSceneMode loadingMode)
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadingMode)
         {
             // After a scene load, check if the local player is in a valid position.
             if (!Physics.Raycast(transform.position, -Vector3.up, 5f))
             {
                 transform.position = new Vector3(0, 5, 0);
+            }
+
+            if (photonView.IsMine)
+            {
+                AssignLocalCameraTarget();
             }
         }
 
@@ -92,17 +129,22 @@ namespace PS.Manager
         {
             if (photonView.IsMine)
             {
-                ProcessInput();
+                if (stats != null && input != null)
+                {
+                    bool isSprinting = input.sprint && input.move.sqrMagnitude > 0.01f;
+                    stats.TickStamina(Time.deltaTime, isSprinting);
+                }
 
-                // ?꾩옱 泥대젰 愿由?
-                if (Health <= 0f && !isDead)
+                ProcessInput();
+                // Health handling.
+
                 {
                     isDead = true;
                     GameManager.Instance.LeaveRoom();
                 }
             }
-
-            // Beam ?쒖꽦??            if (beams != null && isFiring != beams.activeInHierarchy)
+            // Keep beam active state in sync with firing.
+            if (beams != null && isFiring != beams.activeInHierarchy)
             {
                 beams.SetActive(isFiring);
             }
@@ -168,15 +210,24 @@ namespace PS.Manager
 
         private void ProcessInput()
         {
-            if (input.fire)
+            if (input.attack && !wasAttackHeld)
+            {
+                if (stats == null || stats.TryConsumeStamina(stats.BasicAttackStaminaCost))
+                {
+                    TryUseSkill(SkillSlot.Basic);
+                    Debug.Log("Basic attack triggered.");
+                }
+            }
+
+            if (input.attack)
             {
                 if (!isFiring)
                 {
-                    Debug.Log("?덊엳 諛쒖궗");
+                    Debug.Log("Firing started.");
                     isFiring = true;
                 }
             }
-            else if (!input.fire)
+            else if (!input.attack)
             {
                 if (isFiring)
                 {
@@ -185,6 +236,7 @@ namespace PS.Manager
             }
 
             HandleSkillInput();
+            wasAttackHeld = input.attack;
         }
 
         private void HandleSkillInput()
@@ -201,7 +253,22 @@ namespace PS.Manager
 
             if (input.skill2 && !wasSkill2Held)
             {
-                TryUseSkill(SkillSlot.E);
+                if (skillExecutor != null && skillExecutor.IsChannelSkill(SkillSlot.E))
+                {
+                    skillExecutor.BeginChannel(SkillSlot.E);
+                }
+                else
+                {
+                    TryUseSkill(SkillSlot.E);
+                }
+            }
+
+            if (!input.skill2 && wasSkill2Held)
+            {
+                if (skillExecutor != null && skillExecutor.IsChannelSkill(SkillSlot.E))
+                {
+                    skillExecutor.EndChannel(SkillSlot.E);
+                }
             }
 
             if (input.skill3 && !wasSkill3Held)
@@ -218,17 +285,35 @@ namespace PS.Manager
         {
             if (stream.IsWriting)
             {
-                // ?닿쾶 ?먯떊?대떎. ?먯떊???곗씠?곕? ?ㅻⅨ ?щ엺?먭쾶 ?꾩넚
-                stream.SendNext(isFiring);
+                // Local player: send state to others.
+
                 stream.SendNext(Health);
             }
             else
             {
-                // ?곗씠???섏떊
-                this.isFiring = (bool)stream.ReceiveNext();
+                // Remote player: receive state.
+
                 this.Health = (float)stream.ReceiveNext();
             }
 
+        }
+
+        private void OnDamageApplied(DamageInfo info)
+        {
+            if (!photonView.IsMine)
+            {
+                return;
+            }
+
+            if (info.SourceId != gameObject.GetInstanceID())
+            {
+                return;
+            }
+
+            if (info.Slot == SkillSlot.Basic)
+            {
+                skillExecutor?.ReduceCooldown(SkillSlot.Q, 1f);
+            }
         }
 
         private void InitializeClassAndSkills()
@@ -242,10 +327,38 @@ namespace PS.Manager
             }
             else if (classState.CurrentClass == null)
             {
-                classState.SetClass(TestClassFactory.GetOrCreate());
+                ClassDefinition resolved = ResolveDefaultClass();
+                if (resolved != null)
+                {
+                    classState.SetClass(resolved);
+                }
             }
 
             ApplyClassSkills();
+        }
+
+        private ClassDefinition ResolveDefaultClass()
+        {
+            ClassCatalog catalog = classCatalogOverride;
+            if (catalog == null)
+            {
+                catalog = Resources.Load<ClassCatalog>("ClassCatalog");
+            }
+
+            if (catalog != null)
+            {
+                if (catalog.defaultClass != null)
+                {
+                    return catalog.defaultClass;
+                }
+
+                if (catalog.classes != null && catalog.classes.Length > 0)
+                {
+                    return catalog.classes[0];
+                }
+            }
+
+            return TestClassFactory.GetOrCreate();
         }
 
         private void ApplyClassSkills()
@@ -256,10 +369,39 @@ namespace PS.Manager
             }
 
             skillExecutor.SetSkills(
+                classState.CurrentClass.basicAttack,
                 classState.CurrentClass.skillQ,
                 classState.CurrentClass.skillE,
                 classState.CurrentClass.skillR);
+
+            ApplyClassStats();
+        }
+
+        private void ApplyClassStats()
+        {
+            if (stats == null || classState == null || classState.CurrentClass == null)
+            {
+                return;
+            }
+
+            stats.SetBaseStats(classState.CurrentClass.stats);
+            Health = stats.MaxHealth;
+
+            if (firstPersonController == null)
+            {
+                return;
+            }
+
+            if (!hasMovementBaseline)
+            {
+                baseMoveSpeed = firstPersonController.MoveSpeed;
+                baseSprintSpeed = firstPersonController.SprintSpeed;
+                hasMovementBaseline = true;
+            }
+
+            float moveMultiplier = stats.GetMoveSpeedMultiplier();
+            firstPersonController.MoveSpeed = baseMoveSpeed * moveMultiplier;
+            firstPersonController.SprintSpeed = baseSprintSpeed * moveMultiplier;
         }
     }
 }
-

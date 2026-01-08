@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
@@ -17,7 +17,7 @@ namespace PS.Manager
         {
             if (Instance == null)
             {
-                Instance = this; 
+                Instance = this;
             }
         }
 
@@ -31,7 +31,7 @@ namespace PS.Manager
             {
                 if (PlayerManager.LocalPlayerInstance == null)
                 {
-                    // 방에 입장하기 전까지 기다렸다가 플레이어 오브젝트를 생성한다.
+                    // Wait for room join before spawning the local player.
                     StartCoroutine(InstantiatePlayerWhenInRoom());
                 }
                 else
@@ -40,32 +40,24 @@ namespace PS.Manager
                 }
             }
         }
-        
+
         /// <summary>
-        /// 방에 입장할 때까지 대기 후 플레이어 오브젝트를 생성한다.(Race Condition 방지)
+        /// Wait until the client is in a room before instantiating the local player.
         /// </summary>
         private IEnumerator InstantiatePlayerWhenInRoom()
         {
-            // Wait until the client is in a room
+            // Wait until the client is in a room.
             while (!PhotonNetwork.InRoom)
             {
                 yield return null;
             }
 
-            Debug.LogFormat("[GameManager] LocalPlayer 객체 생성 from {0}", SceneManager.GetActiveScene().name);
+            Debug.LogFormat("[GameManager] LocalPlayer spawned in {0}", SceneManager.GetActiveScene().name);
             PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
         }
 
         /// <summary>
-        /// Called when local player left the room
-        /// </summary>
-        public override void OnLeftRoom()
-        {
-            SceneManager.LoadScene(0);
-        }
-
-        /// <summary>
-        /// 룸 종료 버튼에 바인딩
+        /// Requests leaving the current room if connected.
         /// </summary>
         public void LeaveRoom()
         {
@@ -80,4 +72,3 @@ namespace PS.Manager
         // This avoids all race conditions related to scene loading and player instantiation.
     }
 }
-

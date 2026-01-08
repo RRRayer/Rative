@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae6eb2fba9eb38041beff4684f2e8d8f, type: 3}
+  m_Name: ExampleClass
+  m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.ClassDefinition
+  id: 
+  displayName: 
+  description: 
+  stats:
+    str: 9
+    intel: 4
+    luk: 3
+    agi: 5
+    vit: 7
+    spi: 7
+  basicAttack: {fileID: 11400000, guid: 7dfd9b3e7e644b0cb9d5c5405a1b8d88, type: 2}
+  skillQ: {fileID: 11400000, guid: 6fefce20e6b44e9a8ef8d0f7a5c9dd04, type: 2}
+  skillE: {fileID: 11400000, guid: b1f2a7e3d4c54c0a9f5b0a6ce1f3b2d1, type: 2}
+  skillR: {fileID: 11400000, guid: c7d2e9f1a4b84b1c8f2d9a3e6b5c7a12, type: 2}
