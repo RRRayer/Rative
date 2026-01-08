@@ -10,5 +10,6 @@ namespace ProjectS.Data.Definitions
         public float cooldown;
         public Sprite icon;
         public SkillBehaviour behaviour;
+        public SkillUpgradeTrack upgradeTrack;
     }
 }

@@ -21,6 +21,14 @@ namespace ProjectS.Gameplay.Skills.Behaviours
                 damageMultiplier,
                 critChance,
                 critMultiplier);
+
+            if (context.UpgradeState.PullRadiusBonus > 0f && context.UpgradeState.PullStrengthBonus > 0f)
+            {
+                SkillCombatUtility.ApplyPull(
+                    context.Origin.position,
+                    context.UpgradeState.PullRadiusBonus,
+                    context.UpgradeState.PullStrengthBonus);
+            }
         }
 
         public void ExecuteRelease(SkillContext context, float damageMultiplier, float critChance, float critMultiplier)

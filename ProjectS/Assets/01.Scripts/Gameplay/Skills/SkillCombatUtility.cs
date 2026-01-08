@@ -11,10 +11,11 @@ namespace ProjectS.Gameplay.Skills
         {
             if (context.Stats == null)
             {
-                return 1f;
+                return 1f + context.UpgradeState.DamageBonusPercent;
             }
 
-            return context.Stats.GetDamageMultiplier(slot);
+            float baseMultiplier = context.Stats.GetDamageMultiplier(slot);
+            return baseMultiplier * (1f + context.UpgradeState.DamageBonusPercent);
         }
 
         public static float GetCritChance(SkillContext context)
@@ -46,6 +47,12 @@ namespace ProjectS.Gameplay.Skills
                 return;
             }
 
+            float scaleMultiplier = 1f + context.UpgradeState.PrefabScaleBonusPercent;
+            if (scaleMultiplier > 0.01f && scaleMultiplier != 1f)
+            {
+                spawned.transform.localScale *= scaleMultiplier;
+            }
+
             int sourceId = context.SourceId;
             IDamageConfigurable[] damageTargets = spawned.GetComponentsInChildren<IDamageConfigurable>();
             for (int i = 0; i < damageTargets.Length; i++)
@@ -68,7 +75,8 @@ namespace ProjectS.Gameplay.Skills
             float critMultiplier,
             float range,
             float angle,
-            float airborneMultiplier)
+            float airborneMultiplier,
+            bool forceAirborneCrit)
         {
             Collider[] hits = Physics.OverlapSphere(context.Origin.position, range, ~0, QueryTriggerInteraction.Ignore);
             for (int i = 0; i < hits.Length; i++)
@@ -86,7 +94,7 @@ namespace ProjectS.Gameplay.Skills
                     AirborneStatus airborne = hit.GetComponent<AirborneStatus>();
                     if (airborne != null && airborne.IsAirborne)
                     {
-                        finalDamage *= airborneMultiplier;
+                        finalDamage *= forceAirborneCrit ? critMultiplier : airborneMultiplier;
                     }
                     else if (critChance > 0f && Random.value < critChance)
                     {

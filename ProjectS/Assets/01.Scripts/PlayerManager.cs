@@ -4,6 +4,7 @@ using ProjectS.Classes;
 using ProjectS.Core.Combat;
 using ProjectS.Core.Skills;
 using ProjectS.Data.Definitions;
+using ProjectS.Progression.Leveling;
 using ProjectS.Gameplay.Stats;
 using ProjectS.Gameplay.Skills;
 using UnityEngine;
@@ -30,10 +31,15 @@ namespace PS.Manager
         private PlayerClassState classState;
         private PlayerSkillExecutor skillExecutor;
         private PlayerStats stats;
+        private ProgressionManager progression;
+        private WarriorPassiveState passiveState;
         private StarterAssets.FirstPersonController firstPersonController;
         private float baseMoveSpeed;
         private float baseSprintSpeed;
         private bool hasMovementBaseline;
+        private float lastMoveSpeedMultiplier = -1f;
+        private float lastCooldownMultiplier = -1f;
+        private float lastComboResetMultiplier = -1f;
     #if ENABLE_INPUT_SYSTEM
         private StarterAssetsInputs input;
     #endif
@@ -60,7 +66,9 @@ namespace PS.Manager
             
             input = GetComponent<StarterAssetsInputs>();
             stats = GetComponent<PlayerStats>() ?? gameObject.AddComponent<PlayerStats>();
+            progression = GetComponent<ProgressionManager>() ?? gameObject.AddComponent<ProgressionManager>();
             firstPersonController = GetComponent<StarterAssets.FirstPersonController>();
+            passiveState = GetComponent<WarriorPassiveState>() ?? gameObject.AddComponent<WarriorPassiveState>();
             InitializeClassAndSkills();
 
             if (beams == null)
@@ -97,12 +105,35 @@ namespace PS.Manager
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
             DamageEvents.DamageApplied += OnDamageApplied;
+            KillEvents.Killed += OnKilled;
+
+            if (progression != null)
+            {
+                progression.LevelUp += OnLevelUp;
+                ApplyProgressionLevel(progression.Level);
+            }
+
+            if (passiveState != null)
+            {
+                passiveState.Changed += OnPassiveChanged;
+            }
         }
 
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
             DamageEvents.DamageApplied -= OnDamageApplied;
+            KillEvents.Killed -= OnKilled;
+
+            if (progression != null)
+            {
+                progression.LevelUp -= OnLevelUp;
+            }
+
+            if (passiveState != null)
+            {
+                passiveState.Changed -= OnPassiveChanged;
+            }
 
             // If this was the local player instance, clean up the static reference
             if (photonView.IsMine && LocalPlayerInstance == gameObject)
@@ -129,13 +160,8 @@ namespace PS.Manager
         {
             if (photonView.IsMine)
             {
-                if (stats != null && input != null)
-                {
-                    bool isSprinting = input.sprint && input.move.sqrMagnitude > 0.01f;
-                    stats.TickStamina(Time.deltaTime, isSprinting);
-                }
-
                 ProcessInput();
+                ApplyRuntimeModifiers();
                 // Health handling.
 
                 {
@@ -212,11 +238,8 @@ namespace PS.Manager
         {
             if (input.attack && !wasAttackHeld)
             {
-                if (stats == null || stats.TryConsumeStamina(stats.BasicAttackStaminaCost))
-                {
-                    TryUseSkill(SkillSlot.Basic);
-                    Debug.Log("Basic attack triggered.");
-                }
+                TryUseSkill(SkillSlot.Basic);
+                Debug.Log("Basic attack triggered.");
             }
 
             if (input.attack)
@@ -281,6 +304,93 @@ namespace PS.Manager
             wasSkill3Held = input.skill3;
         }
 
+        private void ApplyRuntimeModifiers()
+        {
+            if (!photonView.IsMine)
+            {
+                return;
+            }
+
+            float statMultiplier = stats != null ? stats.GetMoveSpeedMultiplier() : 1f;
+            float passiveMultiplier = passiveState != null ? passiveState.MoveSpeedMultiplier : 1f;
+            float channelMultiplier = skillExecutor != null ? skillExecutor.CurrentChannelMoveSpeedMultiplier : 1f;
+            float moveMultiplier = statMultiplier * passiveMultiplier * channelMultiplier;
+
+            if (firstPersonController != null && hasMovementBaseline
+                && Mathf.Abs(moveMultiplier - lastMoveSpeedMultiplier) > 0.001f)
+            {
+                firstPersonController.MoveSpeed = baseMoveSpeed * moveMultiplier;
+                firstPersonController.SprintSpeed = baseSprintSpeed * moveMultiplier;
+                lastMoveSpeedMultiplier = moveMultiplier;
+            }
+
+            float cooldownMultiplier = passiveState != null ? passiveState.CooldownMultiplier : 1f;
+            if (skillExecutor != null && Mathf.Abs(cooldownMultiplier - lastCooldownMultiplier) > 0.001f)
+            {
+                skillExecutor.SetCooldownMultiplier(cooldownMultiplier);
+                lastCooldownMultiplier = cooldownMultiplier;
+            }
+
+            float comboResetMultiplier = passiveState != null ? passiveState.ComboResetMultiplier : 1f;
+            if (skillExecutor != null && Mathf.Abs(comboResetMultiplier - lastComboResetMultiplier) > 0.001f)
+            {
+                skillExecutor.SetBasicComboResetMultiplier(comboResetMultiplier);
+                lastComboResetMultiplier = comboResetMultiplier;
+            }
+        }
+
+        private void OnKilled(KillInfo info)
+        {
+            if (!photonView.IsMine)
+            {
+                return;
+            }
+
+            if (info.SourceId != gameObject.GetInstanceID())
+            {
+                return;
+            }
+
+            if (progression != null)
+            {
+                progression.AddXp(info.XpReward);
+            }
+
+            if (info.Slot == SkillSlot.Q && skillExecutor != null
+                && skillExecutor.ShouldResetCooldownOnKill(SkillSlot.Q))
+            {
+                skillExecutor.ResetCooldown(SkillSlot.Q);
+            }
+        }
+
+        private void OnLevelUp(int level)
+        {
+            ApplyProgressionLevel(level);
+        }
+
+        private void ApplyProgressionLevel(int level)
+        {
+            int clampedLevel = Mathf.Clamp(level, 1, 5);
+
+            if (skillExecutor != null)
+            {
+                skillExecutor.SetSkillLevel(SkillSlot.Basic, clampedLevel);
+                skillExecutor.SetSkillLevel(SkillSlot.Q, clampedLevel);
+                skillExecutor.SetSkillLevel(SkillSlot.E, clampedLevel);
+                skillExecutor.SetSkillLevel(SkillSlot.R, clampedLevel);
+            }
+
+            if (passiveState != null)
+            {
+                passiveState.SetLevel(clampedLevel);
+            }
+        }
+
+        private void OnPassiveChanged()
+        {
+            ApplyRuntimeModifiers();
+        }
+
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
             if (stream.IsWriting)
@@ -313,6 +423,7 @@ namespace PS.Manager
             if (info.Slot == SkillSlot.Basic)
             {
                 skillExecutor?.ReduceCooldown(SkillSlot.Q, 1f);
+                passiveState?.RegisterHit();
             }
         }
 
@@ -374,7 +485,65 @@ namespace PS.Manager
                 classState.CurrentClass.skillE,
                 classState.CurrentClass.skillR);
 
+            ConfigureUpgradeTracks(classState.CurrentClass);
+
             ApplyClassStats();
+        }
+
+        private void ConfigureUpgradeTracks(ClassDefinition definition)
+        {
+            if (skillExecutor == null || definition == null)
+            {
+                return;
+            }
+
+            SkillUpgradeTrack basicTrack = ResolveUpgradeTrack(definition, SkillSlot.Basic);
+            if (basicTrack != null)
+            {
+                skillExecutor.SetUpgradeTrack(SkillSlot.Basic, basicTrack);
+            }
+
+            SkillUpgradeTrack qTrack = ResolveUpgradeTrack(definition, SkillSlot.Q);
+            if (qTrack != null)
+            {
+                skillExecutor.SetUpgradeTrack(SkillSlot.Q, qTrack);
+            }
+
+            SkillUpgradeTrack eTrack = ResolveUpgradeTrack(definition, SkillSlot.E);
+            if (eTrack != null)
+            {
+                skillExecutor.SetUpgradeTrack(SkillSlot.E, eTrack);
+            }
+
+            SkillUpgradeTrack rTrack = ResolveUpgradeTrack(definition, SkillSlot.R);
+            if (rTrack != null)
+            {
+                skillExecutor.SetUpgradeTrack(SkillSlot.R, rTrack);
+            }
+        }
+
+        private SkillUpgradeTrack ResolveUpgradeTrack(ClassDefinition definition, SkillSlot slot)
+        {
+            SkillUpgradeTrack track = slot switch
+            {
+                SkillSlot.Basic => definition.basicUpgradeTrack,
+                SkillSlot.Q => definition.skillQUpgradeTrack,
+                SkillSlot.E => definition.skillEUpgradeTrack,
+                SkillSlot.R => definition.skillRUpgradeTrack,
+                _ => null
+            };
+
+            if (track != null)
+            {
+                return track;
+            }
+
+            if (WarriorUpgradeLibrary.IsWarrior(definition))
+            {
+                return WarriorUpgradeLibrary.GetTrack(slot);
+            }
+
+            return null;
         }
 
         private void ApplyClassStats()
@@ -398,10 +567,7 @@ namespace PS.Manager
                 baseSprintSpeed = firstPersonController.SprintSpeed;
                 hasMovementBaseline = true;
             }
-
-            float moveMultiplier = stats.GetMoveSpeedMultiplier();
-            firstPersonController.MoveSpeed = baseMoveSpeed * moveMultiplier;
-            firstPersonController.SprintSpeed = baseSprintSpeed * moveMultiplier;
+            ApplyRuntimeModifiers();
         }
     }
 }

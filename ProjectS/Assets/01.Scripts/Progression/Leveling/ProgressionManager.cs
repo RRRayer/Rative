@@ -15,15 +15,13 @@ namespace ProjectS.Progression.Leveling
         public void AddXp(float amount)
         {
             CurrentXp += amount;
-            if (CurrentXp < XpToNext)
+            while (CurrentXp >= XpToNext)
             {
-                return;
+                CurrentXp -= XpToNext;
+                Level += 1;
+                XpToNext *= 1.2f;
+                LevelUp?.Invoke(Level);
             }
-
-            CurrentXp -= XpToNext;
-            Level += 1;
-            XpToNext *= 1.2f;
-            LevelUp?.Invoke(Level);
         }
     }
 }

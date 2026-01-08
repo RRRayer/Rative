@@ -9,6 +9,8 @@ namespace ProjectS.Gameplay.Skills
     {
         public SkillDefinition Definition;
         public SkillSlot Slot;
+        public int SkillLevel;
+        public SkillUpgradeState UpgradeState;
         public Transform Origin;
         public GameObject Owner;
         public PlayerStats Stats;
