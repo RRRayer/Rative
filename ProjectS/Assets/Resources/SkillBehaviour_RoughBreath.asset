@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: SkillBehaviour_RoughBreath
   m_EditorClassIdentifier: ProjectS.Gameplay.Skills.Behaviours::ProjectS.Gameplay.Skills.Behaviours.BasicComboSkillBehaviour
   baseDamage: 12
-  swingPrefab: {fileID: 3320012345678901234, guid: 4b1950a25b4d4f2e88508f0b88b8a65f, type: 3}
+  swingPrefab: {fileID: 0}
   finisherPrefab: {fileID: 0}
   comboResetSeconds: 0.9
   finisherMultiplier: 1.5
+  swingHitboxDuration: 0.2
+  finisherHitboxDuration: 0.25
