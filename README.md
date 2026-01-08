@@ -67,7 +67,11 @@ Project S
 - FEAT/10 (#5)
 
 **테스트 결과**
-- (추가 예정)
+- 플레이어 테스트 씬
+<img width="1458" height="436" alt="image" src="https://github.com/user-attachments/assets/d0cf8f2c-27a6-4018-8643-b2c2a9e6aa23" />
+- 온라인 로비 테스트 씬
+<img width="3439" height="1439" alt="image" src="https://github.com/user-attachments/assets/77cee21e-cb04-4935-99a3-c31599a89e7f" />
+
 
 **링크**
 - https://github.com/RRRayer/Rative/pull/8
