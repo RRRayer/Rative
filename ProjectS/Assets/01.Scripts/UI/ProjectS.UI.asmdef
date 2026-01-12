@@ -6,6 +6,7 @@
         "ProjectS.Data",
         "ProjectS.Gameplay",
         "ProjectS.Networking",
+        "Unity.InputSystem",
         "Unity.TextMeshPro",
         "PhotonUnityNetworking",
         "PhotonRealtime"

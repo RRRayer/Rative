@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3320012345678901234
+--- !u!1 &7713897069012110140
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,51 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3320012345678901235}
-  - component: {fileID: 3320012345678901236}
-  - component: {fileID: 3320012345678901237}
-  - component: {fileID: 5179170523478905841}
-  - component: {fileID: 3320012345678901238}
-  - component: {fileID: 3320012345678901239}
-  m_Layer: 0
-  m_Name: TestEnemy
+  - component: {fileID: 2556030743133551227}
+  - component: {fileID: 2223525090768226694}
+  - component: {fileID: 8482160878682520719}
+  - component: {fileID: 3993927248122858617}
+  - component: {fileID: 2587412313738733436}
+  - component: {fileID: 4202742681801083140}
+  - component: {fileID: 6198954401402872852}
+  - component: {fileID: 7000743185055657884}
+  m_Layer: 6
+  m_Name: ExampleEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3320012345678901235
+--- !u!4 &2556030743133551227
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3320012345678901234}
+  m_GameObject: {fileID: 7713897069012110140}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.74, y: 1, z: -4}
   m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3320012345678901236
+--- !u!33 &2223525090768226694
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3320012345678901234}
+  m_GameObject: {fileID: 7713897069012110140}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &3320012345678901237
+--- !u!23 &8482160878682520719
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3320012345678901234}
+  m_GameObject: {fileID: 7713897069012110140}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -69,7 +71,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 073b1ee561def20429e655b5c8893ad4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,13 +95,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &5179170523478905841
+--- !u!54 &3993927248122858617
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3320012345678901234}
+  m_GameObject: {fileID: 7713897069012110140}
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
@@ -120,13 +122,13 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &3320012345678901238
+--- !u!65 &2587412313738733436
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3320012345678901234}
+  m_GameObject: {fileID: 7713897069012110140}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -141,19 +143,61 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3320012345678901239
+--- !u!114 &4202742681801083140
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3320012345678901234}
+  m_GameObject: {fileID: 7713897069012110140}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d6f6f31f0c44f64a3cda2f859b6b2ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 40
-  currentHealth: 0
+  m_EditorClassIdentifier: ProjectS.Gameplay::ProjectS.Gameplay.Combat.Damageable
+  maxHealth: 360
+  currentHealth: 360
   xpReward: 5
   destroyOnDeath: 1
+  damageReductionPercent: 0
+--- !u!114 &6198954401402872852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7713897069012110140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12bd7b9aa1bf4ffb8f7e51e7d95f07f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectS.Gameplay::ProjectS.Gameplay.Combat.MeleeAttack
+  attackOrigin: {fileID: 2556030743133551227}
+  attackRange: 2
+  attackRadius: 0.6
+  attackDamage: 320
+  sourceIdOverride: 0
+  attackCooldown: 1
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 128
+--- !u!114 &7000743185055657884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7713897069012110140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 784e83a91a6928e41af381010aa11503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectS.Gameplay::ProjectS.Gameplay.Combat.EnemyMeleeAttackDriver
+  attack: {fileID: 6198954401402872852}
+  detectionRange: 30
+  moveSpeed: 2.5
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  checkInterval: 0.1
+  turnSpeed: 360

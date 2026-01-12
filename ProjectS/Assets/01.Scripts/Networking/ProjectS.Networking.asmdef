@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "ProjectS.Core",
+        "ProjectS.Progression",
         "PhotonUnityNetworking",
         "PhotonRealtime",
         "PhotonChat"
