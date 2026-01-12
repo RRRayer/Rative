@@ -6,10 +6,10 @@ namespace ProjectS.Classes
 {
     public static class WarriorUpgradeLibrary
     {
-        private static SkillUpgradeTrack basicTrack;
-        private static SkillUpgradeTrack qTrack;
-        private static SkillUpgradeTrack eTrack;
-        private static SkillUpgradeTrack rTrack;
+        private static WarriorBasicUpgradeTrack basicTrack;
+        private static WarriorQUpgradeTrack qTrack;
+        private static WarriorEUpgradeTrack eTrack;
+        private static WarriorRUpgradeTrack rTrack;
 
         public static bool IsWarrior(ClassDefinition definition)
         {
@@ -21,7 +21,7 @@ namespace ProjectS.Classes
             return definition.id == "class_default" || definition.displayName == "Warrior";
         }
 
-        public static SkillUpgradeTrack GetTrack(SkillSlot slot)
+        public static SkillUpgradeTrackBase GetTrack(SkillSlot slot)
         {
             switch (slot)
             {
@@ -38,44 +38,47 @@ namespace ProjectS.Classes
             }
         }
 
-        private static SkillUpgradeTrack CreateBasicTrack()
+        private static WarriorBasicUpgradeTrack CreateBasicTrack()
         {
-            SkillUpgradeTrack track = ScriptableObject.CreateInstance<SkillUpgradeTrack>();
+            WarriorBasicUpgradeTrack track = ScriptableObject.CreateInstance<WarriorBasicUpgradeTrack>();
             track.hideFlags = HideFlags.DontSave;
             track.steps = new[]
             {
-                new SkillUpgradeStep { level = 1, damageBonusPercent = 0.10f },
-                new SkillUpgradeStep { level = 3, prefabScaleBonusPercent = 0.30f },
-                new SkillUpgradeStep { level = 4, damageBonusPercent = 0.20f }
+                new WarriorBasicUpgradeStep { level = 1, damageBonusPercent = 0.10f },
+                new WarriorBasicUpgradeStep { level = 2, comboResetMultiplier = 0.8f },
+                new WarriorBasicUpgradeStep { level = 3, prefabScaleBonusPercent = 0.30f },
+                new WarriorBasicUpgradeStep { level = 4, damageBonusPercent = 0.20f },
+                new WarriorBasicUpgradeStep { level = 5, finisherFixedDamage = true }
             };
             return track;
         }
 
-        private static SkillUpgradeTrack CreateQTrack()
+        private static WarriorQUpgradeTrack CreateQTrack()
         {
-            SkillUpgradeTrack track = ScriptableObject.CreateInstance<SkillUpgradeTrack>();
+            WarriorQUpgradeTrack track = ScriptableObject.CreateInstance<WarriorQUpgradeTrack>();
             track.hideFlags = HideFlags.DontSave;
             track.steps = new[]
             {
-                new SkillUpgradeStep { level = 1, cooldownDelta = -1f },
-                new SkillUpgradeStep { level = 2, damageBonusPercent = 0.15f },
-                new SkillUpgradeStep { level = 4, cooldownDelta = -2f },
-                new SkillUpgradeStep { level = 5, resetCooldownOnKill = true }
+                new WarriorQUpgradeStep { level = 1, cooldownDelta = -1f },
+                new WarriorQUpgradeStep { level = 2, damageBonusPercent = 0.15f },
+                new WarriorQUpgradeStep { level = 3, dashDamageReductionMultiplier = 0.5f },
+                new WarriorQUpgradeStep { level = 4, cooldownDelta = -2f },
+                new WarriorQUpgradeStep { level = 5, resetCooldownOnKill = true }
             };
             return track;
         }
 
-        private static SkillUpgradeTrack CreateETrack()
+        private static WarriorEUpgradeTrack CreateETrack()
         {
-            SkillUpgradeTrack track = ScriptableObject.CreateInstance<SkillUpgradeTrack>();
+            WarriorEUpgradeTrack track = ScriptableObject.CreateInstance<WarriorEUpgradeTrack>();
             track.hideFlags = HideFlags.DontSave;
             track.steps = new[]
             {
-                new SkillUpgradeStep { level = 1, durationBonusSeconds = 1f },
-                new SkillUpgradeStep { level = 2, cooldownDelta = -2f },
-                new SkillUpgradeStep { level = 3, channelMoveSpeedMultiplier = 0.7f },
-                new SkillUpgradeStep { level = 4, damageBonusPercent = 0.25f },
-                new SkillUpgradeStep
+                new WarriorEUpgradeStep { level = 1, durationBonusSeconds = 1f },
+                new WarriorEUpgradeStep { level = 2, cooldownDelta = -2f },
+                new WarriorEUpgradeStep { level = 3, channelMoveSpeedMultiplier = 0.7f },
+                new WarriorEUpgradeStep { level = 4, damageBonusPercent = 0.25f },
+                new WarriorEUpgradeStep
                 {
                     level = 5,
                     prefabScaleBonusPercent = 0.50f,
@@ -86,22 +89,23 @@ namespace ProjectS.Classes
             return track;
         }
 
-        private static SkillUpgradeTrack CreateRTrack()
+        private static WarriorRUpgradeTrack CreateRTrack()
         {
-            SkillUpgradeTrack track = ScriptableObject.CreateInstance<SkillUpgradeTrack>();
+            WarriorRUpgradeTrack track = ScriptableObject.CreateInstance<WarriorRUpgradeTrack>();
             track.hideFlags = HideFlags.DontSave;
             track.steps = new[]
             {
-                new SkillUpgradeStep { level = 1, damageBonusPercent = 0.10f, forceAirborneCrit = true },
-                new SkillUpgradeStep
+                new WarriorRUpgradeStep { level = 1, damageBonusPercent = 0.10f, forceAirborneCrit = true },
+                new WarriorRUpgradeStep { level = 2, rangeBonusPercent = 0.15f },
+                new WarriorRUpgradeStep
                 {
                     level = 3,
                     groundDotDuration = 3f,
                     groundDotTickInterval = 0.5f,
                     groundDotDamageMultiplier = 0.35f
                 },
-                new SkillUpgradeStep { level = 4, damageBonusPercent = 0.30f },
-                new SkillUpgradeStep
+                new WarriorRUpgradeStep { level = 4, damageBonusPercent = 0.30f },
+                new WarriorRUpgradeStep
                 {
                     level = 5,
                     enableDoubleHit = true,

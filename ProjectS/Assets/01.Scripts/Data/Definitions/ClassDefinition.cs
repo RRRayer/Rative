@@ -15,9 +15,10 @@ namespace ProjectS.Data.Definitions
         public SkillDefinition skillE;
         public SkillDefinition skillR;
 
-        public SkillUpgradeTrack basicUpgradeTrack;
-        public SkillUpgradeTrack skillQUpgradeTrack;
-        public SkillUpgradeTrack skillEUpgradeTrack;
-        public SkillUpgradeTrack skillRUpgradeTrack;
+        public WarriorBasicUpgradeTrack basicUpgradeTrack;
+        public WarriorQUpgradeTrack skillQUpgradeTrack;
+        public WarriorEUpgradeTrack skillEUpgradeTrack;
+        public WarriorRUpgradeTrack skillRUpgradeTrack;
+        public PassiveUpgradeTrack passiveUpgradeTrack;
     }
 }

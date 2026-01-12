@@ -31,7 +31,8 @@ namespace ProjectS.Classes
                 luk = 5,
                 agi = 5,
                 vit = 5,
-                spi = 5
+                def = 0,
+                spi = 0
             };
 
             classDefinition.basicAttack = CreateSkill("test_basic", "Test Basic", 0.3f);

@@ -10,7 +10,6 @@ namespace ProjectS.Gameplay.Combat
     {
         [SerializeField] private LayerMask hitLayers = ~0;
         [SerializeField] private float baseSizeMultiplier = 1f;
-
         private Collider hitboxCollider;
         private float activeUntil;
         private float damage;

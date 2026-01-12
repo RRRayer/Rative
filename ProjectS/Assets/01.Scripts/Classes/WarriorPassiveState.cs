@@ -1,4 +1,5 @@
 using System;
+using ProjectS.Data.Definitions;
 using UnityEngine;
 
 namespace ProjectS.Classes
@@ -16,6 +17,7 @@ namespace ProjectS.Classes
             [Range(0f, 1f)] public float cooldownReductionAtMaxPercent;
         }
 
+        [SerializeField] private PassiveUpgradeTrack upgradeTrack;
         [SerializeField] private PassiveLevel[] levels;
 
         private PassiveLevel currentLevel;
@@ -25,6 +27,7 @@ namespace ProjectS.Classes
         public event Action Changed;
 
         public int Stacks => stacks;
+        public int CurrentLevel => currentLevel.level;
 
         public float ComboResetMultiplier
         {
@@ -48,7 +51,7 @@ namespace ProjectS.Classes
                 levels = CreateDefaultLevels();
             }
 
-            SetLevel(1);
+            SetLevel(0);
         }
 
         private void Update()
@@ -63,14 +66,7 @@ namespace ProjectS.Classes
 
         public void SetLevel(int level)
         {
-            PassiveLevel resolved = levels[0];
-            for (int i = 0; i < levels.Length; i++)
-            {
-                if (levels[i].level <= level)
-                {
-                    resolved = levels[i];
-                }
-            }
+            PassiveLevel resolved = ResolveLevel(level);
 
             currentLevel = resolved;
             if (stacks > currentLevel.maxStacks)
@@ -81,8 +77,19 @@ namespace ProjectS.Classes
             Changed?.Invoke();
         }
 
+        public void SetUpgradeTrack(PassiveUpgradeTrack track)
+        {
+            upgradeTrack = track;
+            SetLevel(0);
+        }
+
         public void RegisterHit()
         {
+            if (currentLevel.level <= 0)
+            {
+                return;
+            }
+
             int nextStacks = Mathf.Clamp(stacks + 1, 0, Mathf.Max(1, currentLevel.maxStacks));
             if (nextStacks != stacks)
             {
@@ -143,6 +150,42 @@ namespace ProjectS.Classes
                     cooldownReductionAtMaxPercent = 0.2f
                 }
             };
+        }
+
+        private PassiveLevel ResolveLevel(int level)
+        {
+            if (level <= 0)
+            {
+                return default;
+            }
+
+            if (upgradeTrack != null)
+            {
+                PassiveUpgradeStep step = upgradeTrack.Evaluate(level);
+                if (step.level > 0)
+                {
+                    return new PassiveLevel
+                    {
+                        level = step.level,
+                        attackSpeedPerStackPercent = step.attackSpeedPerStackPercent,
+                        stackDurationSeconds = step.stackDurationSeconds,
+                        moveSpeedPerStackPercent = step.moveSpeedPerStackPercent,
+                        maxStacks = step.maxStacks,
+                        cooldownReductionAtMaxPercent = step.cooldownReductionAtMaxPercent
+                    };
+                }
+            }
+
+            PassiveLevel resolved = levels[0];
+            for (int i = 0; i < levels.Length; i++)
+            {
+                if (levels[i].level <= level)
+                {
+                    resolved = levels[i];
+                }
+            }
+
+            return resolved;
         }
     }
 }

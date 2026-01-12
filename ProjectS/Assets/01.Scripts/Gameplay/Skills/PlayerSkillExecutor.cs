@@ -18,10 +18,11 @@ namespace ProjectS.Gameplay.Skills
         private readonly Dictionary<SkillSlot, SkillDefinition> skills = new Dictionary<SkillSlot, SkillDefinition>();
         private readonly Dictionary<SkillSlot, float> cooldownEndTimes = new Dictionary<SkillSlot, float>();
         private readonly Dictionary<SkillSlot, int> skillLevels = new Dictionary<SkillSlot, int>();
-        private readonly Dictionary<SkillSlot, SkillUpgradeTrack> upgradeTracks = new Dictionary<SkillSlot, SkillUpgradeTrack>();
+        private readonly Dictionary<SkillSlot, SkillUpgradeTrackBase> upgradeTracks = new Dictionary<SkillSlot, SkillUpgradeTrackBase>();
         private readonly Dictionary<SkillSlot, SkillUpgradeState> upgradeStates = new Dictionary<SkillSlot, SkillUpgradeState>();
         private PlayerStats playerStats;
         private CharacterController characterController;
+        private IDamageReductionReceiver damageReductionReceiver;
         private int basicComboStep;
         private float lastBasicTime;
         private Coroutine channelRoutine;
@@ -35,6 +36,12 @@ namespace ProjectS.Gameplay.Skills
 
         private void Awake()
         {
+            skills.Clear();
+            cooldownEndTimes.Clear();
+            skillLevels.Clear();
+            upgradeTracks.Clear();
+            upgradeStates.Clear();
+
             if (spawnOrigin == null)
             {
                 spawnOrigin = transform;
@@ -42,6 +49,7 @@ namespace ProjectS.Gameplay.Skills
 
             playerStats = GetComponent<PlayerStats>();
             characterController = GetComponent<CharacterController>();
+            damageReductionReceiver = GetComponent<IDamageReductionReceiver>();
             weaponHitbox = GetComponentInChildren<WeaponHitbox>();
             if (weaponHitbox != null)
             {
@@ -57,7 +65,7 @@ namespace ProjectS.Gameplay.Skills
             SetSkill(SkillSlot.R, skillR);
         }
 
-        public void SetUpgradeTrack(SkillSlot slot, SkillUpgradeTrack track)
+        public void SetUpgradeTrack(SkillSlot slot, SkillUpgradeTrackBase track)
         {
             upgradeTracks[slot] = track;
             UpdateUpgradeState(slot);
@@ -65,7 +73,7 @@ namespace ProjectS.Gameplay.Skills
 
         public void SetSkillLevel(SkillSlot slot, int level)
         {
-            skillLevels[slot] = Mathf.Max(1, level);
+            skillLevels[slot] = Mathf.Max(0, level);
             UpdateUpgradeState(slot);
         }
 
@@ -81,7 +89,7 @@ namespace ProjectS.Gameplay.Skills
 
         public int GetSkillLevel(SkillSlot slot)
         {
-            return skillLevels.TryGetValue(slot, out int level) ? level : 1;
+            return skillLevels.TryGetValue(slot, out int level) ? level : 0;
         }
 
         public bool ShouldResetCooldownOnKill(SkillSlot slot)
@@ -145,6 +153,16 @@ namespace ProjectS.Gameplay.Skills
             }
 
             return Mathf.Max(0f, endTime - Time.time);
+        }
+
+        public float GetCooldownDuration(SkillSlot slot)
+        {
+            if (!skills.TryGetValue(slot, out SkillDefinition skillDefinition) || skillDefinition == null)
+            {
+                return 0f;
+            }
+
+            return GetCooldownDuration(slot, skillDefinition);
         }
 
         public bool IsChannelSkill(SkillSlot slot)
@@ -270,6 +288,12 @@ namespace ProjectS.Gameplay.Skills
             float critChance = SkillCombatUtility.GetCritChance(context);
             float critMultiplier = SkillCombatUtility.GetCritMultiplier(context);
 
+            if (basicComboStep == 3 && context.UpgradeState.FinisherFixedDamage)
+            {
+                damageMultiplier = comboMultiplier;
+                critChance = 0f;
+            }
+
             if (!TryExecuteWeaponSwing(behaviour, context, damageMultiplier, critChance, critMultiplier))
             {
                 SkillCombatUtility.SpawnDamagePrefab(
@@ -359,6 +383,17 @@ namespace ProjectS.Gameplay.Skills
             float duration = behaviour.dashDuration > 0f ? behaviour.dashDuration : 0.15f;
             float elapsed = 0f;
             Vector3 direction = spawnOrigin.forward;
+            float reductionMultiplier = 1f;
+            if (skills.TryGetValue(SkillSlot.Q, out SkillDefinition skillDefinition)
+                && skillDefinition != null)
+            {
+                reductionMultiplier = GetUpgradeState(SkillSlot.Q).DashDamageReductionMultiplier;
+            }
+
+            if (damageReductionReceiver != null && reductionMultiplier < 1f)
+            {
+                damageReductionReceiver.SetDamageReductionMultiplier(reductionMultiplier);
+            }
 
             while (elapsed < duration)
             {
@@ -374,6 +409,11 @@ namespace ProjectS.Gameplay.Skills
 
                 elapsed += Time.deltaTime;
                 yield return null;
+            }
+
+            if (damageReductionReceiver != null && reductionMultiplier < 1f)
+            {
+                damageReductionReceiver.SetDamageReductionMultiplier(1f);
             }
 
             if (behaviour.pullRadius > 0f)
@@ -459,7 +499,7 @@ namespace ProjectS.Gameplay.Skills
 
             if (!skillLevels.ContainsKey(slot))
             {
-                skillLevels[slot] = 1;
+                skillLevels[slot] = 0;
             }
 
             UpdateUpgradeState(slot);
@@ -467,7 +507,7 @@ namespace ProjectS.Gameplay.Skills
 
         private void UpdateUpgradeState(SkillSlot slot)
         {
-            upgradeTracks.TryGetValue(slot, out SkillUpgradeTrack track);
+            upgradeTracks.TryGetValue(slot, out SkillUpgradeTrackBase track);
             int level = GetSkillLevel(slot);
             SkillUpgradeState state = track != null ? track.Evaluate(level) : SkillUpgradeState.CreateDefault();
             upgradeStates[slot] = state;
@@ -511,7 +551,8 @@ namespace ProjectS.Gameplay.Skills
                     range,
                     360f,
                     1f,
-                    false);
+                    false,
+                    ~0);
                 yield return new WaitForSeconds(interval);
             }
 

@@ -6,22 +6,40 @@ namespace ProjectS.Progression.Leveling
 {
     public class ProgressionManager : MonoBehaviour, IProgressionService
     {
-        public int Level { get; private set; } = 1;
-        public float CurrentXp { get; private set; }
-        public float XpToNext { get; private set; } = 10f;
+        [SerializeField] private int level = 1;
+        [SerializeField] private float currentXp;
+        [SerializeField] private float xpToNext = 10f;
+
+        public int Level => level;
+        public float CurrentXp => currentXp;
+        public float XpToNext => xpToNext;
 
         public event Action<int> LevelUp;
 
         public void AddXp(float amount)
         {
-            CurrentXp += amount;
-            while (CurrentXp >= XpToNext)
+            currentXp += amount;
+            while (currentXp >= xpToNext)
             {
-                CurrentXp -= XpToNext;
-                Level += 1;
-                XpToNext *= 1.2f;
-                LevelUp?.Invoke(Level);
+                currentXp -= xpToNext;
+                level += 1;
+                xpToNext = GetRequiredXpForLevel(level);
+                LevelUp?.Invoke(level);
             }
+        }
+
+        public void SetProgress(int newLevel, float newCurrentXp, float newXpToNext)
+        {
+            level = Mathf.Max(1, newLevel);
+            currentXp = Mathf.Max(0f, newCurrentXp);
+            xpToNext = Mathf.Max(1f, newXpToNext);
+        }
+
+        public static float GetRequiredXpForLevel(int currentLevel)
+        {
+            int levelValue = Mathf.Max(1, currentLevel);
+            float needed = (100f * (levelValue - 1) * (levelValue - 1)) + 20f;
+            return Mathf.Ceil(needed);
         }
     }
 }

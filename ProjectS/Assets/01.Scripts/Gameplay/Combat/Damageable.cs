@@ -1,4 +1,5 @@
 using ProjectS.Core.Combat;
+using ProjectS.Gameplay.Stats;
 using UnityEngine;
 
 namespace ProjectS.Gameplay.Combat
@@ -9,6 +10,7 @@ namespace ProjectS.Gameplay.Combat
         [SerializeField] private float currentHealth;
         [SerializeField] private float xpReward = 5f;
         [SerializeField] private bool destroyOnDeath = true;
+        [SerializeField, Range(0f, 0.5f)] private float damageReductionPercent;
 
         public float Health { get; private set; }
         public float MaxHealth => maxHealth;
@@ -33,9 +35,19 @@ namespace ProjectS.Gameplay.Combat
                 return;
             }
 
-            Health = Mathf.Max(0f, Health - info.Amount);
+            float reduction = damageReductionPercent;
+            PlayerStats stats = GetComponent<PlayerStats>();
+            if (stats != null)
+            {
+                reduction = stats.DamageReductionPercent;
+            }
+
+            float finalAmount = info.Amount * (1f - Mathf.Clamp(reduction, 0f, 0.5f));
+            Health = Mathf.Max(0f, Health - finalAmount);
             currentHealth = Health;
-            DamageEvents.Raise(info);
+            DamageInfo resolvedInfo = info;
+            resolvedInfo.Amount = finalAmount;
+            DamageEvents.Raise(resolvedInfo);
 
             if (!IsAlive)
             {

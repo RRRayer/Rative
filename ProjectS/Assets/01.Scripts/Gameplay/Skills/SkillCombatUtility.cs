@@ -76,9 +76,10 @@ namespace ProjectS.Gameplay.Skills
             float range,
             float angle,
             float airborneMultiplier,
-            bool forceAirborneCrit)
+            bool forceAirborneCrit,
+            LayerMask hitLayers)
         {
-            Collider[] hits = Physics.OverlapSphere(context.Origin.position, range, ~0, QueryTriggerInteraction.Ignore);
+            Collider[] hits = Physics.OverlapSphere(context.Origin.position, range, hitLayers, QueryTriggerInteraction.Ignore);
             for (int i = 0; i < hits.Length; i++)
             {
                 Collider hit = hits[i];

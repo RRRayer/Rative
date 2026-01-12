@@ -12,10 +12,12 @@ namespace ProjectS.Data.Definitions
         public float PrefabScaleBonusPercent;
         public float ComboResetMultiplier;
         public float ChannelMoveSpeedMultiplier;
+        public float DashDamageReductionMultiplier;
         public bool ForceAirborneCrit;
         public bool EnableDoubleHit;
         public float SecondaryHitMultiplier;
         public bool ResetCooldownOnKill;
+        public bool FinisherFixedDamage;
         public float GroundDotDuration;
         public float GroundDotTickInterval;
         public float GroundDotDamageMultiplier;
@@ -26,58 +28,15 @@ namespace ProjectS.Data.Definitions
             {
                 TickIntervalMultiplier = 1f,
                 ComboResetMultiplier = 1f,
-                ChannelMoveSpeedMultiplier = 1f,
+                ChannelMoveSpeedMultiplier = 0f,
+                DashDamageReductionMultiplier = 1f,
                 SecondaryHitMultiplier = 0.5f
             };
         }
 
-        public void Apply(SkillUpgradeStep step)
+        public void ApplyDamageBonus(float bonus)
         {
-            DamageBonusPercent += step.damageBonusPercent;
-            CooldownDelta += step.cooldownDelta;
-            RangeBonusPercent += step.rangeBonusPercent;
-            DurationBonusSeconds += step.durationBonusSeconds;
-            PullRadiusBonus += step.pullRadiusBonus;
-            PullStrengthBonus += step.pullStrengthBonus;
-            PrefabScaleBonusPercent += step.prefabScaleBonusPercent;
-            ForceAirborneCrit |= step.forceAirborneCrit;
-            EnableDoubleHit |= step.enableDoubleHit;
-            ResetCooldownOnKill |= step.resetCooldownOnKill;
-
-            if (step.tickIntervalMultiplier > 0f)
-            {
-                TickIntervalMultiplier *= step.tickIntervalMultiplier;
-            }
-
-            if (step.comboResetMultiplier > 0f)
-            {
-                ComboResetMultiplier *= step.comboResetMultiplier;
-            }
-
-            if (step.channelMoveSpeedMultiplier > 0f)
-            {
-                ChannelMoveSpeedMultiplier = step.channelMoveSpeedMultiplier;
-            }
-
-            if (step.secondaryHitMultiplier > 0f)
-            {
-                SecondaryHitMultiplier = step.secondaryHitMultiplier;
-            }
-
-            if (step.groundDotDuration > 0f)
-            {
-                GroundDotDuration = step.groundDotDuration;
-            }
-
-            if (step.groundDotTickInterval > 0f)
-            {
-                GroundDotTickInterval = step.groundDotTickInterval;
-            }
-
-            if (step.groundDotDamageMultiplier > 0f)
-            {
-                GroundDotDamageMultiplier = step.groundDotDamageMultiplier;
-            }
+            DamageBonusPercent += bonus;
         }
     }
 }
