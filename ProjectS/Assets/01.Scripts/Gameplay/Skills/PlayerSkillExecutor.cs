@@ -17,17 +17,31 @@ namespace ProjectS.Gameplay.Skills
 
         private readonly Dictionary<SkillSlot, SkillDefinition> skills = new Dictionary<SkillSlot, SkillDefinition>();
         private readonly Dictionary<SkillSlot, float> cooldownEndTimes = new Dictionary<SkillSlot, float>();
+        private readonly Dictionary<SkillSlot, int> skillLevels = new Dictionary<SkillSlot, int>();
+        private readonly Dictionary<SkillSlot, SkillUpgradeTrackBase> upgradeTracks = new Dictionary<SkillSlot, SkillUpgradeTrackBase>();
+        private readonly Dictionary<SkillSlot, SkillUpgradeState> upgradeStates = new Dictionary<SkillSlot, SkillUpgradeState>();
         private PlayerStats playerStats;
         private CharacterController characterController;
+        private IDamageReductionReceiver damageReductionReceiver;
         private int basicComboStep;
         private float lastBasicTime;
         private Coroutine channelRoutine;
         private SkillSlot channelSlot;
         private ChannelSkillBehaviour channelBehaviour;
         private bool channelActive;
+        private WeaponHitbox weaponHitbox;
+        private float channelMoveSpeedMultiplier = 1f;
+        private float cooldownMultiplier = 1f;
+        private float basicComboResetMultiplier = 1f;
 
         private void Awake()
         {
+            skills.Clear();
+            cooldownEndTimes.Clear();
+            skillLevels.Clear();
+            upgradeTracks.Clear();
+            upgradeStates.Clear();
+
             if (spawnOrigin == null)
             {
                 spawnOrigin = transform;
@@ -35,6 +49,12 @@ namespace ProjectS.Gameplay.Skills
 
             playerStats = GetComponent<PlayerStats>();
             characterController = GetComponent<CharacterController>();
+            damageReductionReceiver = GetComponent<IDamageReductionReceiver>();
+            weaponHitbox = GetComponentInChildren<WeaponHitbox>();
+            if (weaponHitbox != null)
+            {
+                weaponHitbox.ConfigureOwner(gameObject);
+            }
         }
 
         public void SetSkills(SkillDefinition basic, SkillDefinition skillQ, SkillDefinition skillE, SkillDefinition skillR)
@@ -44,6 +64,57 @@ namespace ProjectS.Gameplay.Skills
             SetSkill(SkillSlot.E, skillE);
             SetSkill(SkillSlot.R, skillR);
         }
+
+        public void SetUpgradeTrack(SkillSlot slot, SkillUpgradeTrackBase track)
+        {
+            upgradeTracks[slot] = track;
+            UpdateUpgradeState(slot);
+        }
+
+        public void SetSkillLevel(SkillSlot slot, int level)
+        {
+            skillLevels[slot] = Mathf.Max(0, level);
+            UpdateUpgradeState(slot);
+        }
+
+        public SkillUpgradeState GetUpgradeState(SkillSlot slot)
+        {
+            if (upgradeStates.TryGetValue(slot, out SkillUpgradeState state))
+            {
+                return state;
+            }
+
+            return SkillUpgradeState.CreateDefault();
+        }
+
+        public int GetSkillLevel(SkillSlot slot)
+        {
+            return skillLevels.TryGetValue(slot, out int level) ? level : 0;
+        }
+
+        public bool ShouldResetCooldownOnKill(SkillSlot slot)
+        {
+            return GetUpgradeState(slot).ResetCooldownOnKill;
+        }
+
+        public void ResetCooldown(SkillSlot slot)
+        {
+            cooldownEndTimes[slot] = Time.time;
+        }
+
+        public void SetCooldownMultiplier(float multiplier)
+        {
+            cooldownMultiplier = Mathf.Max(0.1f, multiplier);
+        }
+
+        public void SetBasicComboResetMultiplier(float multiplier)
+        {
+            basicComboResetMultiplier = Mathf.Max(0.1f, multiplier);
+        }
+
+        public bool IsChanneling => channelActive;
+
+        public float CurrentChannelMoveSpeedMultiplier => channelActive ? channelMoveSpeedMultiplier : 1f;
 
         public bool TryExecuteSkill(SkillSlot slot)
         {
@@ -69,7 +140,7 @@ namespace ProjectS.Gameplay.Skills
                 return false;
             }
 
-            cooldownEndTimes[slot] = Time.time + skillDefinition.cooldown;
+            cooldownEndTimes[slot] = Time.time + GetCooldownDuration(slot, skillDefinition);
             ExecuteSkill(skillDefinition, slot);
             return true;
         }
@@ -82,6 +153,16 @@ namespace ProjectS.Gameplay.Skills
             }
 
             return Mathf.Max(0f, endTime - Time.time);
+        }
+
+        public float GetCooldownDuration(SkillSlot slot)
+        {
+            if (!skills.TryGetValue(slot, out SkillDefinition skillDefinition) || skillDefinition == null)
+            {
+                return 0f;
+            }
+
+            return GetCooldownDuration(slot, skillDefinition);
         }
 
         public bool IsChannelSkill(SkillSlot slot)
@@ -117,6 +198,7 @@ namespace ProjectS.Gameplay.Skills
             channelActive = true;
             channelSlot = slot;
             channelBehaviour = behaviour;
+            channelMoveSpeedMultiplier = GetUpgradeState(slot).ChannelMoveSpeedMultiplier;
             channelRoutine = StartCoroutine(ChannelRoutine(skillDefinition, behaviour, slot));
         }
 
@@ -140,7 +222,7 @@ namespace ProjectS.Gameplay.Skills
                 float critChance = SkillCombatUtility.GetCritChance(context);
                 float critMultiplier = SkillCombatUtility.GetCritMultiplier(context);
                 channelBehaviour.ExecuteRelease(context, damageMultiplier, critChance, critMultiplier);
-                cooldownEndTimes[slot] = Time.time + skillDefinition.cooldown;
+                cooldownEndTimes[slot] = Time.time + GetCooldownDuration(slot, skillDefinition);
             }
 
             channelActive = false;
@@ -157,9 +239,32 @@ namespace ProjectS.Gameplay.Skills
             cooldownEndTimes[slot] = Mathf.Max(Time.time, endTime - seconds);
         }
 
+        public void StartGroundDot(
+            SkillContext context,
+            float baseDamage,
+            float damageMultiplier,
+            float critChance,
+            float critMultiplier,
+            float range,
+            float duration,
+            float tickInterval)
+        {
+            StartCoroutine(GroundDotRoutine(
+                context,
+                baseDamage,
+                damageMultiplier,
+                critChance,
+                critMultiplier,
+                range,
+                duration,
+                tickInterval));
+        }
+
         internal void ExecuteBasicCombo(BasicComboSkillBehaviour behaviour, SkillContext context)
         {
             float resetSeconds = behaviour.comboResetSeconds > 0f ? behaviour.comboResetSeconds : 0.9f;
+            resetSeconds *= basicComboResetMultiplier;
+            resetSeconds *= context.UpgradeState.ComboResetMultiplier;
             if (Time.time - lastBasicTime > resetSeconds)
             {
                 basicComboStep = 0;
@@ -183,13 +288,22 @@ namespace ProjectS.Gameplay.Skills
             float critChance = SkillCombatUtility.GetCritChance(context);
             float critMultiplier = SkillCombatUtility.GetCritMultiplier(context);
 
-            SkillCombatUtility.SpawnDamagePrefab(
-                prefabToSpawn,
-                context,
-                behaviour.baseDamage,
-                damageMultiplier,
-                critChance,
-                critMultiplier);
+            if (basicComboStep == 3 && context.UpgradeState.FinisherFixedDamage)
+            {
+                damageMultiplier = comboMultiplier;
+                critChance = 0f;
+            }
+
+            if (!TryExecuteWeaponSwing(behaviour, context, damageMultiplier, critChance, critMultiplier))
+            {
+                SkillCombatUtility.SpawnDamagePrefab(
+                    prefabToSpawn,
+                    context,
+                    behaviour.baseDamage,
+                    damageMultiplier,
+                    critChance,
+                    critMultiplier);
+            }
         }
 
         internal void ExecuteDash(DashSkillBehaviour behaviour, SkillContext context)
@@ -239,8 +353,11 @@ namespace ProjectS.Gameplay.Skills
 
         private IEnumerator ChannelRoutine(SkillDefinition skillDefinition, ChannelSkillBehaviour behaviour, SkillSlot slot)
         {
+            SkillUpgradeState upgrades = GetUpgradeState(slot);
             float tickInterval = behaviour.tickInterval > 0f ? behaviour.tickInterval : 0.2f;
             float maxDuration = behaviour.maxDuration > 0f ? behaviour.maxDuration : 1.5f;
+            tickInterval *= upgrades.TickIntervalMultiplier;
+            maxDuration += upgrades.DurationBonusSeconds;
             float endTime = Time.time + maxDuration;
 
             SkillContext context = BuildContext(skillDefinition, slot);
@@ -266,6 +383,17 @@ namespace ProjectS.Gameplay.Skills
             float duration = behaviour.dashDuration > 0f ? behaviour.dashDuration : 0.15f;
             float elapsed = 0f;
             Vector3 direction = spawnOrigin.forward;
+            float reductionMultiplier = 1f;
+            if (skills.TryGetValue(SkillSlot.Q, out SkillDefinition skillDefinition)
+                && skillDefinition != null)
+            {
+                reductionMultiplier = GetUpgradeState(SkillSlot.Q).DashDamageReductionMultiplier;
+            }
+
+            if (damageReductionReceiver != null && reductionMultiplier < 1f)
+            {
+                damageReductionReceiver.SetDamageReductionMultiplier(reductionMultiplier);
+            }
 
             while (elapsed < duration)
             {
@@ -283,6 +411,11 @@ namespace ProjectS.Gameplay.Skills
                 yield return null;
             }
 
+            if (damageReductionReceiver != null && reductionMultiplier < 1f)
+            {
+                damageReductionReceiver.SetDamageReductionMultiplier(1f);
+            }
+
             if (behaviour.pullRadius > 0f)
             {
                 SkillCombatUtility.ApplyPull(transform.position, behaviour.pullRadius, behaviour.pullStrength);
@@ -295,6 +428,8 @@ namespace ProjectS.Gameplay.Skills
             {
                 Definition = skillDefinition,
                 Slot = slot,
+                SkillLevel = GetSkillLevel(slot),
+                UpgradeState = GetUpgradeState(slot),
                 Origin = spawnOrigin,
                 Owner = gameObject,
                 Stats = playerStats,
@@ -304,10 +439,127 @@ namespace ProjectS.Gameplay.Skills
             };
         }
 
+        private bool TryExecuteWeaponSwing(
+            BasicComboSkillBehaviour behaviour,
+            SkillContext context,
+            float damageMultiplier,
+            float critChance,
+            float critMultiplier)
+        {
+            WeaponHitbox hitbox = GetWeaponHitbox();
+            if (hitbox == null)
+            {
+                return false;
+            }
+
+            float duration = basicComboStep == 3 ? behaviour.finisherHitboxDuration : behaviour.swingHitboxDuration;
+            float sizeBonus = Mathf.Max(context.UpgradeState.RangeBonusPercent, context.UpgradeState.PrefabScaleBonusPercent);
+            hitbox.BeginSwing(
+                duration,
+                behaviour.baseDamage,
+                damageMultiplier,
+                critChance,
+                critMultiplier,
+                context.SourceId,
+                context.Slot,
+                1f + sizeBonus);
+            return true;
+        }
+
+        private WeaponHitbox GetWeaponHitbox()
+        {
+            if (weaponHitbox != null)
+            {
+                return weaponHitbox;
+            }
+
+            Transform origin = spawnOrigin != null ? spawnOrigin : transform;
+            GameObject hitboxObject = new GameObject("WeaponHitbox");
+            hitboxObject.transform.SetParent(origin, false);
+            BoxCollider collider = hitboxObject.AddComponent<BoxCollider>();
+            collider.isTrigger = true;
+            collider.size = new Vector3(1.2f, 1f, 1.2f);
+            weaponHitbox = hitboxObject.AddComponent<WeaponHitbox>();
+            weaponHitbox.ConfigureOwner(gameObject);
+            return weaponHitbox;
+        }
+
         private void SetSkill(SkillSlot slot, SkillDefinition skillDefinition)
         {
             skills[slot] = skillDefinition;
             cooldownEndTimes[slot] = 0f;
+            if (skillDefinition != null)
+            {
+                upgradeTracks[slot] = skillDefinition.upgradeTrack;
+            }
+            else
+            {
+                upgradeTracks[slot] = null;
+            }
+
+            if (!skillLevels.ContainsKey(slot))
+            {
+                skillLevels[slot] = 0;
+            }
+
+            UpdateUpgradeState(slot);
+        }
+
+        private void UpdateUpgradeState(SkillSlot slot)
+        {
+            upgradeTracks.TryGetValue(slot, out SkillUpgradeTrackBase track);
+            int level = GetSkillLevel(slot);
+            SkillUpgradeState state = track != null ? track.Evaluate(level) : SkillUpgradeState.CreateDefault();
+            upgradeStates[slot] = state;
+        }
+
+        private float GetCooldownDuration(SkillSlot slot, SkillDefinition skillDefinition)
+        {
+            float baseCooldown = skillDefinition != null ? skillDefinition.cooldown : 0f;
+            SkillUpgradeState upgrades = GetUpgradeState(slot);
+            float finalCooldown = Mathf.Max(0f, baseCooldown + upgrades.CooldownDelta);
+            return finalCooldown * cooldownMultiplier;
+        }
+
+        private IEnumerator GroundDotRoutine(
+            SkillContext context,
+            float baseDamage,
+            float damageMultiplier,
+            float critChance,
+            float critMultiplier,
+            float range,
+            float duration,
+            float tickInterval)
+        {
+            Transform dotOrigin = new GameObject("GroundDotOrigin").transform;
+            dotOrigin.position = context.Origin.position;
+            dotOrigin.rotation = context.Origin.rotation;
+
+            SkillContext dotContext = context;
+            dotContext.Origin = dotOrigin;
+
+            float interval = tickInterval > 0f ? tickInterval : 0.5f;
+            float endTime = Time.time + duration;
+            while (Time.time < endTime)
+            {
+                SkillCombatUtility.ExecuteConeDamage(
+                    dotContext,
+                    baseDamage,
+                    damageMultiplier,
+                    critChance,
+                    critMultiplier,
+                    range,
+                    360f,
+                    1f,
+                    false,
+                    ~0);
+                yield return new WaitForSeconds(interval);
+            }
+
+            if (dotOrigin != null)
+            {
+                Destroy(dotOrigin.gameObject);
+            }
         }
     }
 }

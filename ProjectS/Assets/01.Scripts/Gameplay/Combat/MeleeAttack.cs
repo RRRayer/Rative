@@ -10,6 +10,7 @@ namespace ProjectS.Gameplay.Combat
         [SerializeField] private float attackRange = 2f;
         [SerializeField] private float attackRadius = 0.6f;
         [SerializeField] private float attackDamage = 12f;
+        [SerializeField] private int sourceIdOverride;
         [SerializeField] private float attackCooldown = 0.4f;
         [SerializeField] private LayerMask hitLayers = ~0;
 
@@ -36,12 +37,13 @@ namespace ProjectS.Gameplay.Combat
                 Collider hit = hits[i];
                 if (hit.TryGetComponent<ICombatant>(out ICombatant combatant))
                 {
+                    int sourceId = sourceIdOverride != 0 ? sourceIdOverride : gameObject.GetInstanceID();
                     DamageInfo info = new DamageInfo
                     {
                         Amount = attackDamage,
                         Point = hit.ClosestPoint(center),
                         Direction = attackOrigin.forward,
-                        SourceId = 0,
+                        SourceId = sourceId,
                         Slot = SkillSlot.Basic
                     };
                     combatant.ApplyDamage(info);

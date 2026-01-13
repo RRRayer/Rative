@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.SkillDefinition
   id: skill_shoot
   displayName: Wind Tunnel
-  cooldown: 6
+  cooldown: 5
   icon: {fileID: 0}
   behaviour: {fileID: 11400000, guid: f2b3c4d5e60718293a4b5c6d7e8f901a, type: 2}
+  upgradeTrack: {fileID: 11400000, guid: 5f92f7a1c0a244a6b6d9a0d1f1c2a302, type: 2}

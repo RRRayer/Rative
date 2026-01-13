@@ -15,30 +15,32 @@ namespace ProjectS.Gameplay.Stats
             luk = 5,
             agi = 5,
             vit = 5,
-            spi = 5
+            def = 0,
+            spi = 0
         };
 
         [Header("Tuning")]
-        [SerializeField] private float baseCritChance = 0f;
-        [SerializeField] private float critChancePerLuk = 0.01f;
-        [SerializeField] private float critMultiplier = 1.5f;
-        [SerializeField] private float basicDamagePerStr = 0.05f;
-        [SerializeField] private float skillDamagePerInt = 0.05f;
+        [SerializeField] private float basePhysicalAttack = 100f;
+        [SerializeField] private float physicalAttackPerStr = 5f;
+        [SerializeField] private float baseSkillAttack = 100f;
+        [SerializeField] private float skillAttackPerInt = 7f;
+        [SerializeField] private float baseMoveSpeed = 5f;
         [SerializeField] private float moveSpeedPerAgi = 0.05f;
-        [SerializeField] private float healthPerVit = 10f;
-        [SerializeField] private float staminaPerSpi = 10f;
-        [SerializeField] private float staminaRegenPerSecond = 8f;
-        [SerializeField] private float basicAttackStaminaCost = 5f;
-        [SerializeField] private float sprintStaminaCostPerSecond = 8f;
-
+        [SerializeField] private float baseHealth = 1000f;
+        [SerializeField] private float healthPerVit = 150f;
+        [SerializeField] private float baseCritChance = 0.05f;
+        [SerializeField] private float critChancePerLuk = 0.005f;
+        [SerializeField] private float critMultiplier = 2f;
+        [SerializeField] private float damageReductionPerDef = 0.01f;
+        [SerializeField] private float maxDamageReduction = 0.5f;
         public StatBlock BaseStats => baseStats;
-        public float MaxHealth => Mathf.Max(1f, baseStats.vit * healthPerVit);
-        public float MaxStamina => Mathf.Max(0f, baseStats.spi * staminaPerSpi);
-        public float CurrentStamina { get; private set; }
+        public float MaxHealth => Mathf.Max(1f, baseHealth + (baseStats.vit * healthPerVit));
         public float CritChance => Mathf.Clamp01(baseCritChance + baseStats.luk * critChancePerLuk);
         public float CritMultiplier => critMultiplier;
-        public float BasicAttackStaminaCost => basicAttackStaminaCost;
-        public float SprintStaminaCostPerSecond => sprintStaminaCostPerSecond;
+        public float PhysicalAttack => basePhysicalAttack + (baseStats.str * physicalAttackPerStr);
+        public float SkillAttack => baseSkillAttack + (baseStats.intel * skillAttackPerInt);
+        public float MoveSpeed => baseMoveSpeed + (baseStats.agi * moveSpeedPerAgi);
+        public float DamageReductionPercent => Mathf.Clamp(GetDefenseValue() * damageReductionPerDef, 0f, maxDamageReduction);
 
         private void Awake()
         {
@@ -46,63 +48,31 @@ namespace ProjectS.Gameplay.Stats
             {
                 baseStats = defaultStats;
             }
-            ResetStaminaFull();
         }
 
         public void SetBaseStats(StatBlock stats)
         {
             baseStats = stats.IsEmpty ? defaultStats : stats;
-            ResetStaminaFull();
-        }
-
-        public void ResetStaminaFull()
-        {
-            CurrentStamina = MaxStamina;
         }
 
         public float GetMoveSpeedMultiplier()
         {
-            return 1f + baseStats.agi * moveSpeedPerAgi;
+            if (baseMoveSpeed <= 0f)
+            {
+                return 1f;
+            }
+
+            return MoveSpeed / baseMoveSpeed;
         }
 
         public float GetDamageMultiplier(SkillSlot slot)
         {
-            if (slot == SkillSlot.Basic)
-            {
-                float staminaRatio = MaxStamina > 0f ? CurrentStamina / MaxStamina : 1f;
-                float staminaBonus = Mathf.Lerp(0.5f, 1f, staminaRatio);
-                return 1f + (baseStats.str * basicDamagePerStr * staminaBonus);
-            }
-
-            return 1f + (baseStats.intel * skillDamagePerInt);
+            return slot == SkillSlot.Basic ? PhysicalAttack : SkillAttack;
         }
 
-        public bool TryConsumeStamina(float amount)
+        private int GetDefenseValue()
         {
-            if (amount <= 0f)
-            {
-                return true;
-            }
-
-            if (CurrentStamina < amount)
-            {
-                return false;
-            }
-
-            CurrentStamina -= amount;
-            return true;
-        }
-
-        public void TickStamina(float deltaTime, bool isSprinting)
-        {
-            if (isSprinting)
-            {
-                CurrentStamina = Mathf.Max(0f, CurrentStamina - (sprintStaminaCostPerSecond * deltaTime));
-            }
-            else
-            {
-                CurrentStamina = Mathf.Min(MaxStamina, CurrentStamina + (staminaRegenPerSecond * deltaTime));
-            }
+            return baseStats.def > 0 ? baseStats.def : baseStats.spi;
         }
     }
 }

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.SkillDefinition
   id: skill_tempest
   displayName: Tempest Edge
-  cooldown: 18
+  cooldown: 20
   icon: {fileID: 0}
   behaviour: {fileID: 11400000, guid: f4d5e60718293a4b5c6d7e8f901a2bcd, type: 2}
+  upgradeTrack: {fileID: 11400000, guid: a2c7b1f2d3e4f5061728394a5b6c7d8e, type: 2}

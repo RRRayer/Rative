@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using ProjectS.Networking;
 
 namespace PS.Manager
 {
@@ -18,6 +19,11 @@ namespace PS.Manager
             if (Instance == null)
             {
                 Instance = this;
+            }
+
+            if (SharedProgressionManager.Instance == null)
+            {
+                gameObject.AddComponent<SharedProgressionManager>();
             }
         }
 

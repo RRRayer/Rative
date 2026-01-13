@@ -16,3 +16,8 @@ MonoBehaviour:
   range: 6
   angle: 120
   airborneMultiplier: 1.5
+  effectPrefab: {fileID: 9012345678901234567, guid: 0b1c2d3e4f5061728394a5b6c7d8e9f0, type: 3}
+  effectLifetime: 0
+  effectScaleMultiplier: 1
+  effectScaleWithRange: 1
+  useProjectileDamage: 1

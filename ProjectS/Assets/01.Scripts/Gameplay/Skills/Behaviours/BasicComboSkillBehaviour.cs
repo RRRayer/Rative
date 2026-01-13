@@ -11,6 +11,8 @@ namespace ProjectS.Gameplay.Skills.Behaviours
         public GameObject finisherPrefab;
         public float comboResetSeconds = 0.9f;
         public float finisherMultiplier = 1.5f;
+        public float swingHitboxDuration = 0.2f;
+        public float finisherHitboxDuration = 0.25f;
 
         public void Execute(SkillContext context)
         {
