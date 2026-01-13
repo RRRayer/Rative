@@ -1,7 +1,14 @@
 fileFormatVersion: 2
 guid: 3001dd91b796208428dee4b9346ee161
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326752
+  packageName: Free Low Poly Cubic Humans - 3D by Shokubutsu
+  packageVersion: 1.0
+  assetPath: Assets/Shokubutsu Studio/Free Low Poly Cubic Humans/Models/Characters/Knights/Knight_02.fbx
+  uploadId: 773318
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
   externalObjects: {}
   materials:
@@ -16,15 +23,13 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -58,6 +63,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -82,7 +90,52 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: Knight_02(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Knight_07
+      parentName: Knight_02(Clone)
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 3.308723e-24, z: -6.617445e-24, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Main_Rig
+      parentName: Knight_02(Clone)
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.277732, y: 0.277732, z: 0.277732}
+    - name: Spine00
+      parentName: Main_Rig
+      position: {x: 4.3129062e-16, y: 1.9423604, z: 0.00000014664415}
+      rotation: {x: 0.000000037748958, y: -0.00000011920929, z: -4.6110487e-15, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Arm_L
+      parentName: Spine00
+      position: {x: -2.8768244, y: 1.0971293, z: -0.3874464}
+      rotation: {x: 0.50000006, y: 0.5000002, z: 0.49999997, w: 0.49999982}
+      scale: {x: 0.99999994, y: 0.99999976, z: 0.9999999}
+    - name: Head
+      parentName: Spine00
+      position: {x: 2.1175824e-22, y: 2.31704, z: -2.1175824e-22}
+      rotation: {x: 3.5527137e-15, y: 0, z: -8.4703295e-22, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Arm_R
+      parentName: Spine00
+      position: {x: 2.876824, y: 1.0971293, z: -0.3874478}
+      rotation: {x: 0.4999999, y: -0.5, z: -0.50000006, w: 0.5}
+      scale: {x: 0.99999994, y: 0.9999998, z: 0.9999999}
+    - name: Foot_L
+      parentName: Main_Rig
+      position: {x: -0.61319, y: 0.19785552, z: -0.39555025}
+      rotation: {x: 0.5000001, y: 0.49999994, z: 0.5000001, w: 0.4999998}
+      scale: {x: 1, y: 0.9999998, z: 1}
+    - name: Foot_R
+      parentName: Main_Rig
+      position: {x: 0.61319, y: 0.19785552, z: -0.39555025}
+      rotation: {x: 0.5000001, y: -0.49999994, z: -0.5000001, w: 0.4999998}
+      scale: {x: 1, y: 0.9999998, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -93,13 +146,13 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
@@ -107,10 +160,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 326752
-  packageName: Free Low Poly Cubic Humans - 3D by Shokubutsu
-  packageVersion: 1.0
-  assetPath: Assets/Shokubutsu Studio/Free Low Poly Cubic Humans/Models/Characters/Knights/Knight_02.fbx
-  uploadId: 773318
