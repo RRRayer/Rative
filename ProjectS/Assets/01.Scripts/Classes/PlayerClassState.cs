@@ -24,6 +24,7 @@ namespace ProjectS.Classes
 
             return slot switch
             {
+                SkillSlot.Basic => classDefinition.basicAttack,
                 SkillSlot.Q => classDefinition.skillQ,
                 SkillSlot.E => classDefinition.skillE,
                 SkillSlot.R => classDefinition.skillR,

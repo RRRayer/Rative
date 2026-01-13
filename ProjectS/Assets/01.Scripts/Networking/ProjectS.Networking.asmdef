@@ -1,25 +1,20 @@
-﻿{
-    "name":  "ProjectS.Networking",
-    "references":  [
-                       "ProjectS.Core"
-                   ],
-    "includePlatforms":  [
-
-                         ],
-    "excludePlatforms":  [
-
-                         ],
-    "allowUnsafeCode":  false,
-    "overrideReferences":  false,
-    "precompiledReferences":  [
-
-                              ],
-    "autoReferenced":  true,
-    "defineConstraints":  [
-
-                          ],
-    "versionDefines":  [
-
-                       ],
-    "noEngineReferences":  false
+{
+    "name": "ProjectS.Networking",
+    "rootNamespace": "",
+    "references": [
+        "ProjectS.Core",
+        "ProjectS.Progression",
+        "PhotonUnityNetworking",
+        "PhotonRealtime",
+        "PhotonChat"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
