@@ -82,26 +82,41 @@ Project S
 
 ### Week 3 (1.4 - 1.11)
 **작업 내역**
-- 전사 업그레이드 트랙/패시브/XP 레벨링 연동
-- 평타 무기 히트박스 방식 도입
-- 데미지 처리/킬 이벤트/테스트 편의성 개선
+- 전사 클래스 1차 구현 및 업그레이드 트랙/패시브 구조 도입
+- 전투 시스템 확장: Airborne, Projectile, WeaponHitbox, SkillBehaviour 보강
+- 공유 경험치/레벨링 및 업그레이드 UI/HUD 추가
+- TestLee 씬/프리팹 보강 (전사/적/투사체/XP 픽업)
+- 플레이어 프리팹 경로 정리
 
 **AI 활용**
-- 업그레이드 시스템 설계 및 구현
-- 무기 히트박스/전투 로직 수정
+- 전사 업그레이드/전투 로직 설계 및 코드 보조
+- UI/HUD/진행 시스템 설계 보조
 
 **완료 기능**
-- 레벨업 시 스킬 자동 업그레이드
-- 평타 히트박스 활성화 방식 전환
+- 전사 스킬 업그레이드 트랙 및 패시브 동작
+- Airborne/투사체/히트박스 기반 전투 처리
+- 공유 XP 및 업그레이드 선택 UI/HUD 동작
+- TestLee 전투/프리팹 구성 보강
 
 **커밋 로그**
-- (추가 예정)
+- feat(#12): 전사 클래스 1차 구현
+- feat(#12): 전사, 적 구현
+- feat(#12): 플레이어 프리팹 위치 이동
+- art(#9): 맵, 플레이어 에셋 추가
+- feat(#9): 테스트 씬 생성
+- feat: 프로빌더 패키지 추가
+- art: 몬스터 추가
+- feat(#9): 템페스트 애니메이션 추가
 
 **테스트 결과**
-- (추가 예정)
+- 플레이어 테스트 씬
+<img width="1286" height="873" alt="스크린샷 2026-01-15 144940" src="https://github.com/user-attachments/assets/e63715f1-83a4-466b-b7f4-31035cefc7fa" />
+<img width="917" height="514" alt="스크린샷 2026-01-15 145020" src="https://github.com/user-attachments/assets/891ac8e1-161f-46eb-b9fe-936aae14d897" />
 
 **링크**
-- (추가 예정)
+- https://github.com/RRRayer/Rative/pull/13
+- https://github.com/RRRayer/Rative/pull/14
 
 **다음 주 계획**
-- (추가 예정)
+- GaneManager, 팀 공동 업그레이드 구현
+- 실제 아트와 플레이어 연동
