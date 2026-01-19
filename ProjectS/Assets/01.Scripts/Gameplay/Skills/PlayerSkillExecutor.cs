@@ -33,6 +33,7 @@ namespace ProjectS.Gameplay.Skills
         private float channelMoveSpeedMultiplier = 1f;
         private float cooldownMultiplier = 1f;
         private float basicComboResetMultiplier = 1f;
+        public event System.Action<SkillSlot> SkillExecuted;
 
         private void Awake()
         {
@@ -63,6 +64,11 @@ namespace ProjectS.Gameplay.Skills
             SetSkill(SkillSlot.Q, skillQ);
             SetSkill(SkillSlot.E, skillE);
             SetSkill(SkillSlot.R, skillR);
+
+            if (logSkillUsage)
+            {
+                Debug.Log($"[Skill] SetSkills: Basic={basic?.displayName ?? "null"}, Q={skillQ?.displayName ?? "null"}, E={skillE?.displayName ?? "null"}, R={skillR?.displayName ?? "null"}");
+            }
         }
 
         public void SetUpgradeTrack(SkillSlot slot, SkillUpgradeTrackBase track)
@@ -118,18 +124,35 @@ namespace ProjectS.Gameplay.Skills
 
         public bool TryExecuteSkill(SkillSlot slot)
         {
-            if (!skills.TryGetValue(slot, out SkillDefinition skillDefinition) || skillDefinition == null)
+            if (logSkillUsage)
             {
+                Debug.Log($"[Skill] TryExecute {slot}");
+            }
+
+            if (!skills.TryGetValue(slot, out SkillDefinition skillDefinition))
+            {
+                Debug.Log($"[Skill] {slot} has no entry. Skills count={skills.Count}");
+                return false;
+            }
+
+            if (skillDefinition == null)
+            {
+                Debug.Log($"[Skill] {slot} definition is null.");
                 return false;
             }
 
             if (skillDefinition.behaviour == null)
             {
+                Debug.Log($"[Skill] {slot} missing behaviour on {skillDefinition.displayName}.");
                 return false;
             }
 
             if (IsChannelSkill(slot))
             {
+                if (logSkillUsage)
+                {
+                    Debug.Log($"[Skill] {slot} channel start: {skillDefinition.displayName}");
+                }
                 BeginChannel(slot);
                 return true;
             }
@@ -137,11 +160,13 @@ namespace ProjectS.Gameplay.Skills
             float cooldownRemaining = GetCooldownRemaining(slot);
             if (cooldownRemaining > 0f)
             {
+                Debug.Log($"[Skill] {slot} on cooldown: {cooldownRemaining:0.00}s");
                 return false;
             }
 
             cooldownEndTimes[slot] = Time.time + GetCooldownDuration(slot, skillDefinition);
             ExecuteSkill(skillDefinition, slot);
+            SkillExecuted?.Invoke(slot);
             return true;
         }
 
