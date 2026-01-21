@@ -1103,6 +1103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
   Health: 1
   beams: {fileID: 1192809007085503642}
+  inputActionsOverride: {fileID: -944628639613478452, guid: 16b689df8308b1341b3930a07cff0741, type: 3}
 --- !u!114 &9132056985765775370
 MonoBehaviour:
   m_ObjectHideFlags: 0

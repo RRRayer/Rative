@@ -212,13 +212,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7713897069012110140}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: 11500000, guid: c2f3b4a5d6e7f8091a2b3c4d5e6f7081, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonTransformView
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
+  m_EditorClassIdentifier: ProjectS.Gameplay.Networking::ProjectS.Gameplay.Networking.EnemyTransformSync
+  sendIntervalSeconds: 1
+  positionLerpSpeed: 8
+  rotationLerpSpeed: 10
 --- !u!114 &7713897069012110142
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -61,6 +61,7 @@ MonoBehaviour:
   beams: {fileID: 195884045183694039, guid: cae1b3b3fe9baf945bd44c741a0854f7, type: 3}
   classDefinitionOverride: {fileID: 11400000, guid: 4134332d39138884589e9e676269e31c, type: 2}
   classCatalogOverride: {fileID: 0}
+  inputActionsOverride: {fileID: -944628639613478452, guid: 16b689df8308b1341b3930a07cff0741, type: 3}
 --- !u!114 &4211861607631022431
 MonoBehaviour:
   m_ObjectHideFlags: 0

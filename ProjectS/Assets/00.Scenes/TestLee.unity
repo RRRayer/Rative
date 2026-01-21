@@ -119,209 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &65314322
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 65314328}
-  - component: {fileID: 65314327}
-  - component: {fileID: 65314326}
-  - component: {fileID: 65314330}
-  - component: {fileID: 65314325}
-  - component: {fileID: 65314324}
-  - component: {fileID: 65314323}
-  - component: {fileID: 65314329}
-  m_Layer: 6
-  m_Name: ExampleEnemy
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &65314323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65314322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12bd7b9aa1bf4ffb8f7e51e7d95f07f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ProjectS.Gameplay::ProjectS.Gameplay.Combat.MeleeAttack
-  attackOrigin: {fileID: 65314328}
-  attackRange: 2
-  attackRadius: 0.6
-  attackDamage: 320
-  sourceIdOverride: 0
-  attackCooldown: 1
-  hitLayers:
-    serializedVersion: 2
-    m_Bits: 128
---- !u!114 &65314324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65314322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d6f6f31f0c44f64a3cda2f859b6b2ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ProjectS.Gameplay::ProjectS.Gameplay.Combat.Damageable
-  maxHealth: 1
-  currentHealth: 1
-  xpReward: 5
-  destroyOnDeath: 1
-  isElite: 1
-  isBoss: 0
-  damageReductionPercent: 0
---- !u!65 &65314325
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65314322}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &65314326
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65314322}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 073b1ee561def20429e655b5c8893ad4, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &65314327
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65314322}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &65314328
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65314322}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.74, y: 1, z: -4}
-  m_LocalScale: {x: 1, y: 2, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &65314329
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65314322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 784e83a91a6928e41af381010aa11503, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ProjectS.Gameplay::ProjectS.Gameplay.Combat.EnemyMeleeAttackDriver
-  attack: {fileID: 65314323}
-  detectionRange: 30
-  moveSpeed: 2.5
-  targetLayers:
-    serializedVersion: 2
-    m_Bits: 128
-  checkInterval: 0.1
-  turnSpeed: 360
---- !u!54 &65314330
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65314322}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &160164170
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +149,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PS.Manager.GameManager
   playerPrefab: {fileID: 1183320563215330989, guid: 1de0eff3a8a7b3b4a903ca7782bdc371, type: 3}
+  testStartStage: 1
+  stageElapsedTime: 0
+  eliteSpawnTimes:
+  - 180
+  - 360
+  bossSpawnTime: 540
+  onStageStart: {fileID: 11400000, guid: 790b94f8a43e9274a948e79e2eceb759, type: 2}
+  onEliteSpawn: {fileID: 11400000, guid: 884afbcdb2d91a045a676040a83e34ba, type: 2}
+  onBossSpawn: {fileID: 11400000, guid: af6506366b4a6524482be26e8f9ec388, type: 2}
+  onStageClear: {fileID: 11400000, guid: 99ead6d185c4ac746983983a0548e15e, type: 2}
 --- !u!4 &160164172
 Transform:
   m_ObjectHideFlags: 0
@@ -439,6 +246,62 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachineSameAsFollowTarget
   m_Damping: 0
+--- !u!1 &910000000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 910000002}
+  - component: {fileID: 910000001}
+  m_Layer: 0
+  m_Name: MonsterManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &910000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d796338916e109243ab0667e54d44750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PS.Manager.MonsterManager
+  onStageStart: {fileID: 11400000, guid: 790b94f8a43e9274a948e79e2eceb759, type: 2}
+  onEliteSpawn: {fileID: 11400000, guid: 884afbcdb2d91a045a676040a83e34ba, type: 2}
+  onBossSpawn: {fileID: 11400000, guid: af6506366b4a6524482be26e8f9ec388, type: 2}
+  onStageClear: {fileID: 11400000, guid: 99ead6d185c4ac746983983a0548e15e, type: 2}
+  normalMonsterPrefabs:
+  - {fileID: 3585619323823449129, guid: c0112779924aff24482f1d392c9c5927, type: 3}
+  bossPrefab: {fileID: 4905036954856149968, guid: 9aeed82712fd218469064ca366baebbf, type: 3}
+  spawnInterval: 3
+  maxMonsters: 10
+  spawnRadius: 10
+  normalSpawnHeightOffset: 1
+  bossSpawnHeightOffset: 1
+--- !u!4 &910000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910000000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1000001623
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,8 +860,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1012,4 +875,4 @@ SceneRoots:
   - {fileID: 160164172}
   - {fileID: 1671285948}
   - {fileID: 1793046758}
-  - {fileID: 65314328}
+  - {fileID: 910000002}
