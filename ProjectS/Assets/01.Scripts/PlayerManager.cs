@@ -26,6 +26,9 @@ namespace PS.Manager
         [SerializeField] private GameObject beams;
         [SerializeField] private ClassDefinition classDefinitionOverride;
         [SerializeField] private ClassCatalog classCatalogOverride;
+#if ENABLE_INPUT_SYSTEM
+        [SerializeField] private InputActionAsset inputActionsOverride;
+#endif
         private bool isFiring;
         private bool isDead;
         private bool wasAttackHeld;
@@ -73,6 +76,12 @@ namespace PS.Manager
                 PlayerInput localInput = GetComponent<PlayerInput>();
                 if (localInput != null)
                 {
+#if ENABLE_INPUT_SYSTEM
+                    if (inputActionsOverride != null && localInput.actions != inputActionsOverride)
+                    {
+                        localInput.actions = inputActionsOverride;
+                    }
+#endif
                     localInput.enabled = true;
                 }
                 StarterAssetsInputs localInputs = GetComponent<StarterAssetsInputs>();
@@ -207,6 +216,7 @@ namespace PS.Manager
                 if (!isDead && Health <= 0f)
                 {
                     isDead = true;
+                    Debug.LogWarning($"[PlayerManager] Health <= 0. Leaving room. Health={Health}, InRoom={PhotonNetwork.InRoom}");
                     GameManager.Instance.LeaveRoom();
                 }
             }
@@ -327,6 +337,11 @@ namespace PS.Manager
 
         private void ApplyDamageInternal(DamageInfo info, bool ignoreSoulLink)
         {
+            if (info.SourceId == gameObject.GetInstanceID())
+            {
+                return;
+            }
+
             if (invulnerableUntil > Time.time)
             {
                 return;

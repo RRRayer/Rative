@@ -42,6 +42,11 @@ namespace ProjectS.Gameplay.Combat
                 return;
             }
 
+            if (info.SourceId == gameObject.GetInstanceID())
+            {
+                return;
+            }
+
             float reduction = damageReductionPercent;
             PlayerStats stats = GetComponent<PlayerStats>();
             if (stats != null)

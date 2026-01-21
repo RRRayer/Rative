@@ -248,7 +248,12 @@ namespace PS.Manager
         {
             if (PhotonNetwork.InRoom)
             {
+                Log.W("[GameManager] LeaveRoom called.");
                 PhotonNetwork.LeaveRoom();
+            }
+            else
+            {
+                Log.W("[GameManager] LeaveRoom called but not in room.");
             }
         }
     }
