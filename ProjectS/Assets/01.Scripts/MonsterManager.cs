@@ -4,6 +4,7 @@ using UnityEngine;
 using PS.Events;
 using PS.Base;
 using PS.AI.Boss; // Assuming the Boss script is in this namespace
+using ProjectS.Networking;
 
 namespace PS.Manager
 {
@@ -24,6 +25,12 @@ namespace PS.Manager
 
         private Coroutine _spawnCoroutine;
         private Boss _spawnedBoss; // Reference to the spawned boss instance
+        private PunPrefabPool _prefabPool;
+
+        private void Awake()
+        {
+            ConfigurePrefabPool();
+        }
 
         private void OnEnable()
         {
@@ -207,5 +214,31 @@ namespace PS.Manager
             // Raise the event to notify GameManager and other systems
             onStageClear?.RaiseEvent();
         }
+
+        private void ConfigurePrefabPool()
+        {
+            if (_prefabPool != null) return;
+
+            var existingPool = Photon.Pun.PhotonNetwork.PrefabPool as PunPrefabPool;
+            if (existingPool != null)
+            {
+                _prefabPool = existingPool;
+                _prefabPool.RegisterPrefabs(normalMonsterPrefabs);
+                if (bossPrefab != null)
+                {
+                    _prefabPool.RegisterPrefab(bossPrefab);
+                }
+                return;
+            }
+
+            _prefabPool = new PunPrefabPool();
+            _prefabPool.RegisterPrefabs(normalMonsterPrefabs);
+            if (bossPrefab != null)
+            {
+                _prefabPool.RegisterPrefab(bossPrefab);
+            }
+            Photon.Pun.PhotonNetwork.PrefabPool = _prefabPool;
+        }
+
     }
 }
