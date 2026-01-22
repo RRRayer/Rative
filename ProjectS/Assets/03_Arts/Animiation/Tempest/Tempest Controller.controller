@@ -21,7 +21,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 4698e431eeecf79459d3e951c58b0bbf, type: 2}
+  m_Motion: {fileID: 7400000, guid: ad131ad107872d2468bb925b8bdebf89, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -97,7 +97,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 5bb6fc2bcd1d0d24989cadb4fa319904, type: 2}
+  m_Motion: {fileID: 7400000, guid: 1b5e54b81cf30f44e8d1dad1fb37e466, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -124,7 +124,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 9ef28bb51b0739c4eb9057ded153d842, type: 2}
+  m_Motion: {fileID: 7400000, guid: abfaa69b529ef6448ade1fe81a1e196e, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -136,7 +136,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CLP Controller
+  m_Name: Tempest Controller
   serializedVersion: 5
   m_AnimatorParameters: []
   m_AnimatorLayers:
@@ -244,7 +244,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 035727fa4b9ef74428380ad1ee1632f2, type: 2}
+  m_Motion: {fileID: 7400000, guid: 74ab516da798f354ba1b8c3375660baa, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -380,7 +380,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 55d7dec30eb488d418e6f5e2d218b314, type: 2}
+  m_Motion: {fileID: 7400000, guid: c46fef8f66a67bc419eaf0d5b258cdcc, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -407,7 +407,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 561c31f4135289547956704c7bcc1cbd, type: 2}
+  m_Motion: {fileID: 7400000, guid: 068325dcb55c9c34e86c59bd0da0b01a, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
