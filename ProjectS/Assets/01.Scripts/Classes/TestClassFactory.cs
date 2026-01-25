@@ -1,7 +1,7 @@
-using ProjectS.Data.Definitions;
+using PS.Data.Definitions;
 using UnityEngine;
 
-namespace ProjectS.Classes
+namespace PS.Classes
 {
     public static class TestClassFactory
     {

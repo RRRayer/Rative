@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     public class UINickNameField : MonoBehaviour
     {

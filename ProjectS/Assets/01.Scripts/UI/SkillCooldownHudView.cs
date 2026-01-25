@@ -1,8 +1,8 @@
-using ProjectS.Core.Skills;
+using PS.Core.Skills;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     public class SkillCooldownHudView : MonoBehaviour
     {

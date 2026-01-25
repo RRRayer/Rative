@@ -173,7 +173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 280668828558638390, guid: 8f73cde9b135f704aa95041db9d2758c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: ProjectS.Networking.LobbyManager, ProjectS.Networking
+      value: PS.Networking.LobbyManager, PS.Networking
       objectReference: {fileID: 0}
     - target: {fileID: 280668828558638390, guid: 8f73cde9b135f704aa95041db9d2758c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
@@ -410,7 +410,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18b217c94cb84a4bab8b364dfd60fa80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.Networking::ProjectS.Networking.LobbyManager
+  m_EditorClassIdentifier: PS.Networking::PS.Networking.LobbyManager
 --- !u!1 &6167841327702692453 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7198494860398823524, guid: 583b2a067a1cdb147b7466b949ddc784, type: 3}

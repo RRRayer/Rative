@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using ProjectS.Core.Services;
+using UnityEngine;
+using PS.Core.Services;
 
-namespace ProjectS.Systems.Flow
+namespace PS.Systems.Flow
 {
     public enum GameMode
     {

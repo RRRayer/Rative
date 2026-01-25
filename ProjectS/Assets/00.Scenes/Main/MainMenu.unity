@@ -147,7 +147,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18b217c94cb84a4bab8b364dfd60fa80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.Networking::ProjectS.Networking.LobbyManager
+  m_EditorClassIdentifier: PS.Networking::PS.Networking.LobbyManager
   lobbyViewBehaviour: {fileID: 1133309274}
   waitingRoomSceneName: GameRoom
 --- !u!4 &743024966
@@ -302,7 +302,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d00b71d9200c4615b2f19ca0ccf33c3e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.LobbyView
+  m_EditorClassIdentifier: PS.UI::PS.UI.LobbyView
 --- !u!1 &1472353719
 GameObject:
   m_ObjectHideFlags: 0
@@ -547,7 +547,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c30718b7f7a49d144b0973d3da4500d7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.Networking::ProjectS.Networking.Launcher
+  m_EditorClassIdentifier: PS.Networking::PS.Networking.Launcher
 --- !u!4 &1783281755
 Transform:
   m_ObjectHideFlags: 0

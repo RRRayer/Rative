@@ -1,11 +1,11 @@
 {
-    "name": "ProjectS.UI",
+    "name": "PS.UI",
     "rootNamespace": "",
     "references": [
-        "ProjectS.Core",
-        "ProjectS.Data",
-        "ProjectS.Gameplay",
-        "ProjectS.Networking",
+        "PS.Core",
+        "PS.Data",
+        "PS.Gameplay",
+        "PS.Networking",
         "Unity.InputSystem",
         "Unity.TextMeshPro",
         "PhotonUnityNetworking",

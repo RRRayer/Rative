@@ -1,14 +1,14 @@
-﻿{
-    "name":  "ProjectS.Editor",
+{
+    "name":  "PS.Editor",
     "references":  [
-                       "ProjectS.Core",
-                       "ProjectS.Data",
-                       "ProjectS.Gameplay",
-                       "ProjectS.AI",
-                       "ProjectS.Progression",
-                       "ProjectS.Classes",
-                       "ProjectS.Systems",
-                       "ProjectS.Networking"
+                       "PS.Core",
+                       "PS.Data",
+                       "PS.Gameplay",
+                       "PS.AI",
+                       "PS.Progression",
+                       "PS.Classes",
+                       "PS.Systems",
+                       "PS.Networking"
                    ],
     "includePlatforms":  [
                              "Editor"

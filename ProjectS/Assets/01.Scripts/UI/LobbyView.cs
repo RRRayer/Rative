@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using ProjectS.Networking;
+using PS.Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     /// <summary>
     /// Lobby UI view (MVC): renders room list and surfaces user intent via events.

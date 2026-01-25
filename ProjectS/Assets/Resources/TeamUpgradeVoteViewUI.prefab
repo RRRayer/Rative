@@ -195,7 +195,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9713aa28f6d47574b8f8aad4ee958c15, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.TeamUpgradeVoteView
+  m_EditorClassIdentifier: PS.UI::PS.UI.TeamUpgradeVoteView
   canvas: {fileID: 2008185398458081786}
   panelRoot: {fileID: 4885439249175024553}
   timerSlider: {fileID: 6073847821506829788}
@@ -434,7 +434,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1f32abc099996f499d7282c47311a52, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.UpgradeSelectionView
+  m_EditorClassIdentifier: PS.UI::PS.UI.UpgradeSelectionView
   canvas: {fileID: 2008185398458081786}
   panelRoot: {fileID: 4885439249175024553}
 --- !u!1 &5329993841243647548

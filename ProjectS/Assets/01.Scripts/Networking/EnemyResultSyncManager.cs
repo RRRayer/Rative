@@ -1,10 +1,10 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using ProjectS.Core.Combat;
+using PS.Core.Combat;
 using UnityEngine;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public class EnemyResultSyncManager : MonoBehaviour, IOnEventCallback
     {

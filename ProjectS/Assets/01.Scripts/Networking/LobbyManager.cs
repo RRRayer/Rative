@@ -6,10 +6,10 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     /// <summary>
-    /// Lobby controller: Photon flow + view coordination (UI lives in ProjectS.UI).
+    /// Lobby controller: Photon flow + view coordination (UI lives in PS.UI).
     /// </summary>
     public class LobbyManager : MonoBehaviourPunCallbacks
     {

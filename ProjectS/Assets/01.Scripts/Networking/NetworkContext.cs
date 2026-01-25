@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using ProjectS.Core.Services;
+using UnityEngine;
+using PS.Core.Services;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public class NetworkContext : MonoBehaviour, INetworkContext
     {

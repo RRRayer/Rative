@@ -1,8 +1,8 @@
 using Photon.Pun;
-using ProjectS.Core.Combat;
+using PS.Core.Combat;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Combat
+namespace PS.Gameplay.Combat
 {
     public class EnemyMeleeAttackDriver : MonoBehaviour
     {

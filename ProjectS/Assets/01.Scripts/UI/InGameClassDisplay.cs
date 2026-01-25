@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
-using ProjectS.Data.Definitions;
-using ProjectS.Networking;
+using PS.Data.Definitions;
+using PS.Networking;
 using TMPro;
 using UnityEngine;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     public class InGameClassDisplay : MonoBehaviourPunCallbacks
     {

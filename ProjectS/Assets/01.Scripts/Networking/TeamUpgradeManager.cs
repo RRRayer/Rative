@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using ProjectS.Core.Skills;
+using PS.Core.Skills;
 using UnityEngine;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public class TeamUpgradeManager : MonoBehaviour, IOnEventCallback
     {
@@ -515,23 +515,23 @@ namespace ProjectS.Networking
             switch (type)
             {
                 case TeamUpgradeType.ExecutionerEye:
-                    return "처형자의 눈";
+                    return "Executioner's Eye";
                 case TeamUpgradeType.BloodFrenzy:
-                    return "피의 광란";
+                    return "Blood Frenzy";
                 case TeamUpgradeType.GuardianAngel:
-                    return "수호 천사";
+                    return "Guardian Angel";
                 case TeamUpgradeType.VampiricOath:
-                    return "흡혈의 맹세";
+                    return "Vampiric Oath";
                 case TeamUpgradeType.TitaniumSkin:
-                    return "티타늄 피부";
+                    return "Titanium Skin";
                 case TeamUpgradeType.GoldenHand:
-                    return "황금의 손";
+                    return "Golden Hand";
                 case TeamUpgradeType.Adrenaline:
-                    return "아드레날린";
+                    return "Adrenaline";
                 case TeamUpgradeType.SoulLink:
-                    return "영혼 링크";
+                    return "Soul Link";
                 default:
-                    return "팀 업그레이드";
+                    return "Unknown";
             }
         }
 
@@ -540,21 +540,21 @@ namespace ProjectS.Networking
             switch (type)
             {
                 case TeamUpgradeType.ExecutionerEye:
-                    return "체력 20% 이하 일반 몬스터 즉사\n보스 대상 1.5배 추가 피해";
+                    return "Execute non-boss targets at <= 20% HP\nBoss takes 1.5x damage";
                 case TeamUpgradeType.BloodFrenzy:
-                    return "적 처치 시 5초간 공격력 5% 증가\n(최대 10중첩)";
+                    return "On kill: +5% attack for 5s\n(max 10 stacks)";
                 case TeamUpgradeType.GuardianAngel:
-                    return "치명적인 피해를 입을 시 HP 1 생존\n3초 무적 (스테이지 당 1회)";
+                    return "Survive lethal hit at 1 HP\n3s invulnerable (once per stage)";
                 case TeamUpgradeType.VampiricOath:
-                    return "가한 피해의 5% 만큼 체력 회복";
+                    return "Heal for 5% of damage dealt";
                 case TeamUpgradeType.TitaniumSkin:
-                    return "상시 슈퍼아머 (경직 면역)\n이동 속도 -10%";
+                    return "Super armor (stagger immune)\nMove speed -10%";
                 case TeamUpgradeType.GoldenHand:
-                    return "몬스터 처치 시 골드/포인트 획득 +50%";
+                    return "Monster kills grant +50% gold/points";
                 case TeamUpgradeType.Adrenaline:
-                    return "궁극기 사용 시 아군 스킬 쿨타임 5초 감소";
+                    return "Ultimate reduces allies' skill cooldowns by 5s";
                 case TeamUpgradeType.SoulLink:
-                    return "받는 피해를 파티원 수로 분산";
+                    return "Incoming damage is shared across the party";
                 default:
                     return string.Empty;
             }

@@ -1,4 +1,4 @@
-namespace ProjectS.Core.Combat
+namespace PS.Core.Combat
 {
     public interface ITeamDamageProvider
     {

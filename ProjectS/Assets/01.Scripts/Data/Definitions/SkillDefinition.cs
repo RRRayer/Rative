@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Skill")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Skill")]
     public class SkillDefinition : ScriptableObject
     {
         public string id;

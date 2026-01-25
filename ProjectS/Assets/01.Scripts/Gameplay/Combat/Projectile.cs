@@ -1,8 +1,8 @@
-using ProjectS.Core.Combat;
-using ProjectS.Core.Skills;
+using PS.Core.Combat;
+using PS.Core.Skills;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Combat
+namespace PS.Gameplay.Combat
 {
     public class Projectile : MonoBehaviour, IDamageConfigurable
     {

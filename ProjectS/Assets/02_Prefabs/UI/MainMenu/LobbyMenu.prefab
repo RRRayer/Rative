@@ -1210,7 +1210,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d00b71d9200c4615b2f19ca0ccf33c3e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.LobbyView
+  m_EditorClassIdentifier: PS.UI::PS.UI.LobbyView
   roomListParent: {fileID: 4269628893540398957}
   roomEntryPrefab: {fileID: 4014371839354804921, guid: 36c88db3e5151d240963bebd306b8188, type: 3}
   refreshButton: {fileID: 3446460788145295713}
@@ -1233,7 +1233,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18b217c94cb84a4bab8b364dfd60fa80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.Networking::ProjectS.Networking.LobbyManager
+  m_EditorClassIdentifier: PS.Networking::PS.Networking.LobbyManager
   lobbyViewBehaviour: {fileID: 1054570631294098845}
   waitingRoomSceneName: GameRoom
 --- !u!1 &7741312135684743474

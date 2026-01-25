@@ -173,7 +173,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2f3b4a5d6e7f8091a2b3c4d5e6f7081, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.Gameplay.Networking::ProjectS.Gameplay.Networking.EnemyTransformSync
+  m_EditorClassIdentifier: PS.Gameplay.Networking::PS.Gameplay.Networking.EnemyTransformSync
   sendIntervalSeconds: 1
   positionLerpSpeed: 8
   rotationLerpSpeed: 10

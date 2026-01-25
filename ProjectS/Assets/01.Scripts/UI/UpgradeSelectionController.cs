@@ -1,8 +1,8 @@
-using ProjectS.Core.Skills;
-using ProjectS.Networking;
+using PS.Core.Skills;
+using PS.Networking;
 using UnityEngine;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     public class UpgradeSelectionController : MonoBehaviour
     {

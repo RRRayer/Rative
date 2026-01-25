@@ -1,4 +1,4 @@
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
     public struct SkillUpgradeState
     {

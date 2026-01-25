@@ -267,7 +267,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d61efcf480e44719e36c6f4e37f023f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.WaitingRoomPlayerSlotView
+  m_EditorClassIdentifier: PS.UI::PS.UI.WaitingRoomPlayerSlotView
 --- !u!1 &127783073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,7 +1119,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d61efcf480e44719e36c6f4e37f023f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.WaitingRoomPlayerSlotView
+  m_EditorClassIdentifier: PS.UI::PS.UI.WaitingRoomPlayerSlotView
 --- !u!1001 &693156850
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1268,7 +1268,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 39e1484b25de4d07ab7fd36594a46026, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.WaitingRoomView
+  m_EditorClassIdentifier: PS.UI::PS.UI.WaitingRoomView
   playerSlots:
   - {fileID: 1579462371}
   - {fileID: 84912267}
@@ -1313,7 +1313,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ce2e3532d0445dcbab2b5bcf2d7c296, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.Networking::ProjectS.Networking.WaitingRoomManager
+  m_EditorClassIdentifier: PS.Networking::PS.Networking.WaitingRoomManager
   waitingRoomViewBehaviour: {fileID: 717412823}
   lobbySceneName: MainMenu
   inGameSceneName: InGame
@@ -2420,7 +2420,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d61efcf480e44719e36c6f4e37f023f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.WaitingRoomPlayerSlotView
+  m_EditorClassIdentifier: PS.UI::PS.UI.WaitingRoomPlayerSlotView
 --- !u!224 &1889383653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2235311645178286697, guid: 07c8ead00f83f2b4da10f781b2e0fe06, type: 3}
@@ -2436,7 +2436,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d61efcf480e44719e36c6f4e37f023f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.WaitingRoomPlayerSlotView
+  m_EditorClassIdentifier: PS.UI::PS.UI.WaitingRoomPlayerSlotView
 --- !u!1001 &6301620340504029071
 PrefabInstance:
   m_ObjectHideFlags: 0

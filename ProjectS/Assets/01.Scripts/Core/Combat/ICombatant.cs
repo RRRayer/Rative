@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace ProjectS.Core.Combat
+namespace PS.Core.Combat
 {
     public interface ICombatant
     {

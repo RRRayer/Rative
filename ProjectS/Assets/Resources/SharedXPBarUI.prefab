@@ -315,7 +315,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cb7ef408ec64d740bf1ad42a3befe60, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.SharedXpBarView
+  m_EditorClassIdentifier: PS.UI::PS.UI.SharedXpBarView
   slider: {fileID: 4604380293245652659}
   levelText: {fileID: 6501149806171219354}
 --- !u!1 &6778334161667808819

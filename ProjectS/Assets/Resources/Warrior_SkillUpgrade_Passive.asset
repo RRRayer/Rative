@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c2d3e4f5061728394a5b6c7d8e9f0a1, type: 3}
   m_Name: Warrior_SkillUpgrade_Passive
-  m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.PassiveUpgradeTrack
+  m_EditorClassIdentifier: PS.Data::PS.Data.Definitions.PassiveUpgradeTrack
   steps:
   - level: 1
     attackSpeedPerStackPercent: 0.04

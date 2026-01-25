@@ -2,7 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public class Launcher : MonoBehaviourPunCallbacks
     {

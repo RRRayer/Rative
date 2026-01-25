@@ -1,10 +1,10 @@
 using System;
-using ProjectS.Data.Definitions;
+using PS.Data.Definitions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     /// <summary>
     /// View for a selectable class option.

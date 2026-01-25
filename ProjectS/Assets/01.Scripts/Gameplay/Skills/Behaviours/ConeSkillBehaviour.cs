@@ -1,12 +1,12 @@
 using System.Collections;
-using ProjectS.Data.Definitions;
-using ProjectS.Core.Combat;
-using ProjectS.Gameplay.Combat;
+using PS.Data.Definitions;
+using PS.Core.Combat;
+using PS.Gameplay.Combat;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Skills.Behaviours
+namespace PS.Gameplay.Skills.Behaviours
 {
-    [CreateAssetMenu(menuName = "ProjectS/Skills/Cone")]
+    [CreateAssetMenu(menuName = "PS/Skills/Cone")]
     public class ConeSkillBehaviour : SkillBehaviour
     {
         public float baseDamage = 45f;

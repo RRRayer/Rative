@@ -1,9 +1,9 @@
-using ProjectS.Data.Definitions;
+using PS.Data.Definitions;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Skills.Behaviours
+namespace PS.Gameplay.Skills.Behaviours
 {
-    [CreateAssetMenu(menuName = "ProjectS/Skills/Basic Combo")]
+    [CreateAssetMenu(menuName = "PS/Skills/Basic Combo")]
     public class BasicComboSkillBehaviour : SkillBehaviour
     {
         public float baseDamage = 12f;

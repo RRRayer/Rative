@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b3f1c2d4e5f60718293a4b5c6d7e8f90, type: 3}
   m_Name: Warrior_SkillUpgrade_Basic
-  m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.WarriorBasicUpgradeTrack
+  m_EditorClassIdentifier: PS.Data::PS.Data.Definitions.WarriorBasicUpgradeTrack
   steps:
   - level: 1
     damageBonusPercent: 0.1

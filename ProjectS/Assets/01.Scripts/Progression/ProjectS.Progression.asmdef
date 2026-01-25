@@ -1,8 +1,8 @@
-﻿{
-    "name":  "ProjectS.Progression",
+{
+    "name":  "PS.Progression",
     "references":  [
-                       "ProjectS.Core",
-                       "ProjectS.Data"
+                       "PS.Core",
+                       "PS.Data"
                    ],
     "includePlatforms":  [
 

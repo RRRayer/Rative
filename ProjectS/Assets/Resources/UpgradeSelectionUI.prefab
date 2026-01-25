@@ -216,6 +216,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1f32abc099996f499d7282c47311a52, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.UpgradeSelectionView
+  m_EditorClassIdentifier: PS.UI::PS.UI.UpgradeSelectionView
   canvas: {fileID: 408160097433315447}
   panelRoot: {fileID: 2200590012856309199}

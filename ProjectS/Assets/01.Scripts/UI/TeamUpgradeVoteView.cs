@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using ProjectS.Core.Skills;
+using PS.Core.Skills;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem.UI;
 #endif
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     public class TeamUpgradeVoteView : MonoBehaviour
     {

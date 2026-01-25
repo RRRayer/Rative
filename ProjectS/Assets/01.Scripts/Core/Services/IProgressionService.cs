@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace ProjectS.Core.Services
+namespace PS.Core.Services
 {
     public interface IProgressionService
     {

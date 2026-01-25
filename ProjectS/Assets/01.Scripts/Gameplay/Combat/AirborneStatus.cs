@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Combat
+namespace PS.Gameplay.Combat
 {
     public class AirborneStatus : MonoBehaviour
     {

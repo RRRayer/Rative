@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
     [Serializable]
     public struct WarriorBasicUpgradeStep
@@ -13,7 +13,7 @@ namespace ProjectS.Data.Definitions
         public bool finisherFixedDamage;
     }
 
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Upgrade Tracks/Warrior/Basic")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Upgrade Tracks/Warrior/Basic")]
     public class WarriorBasicUpgradeTrack : SkillUpgradeTrackBase
     {
         public WarriorBasicUpgradeStep[] steps;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public struct LobbyRoomViewModel
     {

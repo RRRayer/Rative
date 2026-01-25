@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProjectS.Data.Definitions;
-using ProjectS.Networking;
+using PS.Data.Definitions;
+using PS.Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     /// <summary>
     /// Waiting room UI view (MVC): renders slots and exposes user intents.

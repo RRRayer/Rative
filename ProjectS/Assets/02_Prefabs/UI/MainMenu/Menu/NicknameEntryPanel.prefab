@@ -291,7 +291,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5142830354297919043}
-        m_TargetAssemblyTypeName: ProjectS.UI.UINickNameField, ProjectS.UI
+        m_TargetAssemblyTypeName: PS.UI.UINickNameField, PS.UI
         m_MethodName: SetNickname
         m_Mode: 1
         m_Arguments:
@@ -1293,5 +1293,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95f9d1e5899e983478fe6d1b861311fe, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.UINickNameField
+  m_EditorClassIdentifier: PS.UI::PS.UI.UINickNameField
   _nicknameInputField: {fileID: 3586438972192534786}

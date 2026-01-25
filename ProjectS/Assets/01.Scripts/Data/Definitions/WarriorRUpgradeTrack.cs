@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
     [Serializable]
     public struct WarriorRUpgradeStep
@@ -17,7 +17,7 @@ namespace ProjectS.Data.Definitions
         public float groundDotDamageMultiplier;
     }
 
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Upgrade Tracks/Warrior/R")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Upgrade Tracks/Warrior/R")]
     public class WarriorRUpgradeTrack : SkillUpgradeTrackBase
     {
         public WarriorRUpgradeStep[] steps;

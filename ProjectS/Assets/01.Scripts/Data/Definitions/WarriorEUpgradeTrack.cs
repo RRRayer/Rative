@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
     [Serializable]
     public struct WarriorEUpgradeStep
@@ -16,7 +16,7 @@ namespace ProjectS.Data.Definitions
         public float pullStrengthBonus;
     }
 
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Upgrade Tracks/Warrior/E")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Upgrade Tracks/Warrior/E")]
     public class WarriorEUpgradeTrack : SkillUpgradeTrackBase
     {
         public WarriorEUpgradeStep[] steps;

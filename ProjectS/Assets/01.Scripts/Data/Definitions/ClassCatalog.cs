@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Class Catalog")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Class Catalog")]
     public class ClassCatalog : ScriptableObject
     {
         public ClassDefinition defaultClass;

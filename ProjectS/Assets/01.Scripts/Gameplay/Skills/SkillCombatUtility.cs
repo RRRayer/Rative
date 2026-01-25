@@ -1,9 +1,9 @@
-using ProjectS.Core.Combat;
-using ProjectS.Core.Skills;
-using ProjectS.Gameplay.Combat;
+using PS.Core.Combat;
+using PS.Core.Skills;
+using PS.Gameplay.Combat;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Skills
+namespace PS.Gameplay.Skills
 {
     public static class SkillCombatUtility
     {

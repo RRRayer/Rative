@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
     [Serializable]
     public struct WarriorQUpgradeStep
@@ -13,7 +13,7 @@ namespace ProjectS.Data.Definitions
         public bool resetCooldownOnKill;
     }
 
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Upgrade Tracks/Warrior/Q")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Upgrade Tracks/Warrior/Q")]
     public class WarriorQUpgradeTrack : SkillUpgradeTrackBase
     {
         public WarriorQUpgradeStep[] steps;

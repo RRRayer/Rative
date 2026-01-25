@@ -1,9 +1,9 @@
-﻿{
-    "name":  "ProjectS.Classes",
+{
+    "name":  "PS.Classes",
     "references":  [
-                       "ProjectS.Core",
-                       "ProjectS.Data",
-                       "ProjectS.Gameplay"
+                       "PS.Core",
+                       "PS.Data",
+                       "PS.Gameplay"
                    ],
     "includePlatforms":  [
 
