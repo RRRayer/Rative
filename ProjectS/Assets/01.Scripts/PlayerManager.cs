@@ -1,14 +1,14 @@
-ï»¿using Photon.Pun;
+using Photon.Pun;
 using System.Collections.Generic;
 using StarterAssets;
-using ProjectS.Classes;
-using ProjectS.Core.Combat;
-using ProjectS.Core.Skills;
-using ProjectS.Data.Definitions;
-using ProjectS.Progression.Leveling;
-using ProjectS.Gameplay.Stats;
-using ProjectS.Gameplay.Skills;
-using ProjectS.Networking;
+using PS.Classes;
+using PS.Core.Combat;
+using PS.Core.Skills;
+using PS.Data.Definitions;
+using PS.Progression.Leveling;
+using PS.Gameplay.Stats;
+using PS.Gameplay.Skills;
+using PS.Networking;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
@@ -924,7 +924,7 @@ namespace PS.Manager
             int nextLevel = Mathf.Clamp(GetSkillLevel(SkillSlot.Basic) + 1, 1, MaxUpgradeLevel);
             WarriorBasicUpgradeTrack track = classState?.CurrentClass?.basicUpgradeTrack;
             WarriorBasicUpgradeStep step = default;
-            string description = "ì—…ê·¸ë ˆì´ë“œ";
+            string description = "¾÷±×·¹ÀÌµå";
             if (track != null && track.TryGetStep(nextLevel, out step))
             {
                 description = DescribeBasicStep(step);
@@ -933,7 +933,7 @@ namespace PS.Manager
             return new UpgradeOption
             {
                 Type = UpgradeType.Basic,
-                Title = $"ê±°ì¹œ ìˆ¨ê²° (LMB) Lv.{nextLevel}",
+                Title = $"°ÅÄ£ ¼û°á (LMB) Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -943,7 +943,7 @@ namespace PS.Manager
             int nextLevel = Mathf.Clamp(GetSkillLevel(SkillSlot.Q) + 1, 1, MaxUpgradeLevel);
             WarriorQUpgradeTrack track = classState?.CurrentClass?.skillQUpgradeTrack;
             WarriorQUpgradeStep step = default;
-            string description = "ì—…ê·¸ë ˆì´ë“œ";
+            string description = "¾÷±×·¹ÀÌµå";
             if (track != null && track.TryGetStep(nextLevel, out step))
             {
                 description = DescribeQStep(step);
@@ -952,7 +952,7 @@ namespace PS.Manager
             return new UpgradeOption
             {
                 Type = UpgradeType.Q,
-                Title = $"ìœˆë“œ í„°ë„ (Q) Lv.{nextLevel}",
+                Title = $"À©µå ÅÍ³Î (Q) Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -962,7 +962,7 @@ namespace PS.Manager
             int nextLevel = Mathf.Clamp(GetSkillLevel(SkillSlot.E) + 1, 1, MaxUpgradeLevel);
             WarriorEUpgradeTrack track = classState?.CurrentClass?.skillEUpgradeTrack;
             WarriorEUpgradeStep step = default;
-            string description = "ì—…ê·¸ë ˆì´ë“œ";
+            string description = "¾÷±×·¹ÀÌµå";
             if (track != null && track.TryGetStep(nextLevel, out step))
             {
                 description = DescribeEStep(step);
@@ -971,7 +971,7 @@ namespace PS.Manager
             return new UpgradeOption
             {
                 Type = UpgradeType.E,
-                Title = $"íƒœí’ì˜ ëˆˆ (E) Lv.{nextLevel}",
+                Title = $"ÅÂÇ³ÀÇ ´« (E) Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -981,7 +981,7 @@ namespace PS.Manager
             int nextLevel = Mathf.Clamp(GetSkillLevel(SkillSlot.R) + 1, 1, MaxUpgradeLevel);
             WarriorRUpgradeTrack track = classState?.CurrentClass?.skillRUpgradeTrack;
             WarriorRUpgradeStep step = default;
-            string description = "ì—…ê·¸ë ˆì´ë“œ";
+            string description = "¾÷±×·¹ÀÌµå";
             if (track != null && track.TryGetStep(nextLevel, out step))
             {
                 description = DescribeRStep(step);
@@ -990,7 +990,7 @@ namespace PS.Manager
             return new UpgradeOption
             {
                 Type = UpgradeType.R,
-                Title = $"í…œí˜ìŠ¤íŠ¸ ì—£ì§€ (R) Lv.{nextLevel}",
+                Title = $"ÅÛÆä½ºÆ® ¿§Áö (R) Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -1000,7 +1000,7 @@ namespace PS.Manager
             int nextLevel = Mathf.Clamp(GetPassiveLevel() + 1, 1, MaxUpgradeLevel);
             PassiveUpgradeTrack track = classState?.CurrentClass?.passiveUpgradeTrack;
             PassiveUpgradeStep step = default;
-            string description = "ì—…ê·¸ë ˆì´ë“œ";
+            string description = "¾÷±×·¹ÀÌµå";
             if (track != null && track.TryGetStep(nextLevel, out step))
             {
                 description = DescribePassiveStep(step);
@@ -1009,7 +1009,7 @@ namespace PS.Manager
             return new UpgradeOption
             {
                 Type = UpgradeType.Passive,
-                Title = $"í­í’ì˜ ê¸°ì„¸ (P) Lv.{nextLevel}",
+                Title = $"ÆøÇ³ÀÇ ±â¼¼ (P) Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -1049,116 +1049,116 @@ namespace PS.Manager
         {
             if (step.damageBonusPercent > 0f)
             {
-                return $"í”¼í•´ëŸ‰ +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
+                return $"ÇÇÇØ·® +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
             }
             if (step.comboResetMultiplier > 0f && step.comboResetMultiplier < 1f)
             {
                 float reduction = (1f - step.comboResetMultiplier) * 100f;
-                return $"í›„ë”œë ˆì´ -{Mathf.RoundToInt(reduction)}%";
+                return $"ÈÄµô·¹ÀÌ -{Mathf.RoundToInt(reduction)}%";
             }
             if (step.prefabScaleBonusPercent > 0f)
             {
-                return $"ê²€í’ ë²”ìœ„ {Mathf.RoundToInt(step.prefabScaleBonusPercent * 100f)}% ì¦ê°€";
+                return $"°ËÇ³ ¹üÀ§ {Mathf.RoundToInt(step.prefabScaleBonusPercent * 100f)}% Áõ°¡";
             }
             if (step.finisherFixedDamage)
             {
-                return "ì§„ê³µ ë² ê¸°: ë§ˆì§€ë§‰ 3íƒ€ ê³ ì • í”¼í•´";
+                return "Áø°ø º£±â: ¸¶Áö¸· 3Å¸ °íÁ¤ ÇÇÇØ";
             }
-            return "ì—…ê·¸ë ˆì´ë“œ";
+            return "¾÷±×·¹ÀÌµå";
         }
 
         private string DescribeQStep(WarriorQUpgradeStep step)
         {
             if (step.cooldownDelta < 0f)
             {
-                return $"ì¿¨íƒ€ì„ {step.cooldownDelta}ì´ˆ";
+                return $"ÄğÅ¸ÀÓ {step.cooldownDelta}ÃÊ";
             }
             if (step.damageBonusPercent > 0f)
             {
-                return $"í”¼í•´ëŸ‰ +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
+                return $"ÇÇÇØ·® +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
             }
             if (step.dashDamageReductionMultiplier > 0f && step.dashDamageReductionMultiplier < 1f)
             {
                 float reduction = (1f - step.dashDamageReductionMultiplier) * 100f;
-                return $"ì‹œì „ ì¤‘ ë”œê° {Mathf.RoundToInt(reduction)}%";
+                return $"½ÃÀü Áß µô°¨ {Mathf.RoundToInt(reduction)}%";
             }
             if (step.resetCooldownOnKill)
             {
-                return "ì²˜ì¹˜ ì‹œ ì¿¨íƒ€ì„ ì´ˆê¸°í™”";
+                return "Ã³Ä¡ ½Ã ÄğÅ¸ÀÓ ÃÊ±âÈ­";
             }
-            return "ì—…ê·¸ë ˆì´ë“œ";
+            return "¾÷±×·¹ÀÌµå";
         }
 
         private string DescribeEStep(WarriorEUpgradeStep step)
         {
             if (step.durationBonusSeconds > 0f)
             {
-                return $"ì§€ì†ì‹œê°„ +{step.durationBonusSeconds}ì´ˆ";
+                return $"Áö¼Ó½Ã°£ +{step.durationBonusSeconds}ÃÊ";
             }
             if (step.cooldownDelta < 0f)
             {
-                return $"ì¿¨íƒ€ì„ {step.cooldownDelta}ì´ˆ";
+                return $"ÄğÅ¸ÀÓ {step.cooldownDelta}ÃÊ";
             }
             if (step.channelMoveSpeedMultiplier > 0f)
             {
                 int percent = Mathf.RoundToInt(step.channelMoveSpeedMultiplier * 100f);
-                return $"íšŒì „ ì¤‘ ì´ë™ ê°€ëŠ¥ ({percent}%)";
+                return $"È¸Àü Áß ÀÌµ¿ °¡´É ({percent}%)";
             }
             if (step.damageBonusPercent > 0f)
             {
-                return $"í”¼í•´ëŸ‰ +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
+                return $"ÇÇÇØ·® +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
             }
             if (step.prefabScaleBonusPercent > 0f || step.pullRadiusBonus > 0f)
             {
-                return "ê±°ëŒ€ íƒœí’: ë²”ìœ„ ì¦ê°€ + ê°•í•œ í¡ì…";
+                return "°Å´ë ÅÂÇ³: ¹üÀ§ Áõ°¡ + °­ÇÑ ÈíÀÔ";
             }
-            return "ì—…ê·¸ë ˆì´ë“œ";
+            return "¾÷±×·¹ÀÌµå";
         }
 
         private string DescribeRStep(WarriorRUpgradeStep step)
         {
             if (step.damageBonusPercent > 0f)
             {
-                return $"í”¼í•´ëŸ‰ +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
+                return $"ÇÇÇØ·® +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
             }
             if (step.rangeBonusPercent > 0f)
             {
-                return $"ë²”ìœ„ +{Mathf.RoundToInt(step.rangeBonusPercent * 100f)}%";
+                return $"¹üÀ§ +{Mathf.RoundToInt(step.rangeBonusPercent * 100f)}%";
             }
             if (step.groundDotDuration > 0f)
             {
-                return "í­í’ì˜ ì—¬íŒŒ: ë°”ë‹¥ ì¥íŒë”œ ìƒì„±";
+                return "ÆøÇ³ÀÇ ¿©ÆÄ: ¹Ù´Ú ÀåÆÇµô »ı¼º";
             }
             if (step.enableDoubleHit)
             {
-                return "ìŒë‘¥ì´ í­í’: 2íšŒ ë°œì‚¬";
+                return "½ÖµÕÀÌ ÆøÇ³: 2È¸ ¹ß»ç";
             }
-            return "ì—…ê·¸ë ˆì´ë“œ";
+            return "¾÷±×·¹ÀÌµå";
         }
 
         private string DescribePassiveStep(PassiveUpgradeStep step)
         {
             if (step.attackSpeedPerStackPercent > 0f && step.stackDurationSeconds <= 5f)
             {
-                return $"ê³µì† +{Mathf.RoundToInt(step.attackSpeedPerStackPercent * 100f)}%";
+                return $"°ø¼Ó +{Mathf.RoundToInt(step.attackSpeedPerStackPercent * 100f)}%";
             }
             if (step.stackDurationSeconds > 5f)
             {
-                return $"ì§€ì†ì‹œê°„ {Mathf.RoundToInt(step.stackDurationSeconds)}ì´ˆ";
+                return $"Áö¼Ó½Ã°£ {Mathf.RoundToInt(step.stackDurationSeconds)}ÃÊ";
             }
             if (step.moveSpeedPerStackPercent > 0f)
             {
-                return $"ìŠ¤íƒë‹¹ ì´ë™ì†ë„ +{Mathf.RoundToInt(step.moveSpeedPerStackPercent * 100f)}%";
+                return $"½ºÅÃ´ç ÀÌµ¿¼Óµµ +{Mathf.RoundToInt(step.moveSpeedPerStackPercent * 100f)}%";
             }
             if (step.maxStacks > 5)
             {
-                return $"ìµœëŒ€ ì¤‘ì²© {step.maxStacks}íšŒ";
+                return $"ÃÖ´ë ÁßÃ¸ {step.maxStacks}È¸";
             }
             if (step.cooldownReductionAtMaxPercent > 0f)
             {
-                return $"í’€ìŠ¤íƒì‹œ ì¿¨ê° {Mathf.RoundToInt(step.cooldownReductionAtMaxPercent * 100f)}%";
+                return $"Ç®½ºÅÃ½Ã Äğ°¨ {Mathf.RoundToInt(step.cooldownReductionAtMaxPercent * 100f)}%";
             }
-            return "ì—…ê·¸ë ˆì´ë“œ";
+            return "¾÷±×·¹ÀÌµå";
         }
 
         private void ConfigurePassiveTrack(ClassDefinition definition)

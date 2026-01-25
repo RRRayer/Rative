@@ -1,9 +1,9 @@
 {
-    "name": "ProjectS.Networking",
+    "name": "PS.Networking",
     "rootNamespace": "",
     "references": [
-        "ProjectS.Core",
-        "ProjectS.Progression",
+        "PS.Core",
+        "PS.Progression",
         "PhotonUnityNetworking",
         "PhotonRealtime",
         "PhotonChat"

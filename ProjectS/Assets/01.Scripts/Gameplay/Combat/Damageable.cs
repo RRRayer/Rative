@@ -1,11 +1,11 @@
 using Photon.Pun;
-using ProjectS.Core.Combat;
-using ProjectS.Core.Skills;
-using ProjectS.Gameplay.Stats;
-using ProjectS.Networking;
+using PS.Core.Combat;
+using PS.Core.Skills;
+using PS.Gameplay.Stats;
+using PS.Networking;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Combat
+namespace PS.Gameplay.Combat
 {
     public class Damageable : MonoBehaviour, IDeathSyncTarget
     {

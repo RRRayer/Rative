@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae6eb2fba9eb38041beff4684f2e8d8f, type: 3}
   m_Name: TankClass
-  m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.ClassDefinition
+  m_EditorClassIdentifier: PS.Data::PS.Data.Definitions.ClassDefinition
   id: 2
   displayName: Tank
   description: 

@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Class")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Class")]
     public class ClassDefinition : ScriptableObject
     {
         public string id;

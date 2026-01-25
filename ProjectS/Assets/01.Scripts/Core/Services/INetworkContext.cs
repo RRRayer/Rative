@@ -1,4 +1,4 @@
-﻿namespace ProjectS.Core.Services
+namespace PS.Core.Services
 {
     public interface INetworkContext
     {

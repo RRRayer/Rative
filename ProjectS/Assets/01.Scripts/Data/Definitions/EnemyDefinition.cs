@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Enemy")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Enemy")]
     public class EnemyDefinition : ScriptableObject
     {
         public string id;

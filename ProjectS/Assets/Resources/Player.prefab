@@ -217,7 +217,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 700d25dd0411b224f81473829f8ae551, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.Progression::ProjectS.Progression.Leveling.ProgressionManager
+  m_EditorClassIdentifier: PS.Progression::PS.Progression.Leveling.ProgressionManager
   level: 1
   currentXp: 0
   xpToNext: 10
@@ -714,7 +714,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45fe348b6c45f1e489904d22997eea1e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.Gameplay::ProjectS.Gameplay.Combat.WeaponHitbox
+  m_EditorClassIdentifier: PS.Gameplay::PS.Gameplay.Combat.WeaponHitbox
   hitLayers:
     serializedVersion: 2
     m_Bits: 64

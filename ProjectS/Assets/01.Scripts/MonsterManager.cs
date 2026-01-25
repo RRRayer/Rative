@@ -4,7 +4,7 @@ using UnityEngine;
 using PS.Events;
 using PS.Base;
 using PS.AI.Boss; // Assuming the Boss script is in this namespace
-using ProjectS.Networking;
+using PS.Networking;
 
 namespace PS.Manager
 {

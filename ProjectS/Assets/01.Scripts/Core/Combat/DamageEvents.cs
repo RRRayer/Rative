@@ -1,6 +1,6 @@
 using System;
 
-namespace ProjectS.Core.Combat
+namespace PS.Core.Combat
 {
     public static class DamageEvents
     {

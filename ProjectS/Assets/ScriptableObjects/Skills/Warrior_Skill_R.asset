@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b419c67bd3d6424eac2495c8767761c, type: 3}
   m_Name: Warrior_Skill_R
-  m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.SkillDefinition
+  m_EditorClassIdentifier: PS.Data::PS.Data.Definitions.SkillDefinition
   id: W_R
   displayName: 
   cooldown: 0

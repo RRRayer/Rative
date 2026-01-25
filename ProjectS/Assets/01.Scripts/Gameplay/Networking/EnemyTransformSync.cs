@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Networking
+namespace PS.Gameplay.Networking
 {
     public class EnemyTransformSync : MonoBehaviourPun, IPunObservable
     {

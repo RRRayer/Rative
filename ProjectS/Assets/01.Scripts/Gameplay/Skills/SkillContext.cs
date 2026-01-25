@@ -1,9 +1,9 @@
-using ProjectS.Core.Skills;
-using ProjectS.Data.Definitions;
-using ProjectS.Gameplay.Stats;
+using PS.Core.Skills;
+using PS.Data.Definitions;
+using PS.Gameplay.Stats;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Skills
+namespace PS.Gameplay.Skills
 {
     public struct SkillContext
     {

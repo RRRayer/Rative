@@ -1,4 +1,4 @@
-namespace ProjectS.Core.Skills
+namespace PS.Core.Skills
 {
     public enum TeamUpgradeType
     {

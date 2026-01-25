@@ -1,4 +1,4 @@
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     /// <summary>
     /// Centralized Photon custom property keys to avoid magic strings.

@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace ProjectS.Systems.Flow
+namespace PS.Systems.Flow
 {
     public abstract class ClearCondition : MonoBehaviour
     {

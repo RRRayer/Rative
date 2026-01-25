@@ -1,8 +1,8 @@
-using ProjectS.Networking;
+using PS.Networking;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     public class SharedXpBarView : MonoBehaviour
     {

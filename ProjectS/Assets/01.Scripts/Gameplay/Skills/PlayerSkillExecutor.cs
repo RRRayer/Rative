@@ -1,14 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using ProjectS.Core.Combat;
-using ProjectS.Core.Skills;
-using ProjectS.Data.Definitions;
-using ProjectS.Gameplay.Combat;
-using ProjectS.Gameplay.Skills.Behaviours;
-using ProjectS.Gameplay.Stats;
+using PS.Core.Combat;
+using PS.Core.Skills;
+using PS.Data.Definitions;
+using PS.Gameplay.Combat;
+using PS.Gameplay.Skills.Behaviours;
+using PS.Gameplay.Stats;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Skills
+namespace PS.Gameplay.Skills
 {
     public sealed class PlayerSkillExecutor : MonoBehaviour, ISkillExecutor
     {

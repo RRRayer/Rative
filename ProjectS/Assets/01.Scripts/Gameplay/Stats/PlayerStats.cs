@@ -1,8 +1,8 @@
-using ProjectS.Core.Skills;
-using ProjectS.Data.Definitions;
+using PS.Core.Skills;
+using PS.Data.Definitions;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Stats
+namespace PS.Gameplay.Stats
 {
     public sealed class PlayerStats : MonoBehaviour
     {

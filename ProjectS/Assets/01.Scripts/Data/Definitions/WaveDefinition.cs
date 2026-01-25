@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
     [Serializable]
     public struct WaveSpawnEntry
@@ -11,7 +11,7 @@ namespace ProjectS.Data.Definitions
         public float spawnRatePerSecond;
     }
 
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Wave")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Wave")]
     public class WaveDefinition : ScriptableObject
     {
         public string id;

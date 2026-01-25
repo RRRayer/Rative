@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Skills
+namespace PS.Gameplay.Skills
 {
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class TempestEdgeConeMesh : MonoBehaviour

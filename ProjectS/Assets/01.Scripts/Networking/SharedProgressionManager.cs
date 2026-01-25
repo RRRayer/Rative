@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using ProjectS.Core.Combat;
-using ProjectS.Progression.Leveling;
+using PS.Core.Combat;
+using PS.Progression.Leveling;
 using UnityEngine;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public class SharedProgressionManager : MonoBehaviour, IOnEventCallback
     {

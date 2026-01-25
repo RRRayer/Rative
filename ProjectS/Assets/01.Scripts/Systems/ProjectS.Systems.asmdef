@@ -1,13 +1,13 @@
-﻿{
-    "name":  "ProjectS.Systems",
+{
+    "name":  "PS.Systems",
     "references":  [
-                       "ProjectS.Core",
-                       "ProjectS.Data",
-                       "ProjectS.Gameplay",
-                       "ProjectS.AI",
-                       "ProjectS.Progression",
-                       "ProjectS.Classes",
-                       "ProjectS.Networking"
+                       "PS.Core",
+                       "PS.Data",
+                       "PS.Gameplay",
+                       "PS.AI",
+                       "PS.Progression",
+                       "PS.Classes",
+                       "PS.Networking"
                    ],
     "includePlatforms":  [
 

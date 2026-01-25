@@ -1,10 +1,10 @@
 using System;
-using ProjectS.Networking;
+using PS.Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectS.UI
+namespace PS.UI
 {
     /// <summary>
     /// View for a player slot in the waiting room.

@@ -3,7 +3,7 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public class TestLeeAutoMultiplayer : MonoBehaviourPunCallbacks
     {

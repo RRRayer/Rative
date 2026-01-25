@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     [RequireComponent(typeof(Collider))]
     public class TeamUpgradeChest : MonoBehaviourPun

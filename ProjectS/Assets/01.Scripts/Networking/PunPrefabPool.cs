@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public sealed class PunPrefabPool : Photon.Pun.IPunPrefabPool
     {

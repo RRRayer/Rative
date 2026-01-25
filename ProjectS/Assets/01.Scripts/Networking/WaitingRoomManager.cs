@@ -6,10 +6,10 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     /// <summary>
-    /// Waiting room controller: Photon sync + view coordination (UI lives in ProjectS.UI).
+    /// Waiting room controller: Photon sync + view coordination (UI lives in PS.UI).
     /// </summary>
     public class WaitingRoomManager : MonoBehaviourPunCallbacks
     {

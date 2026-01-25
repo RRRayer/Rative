@@ -172,7 +172,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 341bc9965bb31174d8ff3dba88979f01, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.AI::PS.AI.Boss.Boss
+  m_EditorClassIdentifier: PS.AI::PS.AI.Boss.Boss
 --- !u!1 &4905036954856149968
 GameObject:
   m_ObjectHideFlags: 0

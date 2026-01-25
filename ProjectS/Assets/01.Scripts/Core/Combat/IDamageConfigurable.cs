@@ -1,6 +1,6 @@
-using ProjectS.Core.Skills;
+using PS.Core.Skills;
 
-namespace ProjectS.Core.Combat
+namespace PS.Core.Combat
 {
     public interface IDamageConfigurable
     {

@@ -1,8 +1,8 @@
 using Photon.Pun;
-using ProjectS.Networking;
+using PS.Networking;
 using UnityEngine;
 
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     [RequireComponent(typeof(Collider))]
     public class XpPickup : MonoBehaviourPun, IPunInstantiateMagicCallback

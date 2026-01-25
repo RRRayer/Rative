@@ -1011,7 +1011,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cce700a08f9dd4645b3e4c09efdabdbc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.WaitingRoomClassOptionView
+  m_EditorClassIdentifier: PS.UI::PS.UI.WaitingRoomClassOptionView
   classNameText: {fileID: 8214263963108253921}
   descriptionText: {fileID: 2385380237038290882}
   skillQText: {fileID: 5893820960968494857}

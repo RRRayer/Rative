@@ -349,7 +349,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 064660037123443ea41800c9483c6e3a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.RoomEntryView
+  m_EditorClassIdentifier: PS.UI::PS.UI.RoomEntryView
   roomNameText: {fileID: 1748787671106022202}
   playerCountText: {fileID: 6170523162382336919}
   lockIcon: {fileID: 5344468723464986953}

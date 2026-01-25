@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
-using ProjectS.Networking;
+using PS.Networking;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -63,6 +63,23 @@ namespace PS.Manager
         }
 
         private Coroutine _stageTimerCoroutine; // Reference to the running stage timer coroutine
+
+        private void EnsurePlayerPrefabRegistered()
+        {
+            if (playerPrefab == null)
+            {
+                return;
+            }
+
+            var pool = PhotonNetwork.PrefabPool as PS.Networking.PunPrefabPool;
+            if (pool == null)
+            {
+                pool = new PS.Networking.PunPrefabPool();
+                PhotonNetwork.PrefabPool = pool;
+            }
+
+            pool.RegisterPrefab(playerPrefab);
+        }
 
         private void Awake()
         {
@@ -145,7 +162,7 @@ namespace PS.Manager
             Log.D("[GameManager] Starting stage.");
             CurrentState = GameState.InProgress;
             
-            // Raise the event for all clients -> 몬스터 소환하기 시작
+            // Raise the event for all clients -> 몬스???�환?�기 ?�작
             onStageStart?.RaiseEvent();
             
             // Start the timer on the Master Client
@@ -168,7 +185,7 @@ namespace PS.Manager
             {
                 stageElapsedTime += Time.deltaTime;
 
-                // Check for elite spawns ( 3분, 6분 총 2번)
+                // Check for elite spawns ( 3�? 6�?�?2�?
                 if (eliteSpawns < eliteSpawnTimes.Count && stageElapsedTime >= eliteSpawnTimes[eliteSpawns])
                 {
                     Log.D($"[GameManager] Triggering Elite Spawn at {stageElapsedTime}s.");
@@ -179,7 +196,7 @@ namespace PS.Manager
                 yield return null;
             }
             
-            // 9분이 되면 보스 몬스터 소환
+            // 9분이 ?�면 보스 몬스???�환
             Log.D($"[GameManager] Triggering Boss Spawn at {stageElapsedTime}s.");
             CurrentState = GameState.Boss;
             onBossSpawn?.RaiseEvent();
@@ -241,6 +258,7 @@ namespace PS.Manager
             }
 
             Log.D($"[GameManager] LocalPlayer spawned in {SceneManager.GetActiveScene().name}");
+            EnsurePlayerPrefabRegistered();
             PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
         }
         

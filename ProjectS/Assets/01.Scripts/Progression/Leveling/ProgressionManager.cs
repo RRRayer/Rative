@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using UnityEngine;
-using ProjectS.Core.Services;
+using PS.Core.Services;
 
-namespace ProjectS.Progression.Leveling
+namespace PS.Progression.Leveling
 {
     public class ProgressionManager : MonoBehaviour, IProgressionService
     {

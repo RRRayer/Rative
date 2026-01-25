@@ -1,9 +1,9 @@
-﻿{
-    "name":  "ProjectS.Gameplay",
+{
+    "name":  "PS.Gameplay",
     "references":  [
-                       "ProjectS.Core",
-                       "ProjectS.Data",
-                       "ProjectS.Networking",
+                       "PS.Core",
+                       "PS.Data",
+                       "PS.Networking",
                        "PhotonUnityNetworking"
                    ],
     "includePlatforms":  [

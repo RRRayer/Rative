@@ -1,9 +1,9 @@
-using ProjectS.Data.Definitions;
+using PS.Data.Definitions;
 using UnityEngine;
 
-namespace ProjectS.Gameplay.Skills.Behaviours
+namespace PS.Gameplay.Skills.Behaviours
 {
-    [CreateAssetMenu(menuName = "ProjectS/Skills/Channel")]
+    [CreateAssetMenu(menuName = "PS/Skills/Channel")]
     public class ChannelSkillBehaviour : SkillBehaviour
     {
         public float baseDamage = 6f;

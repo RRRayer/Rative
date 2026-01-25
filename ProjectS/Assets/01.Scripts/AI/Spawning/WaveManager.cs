@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using UnityEngine;
-using ProjectS.Core.Services;
+using PS.Core.Services;
 
-namespace ProjectS.AI.Spawning
+namespace PS.AI.Spawning
 {
     public class WaveManager : MonoBehaviour, IWaveService
     {

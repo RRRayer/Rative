@@ -1,7 +1,7 @@
-using ProjectS.Core.Skills;
+using PS.Core.Skills;
 using UnityEngine;
 
-namespace ProjectS.Core.Combat
+namespace PS.Core.Combat
 {
     public struct KillInfo
     {

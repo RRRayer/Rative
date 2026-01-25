@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5f60718293a4b5c6d7e8f901ab2c3d4, type: 3}
   m_Name: SkillBehaviour_TempestEdge
-  m_EditorClassIdentifier: ProjectS.Gameplay.Skills.Behaviours::ProjectS.Gameplay.Skills.Behaviours.ConeSkillBehaviour
+  m_EditorClassIdentifier: PS.Gameplay.Skills.Behaviours::PS.Gameplay.Skills.Behaviours.ConeSkillBehaviour
   baseDamage: 45
   range: 6
   angle: 120

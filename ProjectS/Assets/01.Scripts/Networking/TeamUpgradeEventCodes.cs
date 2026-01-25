@@ -1,4 +1,4 @@
-namespace ProjectS.Networking
+namespace PS.Networking
 {
     public static class TeamUpgradeEventCodes
     {

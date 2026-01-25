@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4d5e6f708192a3b4c5d6e7f8091a2b3, type: 3}
   m_Name: Warrior_SkillUpgrade_Q
-  m_EditorClassIdentifier: ProjectS.Data::ProjectS.Data.Definitions.WarriorQUpgradeTrack
+  m_EditorClassIdentifier: PS.Data::PS.Data.Definitions.WarriorQUpgradeTrack
   steps:
   - level: 1
     cooldownDelta: -1

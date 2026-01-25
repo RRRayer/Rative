@@ -440,7 +440,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d61efcf480e44719e36c6f4e37f023f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectS.UI::ProjectS.UI.WaitingRoomPlayerSlotView
+  m_EditorClassIdentifier: PS.UI::PS.UI.WaitingRoomPlayerSlotView
   nicknameText: {fileID: 2213561240757456442}
   classNameText: {fileID: 2751444727069282132}
   stateText: {fileID: 9038751615217531514}

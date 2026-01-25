@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace ProjectS.Data.Definitions
+namespace PS.Data.Definitions
 {
-    [CreateAssetMenu(menuName = "ProjectS/Definitions/Passive Upgrade Track")]
+    [CreateAssetMenu(menuName = "PS/Definitions/Passive Upgrade Track")]
     public class PassiveUpgradeTrack : ScriptableObject
     {
         public PassiveUpgradeStep[] steps;
