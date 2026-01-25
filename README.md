@@ -153,6 +153,7 @@ Project S
 **테스트 결과**
 - 멀티 플레이 테스트
 <img width="2290" height="684" alt="스크린샷 2026-01-25 160904" src="https://github.com/user-attachments/assets/9045bd37-68ef-43ce-bc10-56ccd7290819" />
+
 - 아트 적용 씬
 
 <img width="832" height="472" alt="image" src="https://github.com/user-attachments/assets/007b23d2-d87b-4537-8815-8c8fc316b2c6" />
