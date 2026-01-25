@@ -2,7 +2,9 @@
     "name":  "ProjectS.Gameplay",
     "references":  [
                        "ProjectS.Core",
-                       "ProjectS.Data"
+                       "ProjectS.Data",
+                       "ProjectS.Networking",
+                       "PhotonUnityNetworking"
                    ],
     "includePlatforms":  [
 

@@ -54,6 +54,11 @@ namespace StarterAssets
 				return;
 			}
 
+			if (!playerInput.enabled)
+			{
+				return;
+			}
+
 			if (!playerInput.actions.enabled)
 			{
 				playerInput.actions.Enable();

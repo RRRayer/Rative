@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 4202742681801083140}
   - component: {fileID: 6198954401402872852}
   - component: {fileID: 7000743185055657884}
+  - component: {fileID: 7713897069012110141}
+  - component: {fileID: 7713897069012110142}
   m_Layer: 6
   m_Name: ExampleEnemy
   m_TagString: Untagged
@@ -201,3 +203,41 @@ MonoBehaviour:
     m_Bits: 128
   checkInterval: 0.1
   turnSpeed: 360
+--- !u!114 &7713897069012110141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7713897069012110140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f3b4a5d6e7f8091a2b3c4d5e6f7081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectS.Gameplay.Networking::ProjectS.Gameplay.Networking.EnemyTransformSync
+  sendIntervalSeconds: 1
+  positionLerpSpeed: 8
+  rotationLerpSpeed: 10
+--- !u!114 &7713897069012110142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7713897069012110140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 7713897069012110141}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

@@ -15,7 +15,17 @@ namespace ProjectS.Gameplay.Skills
             }
 
             float baseMultiplier = context.Stats.GetDamageMultiplier(slot);
-            return baseMultiplier * (1f + context.UpgradeState.DamageBonusPercent);
+            float teamMultiplier = 1f;
+            if (context.Owner != null)
+            {
+                ITeamDamageProvider provider = context.Owner.GetComponent<ITeamDamageProvider>();
+                if (provider != null)
+                {
+                    teamMultiplier = provider.GetTeamDamageMultiplier();
+                }
+            }
+
+            return baseMultiplier * teamMultiplier * (1f + context.UpgradeState.DamageBonusPercent);
         }
 
         public static float GetCritChance(SkillContext context)

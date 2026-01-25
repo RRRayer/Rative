@@ -22,6 +22,8 @@ namespace PS.Manager
         [SerializeField] private float spawnInterval = 3f;
         [SerializeField] private int maxMonsters = 10; // TODO: Implement logic to track active monsters and respect this limit.
         [SerializeField] private float spawnRadius = 10f; // Radius around MonsterManager to spawn monsters
+        [SerializeField] private float normalSpawnHeightOffset = 0.5f;
+        [SerializeField] private float bossSpawnHeightOffset = 0.5f;
 
         private Coroutine _spawnCoroutine;
         private Boss _spawnedBoss; // Reference to the spawned boss instance
@@ -60,7 +62,10 @@ namespace PS.Manager
         /// </summary>
         private void StartMonsterSpawning()
         {
-            if (!Photon.Pun.PhotonNetwork.IsMasterClient) return;
+            if (!IsMasterOrOffline())
+            {
+                return;
+            }
 
             Log.D("[MonsterManager] Starting regular monster spawning.");
             if (_spawnCoroutine != null)
@@ -76,7 +81,10 @@ namespace PS.Manager
         /// </summary>
         private void StopMonsterSpawning()
         {
-            if (!Photon.Pun.PhotonNetwork.IsMasterClient) return;
+            if (!IsMasterOrOffline())
+            {
+                return;
+            }
 
             if (_spawnCoroutine != null)
             {
@@ -105,14 +113,35 @@ namespace PS.Manager
                     // Determine a spawn position within the defined radius
                     Vector3 randomDirection = Random.insideUnitSphere * spawnRadius;
                     Vector3 spawnPosition = transform.position + new Vector3(randomDirection.x, 0f, randomDirection.z);
-                    spawnPosition.y = 0f; // Ensure monsters spawn on the ground level (adjust as needed)
+                    spawnPosition = ResolveGroundPosition(spawnPosition, normalSpawnHeightOffset);
 
-                    if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                    if (Photon.Pun.PhotonNetwork.InRoom)
                     {
-                        // TODO: Replace direct Instantiate with a Pooling system for performance.
-                        Photon.Pun.PhotonNetwork.Instantiate(monsterPrefab.name, spawnPosition, Quaternion.identity, 0);
-                        Log.D($"[MonsterManager] Spawned {monsterPrefab.name} at {spawnPosition}.");
+                        if (!Photon.Pun.PhotonNetwork.IsMasterClient)
+                        {
+                            yield return new WaitForSeconds(spawnInterval);
+                            continue;
+                        }
+
+                        if (Resources.Load<GameObject>(monsterPrefab.name) == null)
+                        {
+                            Log.E($"[MonsterManager] '{monsterPrefab.name}' is not in Resources. PhotonNetwork.Instantiate will fail.");
+                        }
+                        else
+                        {
+                            Photon.Pun.PhotonNetwork.Instantiate(monsterPrefab.name, spawnPosition, Quaternion.identity, 0);
+                        }
                     }
+                    else
+                    {
+                        Instantiate(monsterPrefab, spawnPosition, Quaternion.identity);
+                    }
+
+                    Log.D($"[MonsterManager] Spawned {monsterPrefab.name} at {spawnPosition}.");
+                }
+                else
+                {
+                    Log.W("[MonsterManager] No normalMonsterPrefabs assigned.");
                 }
                 yield return new WaitForSeconds(spawnInterval);
             }
@@ -124,7 +153,10 @@ namespace PS.Manager
         /// </summary>
         private void SpawnElite()
         {
-            // if (!Photon.Pun.PhotonNetwork.IsMasterClient) return;
+            if (!IsMasterOrOffline())
+            {
+                return;
+            }
 
             Log.D("[MonsterManager] Received request to spawn ELITE monster.");
             // TODO: Implement elite monster spawning logic here.
@@ -138,7 +170,10 @@ namespace PS.Manager
         /// </summary>
         private void SpawnBoss()
         {
-            // if (!Photon.Pun.PhotonNetwork.IsMasterClient) return;
+            if (!IsMasterOrOffline())
+            {
+                return;
+            }
 
             Log.D("[MonsterManager] Received request to spawn BOSS monster.");
             StopMonsterSpawning(); // Stop regular monster spawning when boss appears
@@ -151,7 +186,24 @@ namespace PS.Manager
 
             // Spawn the boss at a designated point (e.g., the MonsterManager's position)
             // You might want a more specific spawn point.
-            GameObject bossGO = Photon.Pun.PhotonNetwork.Instantiate(bossPrefab.name, transform.position, Quaternion.identity, 0);
+            Vector3 bossSpawnPosition = ResolveGroundPosition(transform.position, bossSpawnHeightOffset);
+            GameObject bossGO;
+            if (Photon.Pun.PhotonNetwork.InRoom)
+            {
+                if (Resources.Load<GameObject>(bossPrefab.name) == null)
+                {
+                    Log.E($"[MonsterManager] '{bossPrefab.name}' is not in Resources. PhotonNetwork.Instantiate will fail.");
+                    bossGO = null;
+                }
+                else
+                {
+                    bossGO = Photon.Pun.PhotonNetwork.Instantiate(bossPrefab.name, bossSpawnPosition, Quaternion.identity, 0);
+                }
+            }
+            else
+            {
+                bossGO = Instantiate(bossPrefab, bossSpawnPosition, Quaternion.identity);
+            }
             if (bossGO != null)
                 _spawnedBoss = bossGO.GetComponent<Boss>();
 
@@ -215,6 +267,21 @@ namespace PS.Manager
             onStageClear?.RaiseEvent();
         }
 
+        private bool IsMasterOrOffline()
+        {
+            return !Photon.Pun.PhotonNetwork.InRoom || Photon.Pun.PhotonNetwork.IsMasterClient;
+        }
+
+        private Vector3 ResolveGroundPosition(Vector3 basePosition, float heightOffset)
+        {
+            Vector3 rayOrigin = basePosition + Vector3.up * 50f;
+            if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, 100f, ~0, QueryTriggerInteraction.Ignore))
+            {
+                return hit.point + Vector3.up * Mathf.Max(0f, heightOffset);
+            }
+
+            return basePosition + Vector3.up * Mathf.Max(0f, heightOffset);
+        }
         private void ConfigurePrefabPool()
         {
             if (_prefabPool != null) return;

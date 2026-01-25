@@ -8,6 +8,7 @@ using ProjectS.Data.Definitions;
 using ProjectS.Progression.Leveling;
 using ProjectS.Gameplay.Stats;
 using ProjectS.Gameplay.Skills;
+using ProjectS.Networking;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
@@ -15,15 +16,19 @@ using UnityEngine.InputSystem; // Added
 
 namespace PS.Manager
 {
-    public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamageReductionReceiver, IUpgradeProvider, ICooldownProvider, ICombatant
+    public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamageReductionReceiver, IUpgradeProvider, ICooldownProvider, ICombatant, ITeamDamageProvider
     {
         private const int MaxUpgradeLevel = 5;
         public float Health = 1f;
         public static GameObject LocalPlayerInstance;
+        private static readonly List<PlayerManager> Instances = new List<PlayerManager>();
 
         [SerializeField] private GameObject beams;
         [SerializeField] private ClassDefinition classDefinitionOverride;
         [SerializeField] private ClassCatalog classCatalogOverride;
+#if ENABLE_INPUT_SYSTEM
+        [SerializeField] private InputActionAsset inputActionsOverride;
+#endif
         private bool isFiring;
         private bool isDead;
         private bool wasAttackHeld;
@@ -43,22 +48,58 @@ namespace PS.Manager
         private float lastCooldownMultiplier = -1f;
         private float lastComboResetMultiplier = -1f;
         private float damageReductionMultiplier = 1f;
-    #if ENABLE_INPUT_SYSTEM
+        private int bloodFrenzyStacks;
+        private float bloodFrenzyExpiresAt;
+        private bool guardianAngelUsed;
+        private float invulnerableUntil;
+        private bool resolvingSoulLink;
+        private Vector3 networkPosition;
+        private Quaternion networkRotation;
+        private bool hasNetworkState;
+#if ENABLE_INPUT_SYSTEM
         private StarterAssetsInputs input;
-    #endif
+        private PlayerInput playerInput;
+        private InputAction attackAction;
+        private InputAction skill1Action;
+        private InputAction skill2Action;
+        private InputAction skill3Action;
+        private bool loggedMissingInputActions;
+#endif
 
         private void Awake()
         {
+            Instances.Add(this);
             if (photonView.IsMine)
             {
                 LocalPlayerInstance = gameObject;
                 AssignLocalCameraTarget();
+                PlayerInput localInput = GetComponent<PlayerInput>();
+                if (localInput != null)
+                {
+#if ENABLE_INPUT_SYSTEM
+                    if (inputActionsOverride != null && localInput.actions != inputActionsOverride)
+                    {
+                        localInput.actions = inputActionsOverride;
+                    }
+#endif
+                    localInput.enabled = true;
+                }
+                StarterAssetsInputs localInputs = GetComponent<StarterAssetsInputs>();
+                if (localInputs != null)
+                {
+                    localInputs.enabled = true;
+                }
             }
             else
             {
                 // It's a remote player. Disable input, character controller, camera and audio listener.
                 GetComponent<PlayerInput>().enabled = false;
                 GetComponent<StarterAssets.FirstPersonController>().enabled = false;
+                StarterAssetsInputs localInputs = GetComponent<StarterAssetsInputs>();
+                if (localInputs != null)
+                {
+                    localInputs.enabled = false;
+                }
 
                 Camera camera = GetComponentInChildren<Camera>();
                 if (camera != null) camera.enabled = false;
@@ -68,11 +109,15 @@ namespace PS.Manager
             }
             
             input = GetComponent<StarterAssetsInputs>();
+#if ENABLE_INPUT_SYSTEM
+            playerInput = GetComponent<PlayerInput>();
+            CacheInputActions();
+#endif
             stats = GetComponent<PlayerStats>() ?? gameObject.AddComponent<PlayerStats>();
             progression = GetComponent<ProgressionManager>() ?? gameObject.AddComponent<ProgressionManager>();
             firstPersonController = GetComponent<StarterAssets.FirstPersonController>();
             passiveState = GetComponent<WarriorPassiveState>() ?? gameObject.AddComponent<WarriorPassiveState>();
-            InitializeClassAndSkills();
+            // Defer class/skill initialization until Start so dependent components are ready.
 
             if (beams == null)
             {
@@ -110,14 +155,22 @@ namespace PS.Manager
             DamageEvents.DamageApplied += OnDamageApplied;
             KillEvents.Killed += OnKilled;
 
+            InitializeClassAndSkills();
+
             if (passiveState != null)
             {
                 passiveState.Changed += OnPassiveChanged;
+            }
+
+            if (skillExecutor != null)
+            {
+                skillExecutor.SkillExecuted += OnSkillExecuted;
             }
         }
 
         private void OnDestroy()
         {
+            Instances.Remove(this);
             SceneManager.sceneLoaded -= OnSceneLoaded;
             DamageEvents.DamageApplied -= OnDamageApplied;
             KillEvents.Killed -= OnKilled;
@@ -125,6 +178,11 @@ namespace PS.Manager
             if (passiveState != null)
             {
                 passiveState.Changed -= OnPassiveChanged;
+            }
+
+            if (skillExecutor != null)
+            {
+                skillExecutor.SkillExecuted -= OnSkillExecuted;
             }
 
             // If this was the local player instance, clean up the static reference
@@ -152,14 +210,29 @@ namespace PS.Manager
         {
             if (photonView.IsMine)
             {
+                EnsureActionMap();
                 ProcessInput();
                 ApplyRuntimeModifiers();
-                // Health handling.
-
+                if (!isDead && Health <= 0f)
                 {
                     isDead = true;
+                    Debug.LogWarning($"[PlayerManager] Health <= 0. Leaving room. Health={Health}, InRoom={PhotonNetwork.InRoom}");
                     GameManager.Instance.LeaveRoom();
                 }
+            }
+            else if (hasNetworkState)
+            {
+                transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * 10f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, networkRotation, Time.deltaTime * 10f);
+            }
+            if (bloodFrenzyStacks > 0 && Time.time >= bloodFrenzyExpiresAt)
+            {
+                bloodFrenzyStacks = 0;
+            }
+
+            if (invulnerableUntil > 0f && Time.time >= invulnerableUntil)
+            {
+                invulnerableUntil = 0f;
             }
             // Keep beam active state in sync with firing.
             if (beams != null && isFiring != beams.activeInHierarchy)
@@ -183,6 +256,7 @@ namespace PS.Manager
         {
             if (!photonView.IsMine || skillExecutor == null)
             {
+                Debug.LogWarning($"[PlayerManager] TryUseSkill blocked. IsMine={photonView.IsMine}, skillExecutor={(skillExecutor == null ? "null" : "ok")} slot={slot}");
                 return false;
             }
 
@@ -258,9 +332,64 @@ namespace PS.Manager
 
         public void ApplyDamage(DamageInfo info)
         {
+            ApplyDamageInternal(info, false);
+        }
+
+        private void ApplyDamageInternal(DamageInfo info, bool ignoreSoulLink)
+        {
+            if (info.SourceId == gameObject.GetInstanceID())
+            {
+                return;
+            }
+
+            if (invulnerableUntil > Time.time)
+            {
+                return;
+            }
+
+            if (!ignoreSoulLink
+                && TeamUpgradeManager.Instance != null
+                && TeamUpgradeManager.Instance.HasUpgrade(TeamUpgradeType.SoulLink)
+                && !resolvingSoulLink)
+            {
+                int partyCount = Mathf.Max(1, Instances.Count);
+                float sharedAmount = info.Amount / partyCount;
+                resolvingSoulLink = true;
+                for (int i = 0; i < Instances.Count; i++)
+                {
+                    if (Instances[i] == null)
+                    {
+                        continue;
+                    }
+
+                    DamageInfo sharedInfo = info;
+                    sharedInfo.Amount = sharedAmount;
+                    Instances[i].ApplyDamageInternal(sharedInfo, true);
+                }
+                resolvingSoulLink = false;
+                return;
+            }
+
             float reduction = stats != null ? stats.DamageReductionPercent : 0f;
             float finalAmount = info.Amount * damageReductionMultiplier;
             finalAmount *= 1f - Mathf.Clamp(reduction, 0f, 0.5f);
+
+            if (TeamUpgradeManager.Instance != null
+                && TeamUpgradeManager.Instance.HasUpgrade(TeamUpgradeType.GuardianAngel)
+                && !guardianAngelUsed
+                && finalAmount >= Health)
+            {
+                guardianAngelUsed = true;
+                invulnerableUntil = Time.time + 3f;
+                float applied = Mathf.Max(0f, Health - 1f);
+                Health = Mathf.Max(1f, Health - applied);
+
+                DamageInfo resolved = info;
+                resolved.Amount = applied;
+                DamageEvents.Raise(resolved);
+                return;
+            }
+
             Health = Mathf.Max(0f, Health - finalAmount);
 
             DamageInfo resolvedInfo = info;
@@ -268,15 +397,93 @@ namespace PS.Manager
             DamageEvents.Raise(resolvedInfo);
         }
 
+        public float GetTeamDamageMultiplier()
+        {
+            if (TeamUpgradeManager.Instance != null && TeamUpgradeManager.Instance.HasUpgrade(TeamUpgradeType.BloodFrenzy))
+            {
+                return 1f + (bloodFrenzyStacks * 0.05f);
+            }
+
+            return 1f;
+        }
+
+        public void Heal(float amount)
+        {
+            if (amount <= 0f)
+            {
+                return;
+            }
+
+            float maxHealth = stats != null ? stats.MaxHealth : Health;
+            Health = Mathf.Min(maxHealth, Health + amount);
+        }
+
+        private void OnSkillExecuted(SkillSlot slot)
+        {
+            if (slot != SkillSlot.R)
+            {
+                return;
+            }
+
+            if (TeamUpgradeManager.Instance == null || !TeamUpgradeManager.Instance.HasUpgrade(TeamUpgradeType.Adrenaline))
+            {
+                return;
+            }
+
+            for (int i = 0; i < Instances.Count; i++)
+            {
+                PlayerManager player = Instances[i];
+                if (player == null || player.skillExecutor == null)
+                {
+                    continue;
+                }
+
+                player.skillExecutor.ReduceCooldown(SkillSlot.Q, 5f);
+                player.skillExecutor.ReduceCooldown(SkillSlot.E, 5f);
+            }
+        }
+
         private void ProcessInput()
         {
-            if (input.attack && !wasAttackHeld)
+            bool attackPressed = input != null && input.attack;
+            bool skill1Pressed = input != null && input.skill1;
+            bool skill2Pressed = input != null && input.skill2;
+            bool skill3Pressed = input != null && input.skill3;
+
+#if ENABLE_INPUT_SYSTEM
+            if (attackAction != null)
+            {
+                attackPressed = attackAction.IsPressed();
+            }
+            if (skill1Action != null)
+            {
+                skill1Pressed = skill1Action.IsPressed();
+            }
+            if (skill2Action != null)
+            {
+                skill2Pressed = skill2Action.IsPressed();
+            }
+            if (skill3Action != null)
+            {
+                skill3Pressed = skill3Action.IsPressed();
+            }
+#endif
+
+            bool attackDown = attackPressed && !wasAttackHeld;
+#if ENABLE_INPUT_SYSTEM
+            if (attackAction != null)
+            {
+                attackDown = attackAction.WasPressedThisFrame();
+            }
+#endif
+
+            if (attackDown)
             {
                 TryUseSkill(SkillSlot.Basic);
                 Debug.Log("Basic attack triggered.");
             }
 
-            if (input.attack)
+            if (attackPressed)
             {
                 if (!isFiring)
                 {
@@ -284,7 +491,7 @@ namespace PS.Manager
                     isFiring = true;
                 }
             }
-            else if (!input.attack)
+            else if (!attackPressed)
             {
                 if (isFiring)
                 {
@@ -292,23 +499,40 @@ namespace PS.Manager
                 }
             }
 
-            HandleSkillInput();
-            wasAttackHeld = input.attack;
+            HandleSkillInput(skill1Pressed, skill2Pressed, skill3Pressed);
+            wasAttackHeld = attackPressed;
         }
 
-        private void HandleSkillInput()
+        private void HandleSkillInput(bool skill1Pressed, bool skill2Pressed, bool skill3Pressed)
         {
-            if (input == null)
+            bool skill1Down = skill1Pressed && !wasSkill1Held;
+            bool skill2Down = skill2Pressed && !wasSkill2Held;
+            bool skill2Up = !skill2Pressed && wasSkill2Held;
+            bool skill3Down = skill3Pressed && !wasSkill3Held;
+
+#if ENABLE_INPUT_SYSTEM
+            if (skill1Action != null)
             {
-                return;
+                skill1Down = skill1Action.WasPressedThisFrame();
+            }
+            if (skill2Action != null)
+            {
+                skill2Down = skill2Action.WasPressedThisFrame();
+                skill2Up = skill2Action.WasReleasedThisFrame();
+            }
+            if (skill3Action != null)
+            {
+                skill3Down = skill3Action.WasPressedThisFrame();
+            }
+#endif
+
+            if (skill1Down)
+            {
+                bool used = TryUseSkill(SkillSlot.Q);
+                Debug.Log($"Skill Q pressed. Used={used}.");
             }
 
-            if (input.skill1 && !wasSkill1Held)
-            {
-                TryUseSkill(SkillSlot.Q);
-            }
-
-            if (input.skill2 && !wasSkill2Held)
+            if (skill2Down)
             {
                 if (skillExecutor != null && skillExecutor.IsChannelSkill(SkillSlot.E))
                 {
@@ -316,11 +540,12 @@ namespace PS.Manager
                 }
                 else
                 {
-                    TryUseSkill(SkillSlot.E);
+                    bool used = TryUseSkill(SkillSlot.E);
+                    Debug.Log($"Skill E pressed. Used={used}.");
                 }
             }
 
-            if (!input.skill2 && wasSkill2Held)
+            if (skill2Up)
             {
                 if (skillExecutor != null && skillExecutor.IsChannelSkill(SkillSlot.E))
                 {
@@ -328,15 +553,62 @@ namespace PS.Manager
                 }
             }
 
-            if (input.skill3 && !wasSkill3Held)
+            if (skill3Down)
             {
-                TryUseSkill(SkillSlot.R);
+                bool used = TryUseSkill(SkillSlot.R);
+                Debug.Log($"Skill R pressed. Used={used}.");
             }
 
-            wasSkill1Held = input.skill1;
-            wasSkill2Held = input.skill2;
-            wasSkill3Held = input.skill3;
+            wasSkill1Held = skill1Pressed;
+            wasSkill2Held = skill2Pressed;
+            wasSkill3Held = skill3Pressed;
         }
+
+#if ENABLE_INPUT_SYSTEM
+        private void CacheInputActions()
+        {
+            if (playerInput == null || playerInput.actions == null)
+            {
+                return;
+            }
+
+            attackAction = playerInput.actions["Attack"];
+            skill1Action = playerInput.actions["Skill1"];
+            skill2Action = playerInput.actions["Skill2"];
+            skill3Action = playerInput.actions["Skill3"];
+
+            if (!loggedMissingInputActions
+                && (attackAction == null || skill1Action == null || skill2Action == null || skill3Action == null))
+            {
+                loggedMissingInputActions = true;
+                Debug.LogWarning(
+                    "[PlayerManager] Missing input actions. Check InputSystem_Actions: Attack/Skill1/Skill2/Skill3.");
+            }
+        }
+
+        private void EnsureActionMap()
+        {
+            if (playerInput == null || playerInput.actions == null)
+            {
+                return;
+            }
+
+            if (!playerInput.enabled)
+            {
+                return;
+            }
+
+            if (!playerInput.actions.enabled)
+            {
+                playerInput.actions.Enable();
+            }
+
+            if (playerInput.currentActionMap == null || playerInput.currentActionMap.name != "Player")
+            {
+                playerInput.SwitchCurrentActionMap("Player");
+            }
+        }
+#endif
 
         private void ApplyRuntimeModifiers()
         {
@@ -349,6 +621,10 @@ namespace PS.Manager
             float passiveMultiplier = passiveState != null ? passiveState.MoveSpeedMultiplier : 1f;
             float channelMultiplier = skillExecutor != null ? skillExecutor.CurrentChannelMoveSpeedMultiplier : 1f;
             float moveMultiplier = statMultiplier * passiveMultiplier * channelMultiplier;
+            if (TeamUpgradeManager.Instance != null && TeamUpgradeManager.Instance.HasUpgrade(TeamUpgradeType.TitaniumSkin))
+            {
+                moveMultiplier *= 0.9f;
+            }
 
             if (firstPersonController != null && hasMovementBaseline
                 && Mathf.Abs(moveMultiplier - lastMoveSpeedMultiplier) > 0.001f)
@@ -390,6 +666,12 @@ namespace PS.Manager
             {
                 skillExecutor.ResetCooldown(SkillSlot.Q);
             }
+
+            if (TeamUpgradeManager.Instance != null && TeamUpgradeManager.Instance.HasUpgrade(TeamUpgradeType.BloodFrenzy))
+            {
+                bloodFrenzyStacks = Mathf.Clamp(bloodFrenzyStacks + 1, 0, 10);
+                bloodFrenzyExpiresAt = Time.time + 5f;
+            }
         }
 
         private void OnPassiveChanged()
@@ -404,12 +686,17 @@ namespace PS.Manager
                 // Local player: send state to others.
 
                 stream.SendNext(Health);
+                stream.SendNext(transform.position);
+                stream.SendNext(transform.rotation);
             }
             else
             {
                 // Remote player: receive state.
 
                 this.Health = (float)stream.ReceiveNext();
+                networkPosition = (Vector3)stream.ReceiveNext();
+                networkRotation = (Quaternion)stream.ReceiveNext();
+                hasNetworkState = true;
             }
 
         }
@@ -430,6 +717,11 @@ namespace PS.Manager
             {
                 skillExecutor?.ReduceCooldown(SkillSlot.Q, 1f);
                 passiveState?.RegisterHit();
+            }
+
+            if (TeamUpgradeManager.Instance != null && TeamUpgradeManager.Instance.HasUpgrade(TeamUpgradeType.VampiricOath))
+            {
+                Heal(info.Amount * 0.05f);
             }
         }
 
@@ -452,6 +744,7 @@ namespace PS.Manager
             }
 
             ApplyClassSkills();
+            Debug.Log($"[PlayerManager] Class resolved: {(classState != null && classState.CurrentClass != null ? classState.CurrentClass.displayName : "null")}");
         }
 
         private ClassDefinition ResolveDefaultClass()

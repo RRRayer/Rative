@@ -1,3 +1,4 @@
+using Photon.Pun;
 using ProjectS.Core.Combat;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace ProjectS.Gameplay.Combat
         private float nextCheckTime;
         private ICombatant currentTarget;
         private Rigidbody body;
+        private PhotonView photonView;
 
         private void Awake()
         {
@@ -24,10 +26,16 @@ namespace ProjectS.Gameplay.Combat
             }
 
             body = GetComponent<Rigidbody>();
+            photonView = GetComponent<PhotonView>();
         }
 
         private void Update()
         {
+            if (PhotonNetwork.InRoom && photonView != null && !photonView.IsMine)
+            {
+                return;
+            }
+
             if (attack == null)
             {
                 return;
