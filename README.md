@@ -72,7 +72,6 @@ Project S
 - 온라인 로비 테스트 씬
 <img width="3439" height="1439" alt="image" src="https://github.com/user-attachments/assets/77cee21e-cb04-4935-99a3-c31599a89e7f" />
 
-
 **링크**
 - https://github.com/RRRayer/Rative/pull/8
 - https://github.com/RRRayer/Rative/pull/10
@@ -120,3 +119,48 @@ Project S
 **다음 주 계획**
 - GaneManager, 팀 공동 업그레이드 구현
 - 실제 아트와 플레이어 연동
+
+### Week 4 (1.12 - 1.18)
+**작업 내역**
+- GameManager/MonsterManager 생성 및 스테이지 진행 기반 도입
+- 팀 공동 업그레이드/멀티 테스트 구현 진행(스크립트 포함/외)
+- 몬스터/캐릭터 프리팹 및 풀링 적용
+- 맵 오브젝트/지형 배치
+- 스킬/슬래시 이펙트 및 템페스트 애니메이션 보강
+- 아트 리소스 추가 반영
+
+**AI 활용**
+- 팀 업그레이드/멀티 테스트 구조 설계 및 코드 보조
+- 스테이지 진행 로직 설계 보조
+
+**완료 기능**
+- 스테이지 진행 기본 골격(GameManager/MonsterManager)
+- 팀 업그레이드 + 멀티 테스트 기능 베이스
+- 풀링 적용
+- 몬스터/캐릭터/맵/이펙트/애니메이션 에셋 보강
+
+**커밋 로그**
+- feat(#16): GameManager, MonsterManager 생성
+- feat(#18): 팀 업그레이드, 멀티 테스트 구현 중
+- art(#15) : 맵 오브젝트 배치
+- art(#15) : 템페스트 walk, idle, run, normal hit 애니메이션 추가
+- feat(#15) : 몬스터, 캐릭터 프리팹 생성
+- feat(#18): 멀티 테스트
+- feat(#11): 풀링 적용
+- art(#15) : 스킬 애니메이션 추가
+- art(#15) : 슬래시 이펙트 추가
+
+**테스트 결과**
+- 멀티 플레이 테스트
+<img width="2290" height="684" alt="스크린샷 2026-01-25 160904" src="https://github.com/user-attachments/assets/9045bd37-68ef-43ce-bc10-56ccd7290819" />
+- 아트 적용 씬
+<img width="832" height="472" alt="image" src="https://github.com/user-attachments/assets/007b23d2-d87b-4537-8815-8c8fc316b2c6" />
+
+**링크**
+- https://github.com/RRRayer/Rative/pull/17
+- https://github.com/RRRayer/Rative/pull/19
+- https://github.com/RRRayer/Rative/pull/20
+
+**다음 주 계획**
+- 팀 업그레이드/멀티 테스트 안정화
+- 스테이지 진행 및 몬스터 스폰 고도화
