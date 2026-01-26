@@ -62,6 +62,9 @@ MonoBehaviour:
   classDefinitionOverride: {fileID: 11400000, guid: 4134332d39138884589e9e676269e31c, type: 2}
   classCatalogOverride: {fileID: 0}
   inputActionsOverride: {fileID: -944628639613478452, guid: 16b689df8308b1341b3930a07cff0741, type: 3}
+  animator: {fileID: 0}
+  remoteWalkSpeed: 0.1
+  remoteRunSpeed: 2.5
 --- !u!114 &4211861607631022431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,7 +248,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2156601530557571903}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.18137711, y: 0, z: 0, w: 0.98341364}
   m_LocalPosition: {x: 0, y: 0.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

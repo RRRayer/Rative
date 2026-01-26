@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SkillBehaviour_WindTunnel
   m_EditorClassIdentifier: PS.Gameplay.Skills.Behaviours::PS.Gameplay.Skills.Behaviours.DashSkillBehaviour
   baseDamage: 20
-  prefab: {fileID: 2460012345678901234, guid: d5e0c06d2c0e4a7fbad57f51a41c1d92, type: 3}
+  prefab: {fileID: 0}
   dashDistance: 5
   dashDuration: 0.2
   pullRadius: 2

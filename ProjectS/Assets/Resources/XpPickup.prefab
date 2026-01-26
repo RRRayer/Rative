@@ -160,7 +160,8 @@ MonoBehaviour:
   Synchronization: 0
   OwnershipTransfer: 0
   observableSearch: 0
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 0}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -179,3 +180,4 @@ MonoBehaviour:
   xpAmount: 5
   rotate: 1
   rotateSpeed: 90
+  pickupDelaySeconds: 0.25

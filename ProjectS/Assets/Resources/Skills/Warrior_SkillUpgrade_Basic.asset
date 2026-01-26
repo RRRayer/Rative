@@ -18,23 +18,29 @@ MonoBehaviour:
     comboResetMultiplier: 0
     prefabScaleBonusPercent: 0
     finisherFixedDamage: 0
+    description: "\uD53C\uD574\uB7C9 +10%"
   - level: 2
     damageBonusPercent: 0
     comboResetMultiplier: 0.8
     prefabScaleBonusPercent: 0
     finisherFixedDamage: 0
+    description: "\uD6C4\uB51C\uB808\uC774 -20%"
   - level: 3
     damageBonusPercent: 0
     comboResetMultiplier: 0
     prefabScaleBonusPercent: 0.3
     finisherFixedDamage: 0
+    description: "[\uAC80\uD48D] \uBC94\uC704 30% \uC99D\uAC00"
   - level: 4
     damageBonusPercent: 0.2
     comboResetMultiplier: 0
     prefabScaleBonusPercent: 0
     finisherFixedDamage: 0
+    description: "\uD53C\uD574\uB7C9 +20%"
   - level: 5
     damageBonusPercent: 0
     comboResetMultiplier: 0
     prefabScaleBonusPercent: 0
     finisherFixedDamage: 1
+    description: "[\uC9C4\uACF5 \uBCA0\uAE30] \uB9C9\uD0C0 \uACE0\uC815 \uD53C\uD574
+      \uBCC0\uACBD"

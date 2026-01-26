@@ -18,23 +18,29 @@ MonoBehaviour:
     damageBonusPercent: 0
     dashDamageReductionMultiplier: 0
     resetCooldownOnKill: 0
+    description: "\uCFE8\uD0C0\uC784 -1\uCD08"
   - level: 2
     cooldownDelta: 0
     damageBonusPercent: 0.15
     dashDamageReductionMultiplier: 0
     resetCooldownOnKill: 0
+    description: "\uD53C\uD574\uB7C9 +15%"
   - level: 3
     cooldownDelta: 0
     damageBonusPercent: 0
     dashDamageReductionMultiplier: 0.5
     resetCooldownOnKill: 0
+    description: "[\uBCF4\uD638\uC758 \uBC14\uB78C] \uC2DC\uC804 \uC911 \uB380\uAC10
+      50%"
   - level: 4
     cooldownDelta: -2
     damageBonusPercent: 0
     dashDamageReductionMultiplier: 0
     resetCooldownOnKill: 0
+    description: "\uCFE8\uD0C0\uC784 -2\uCD08"
   - level: 5
     cooldownDelta: 0
     damageBonusPercent: 0
     dashDamageReductionMultiplier: 0
     resetCooldownOnKill: 1
+    description: "[\uC21C\uD48D] \uCC98\uCE58 \uC2DC \uCFE8\uD0C0\uC784 \uCD08\uAE30\uD654"

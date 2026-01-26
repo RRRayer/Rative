@@ -21,6 +21,7 @@ MonoBehaviour:
     prefabScaleBonusPercent: 0
     pullRadiusBonus: 0
     pullStrengthBonus: 0
+    description: "\uC9C0\uC18D\uC2DC\uAC04 +1\uCD08"
   - level: 2
     durationBonusSeconds: 0
     cooldownDelta: -2
@@ -29,6 +30,7 @@ MonoBehaviour:
     prefabScaleBonusPercent: 0
     pullRadiusBonus: 0
     pullStrengthBonus: 0
+    description: "\uCFE8\uD0C0\uC784 -2\uCD08"
   - level: 3
     durationBonusSeconds: 0
     cooldownDelta: 0
@@ -37,6 +39,7 @@ MonoBehaviour:
     prefabScaleBonusPercent: 0
     pullRadiusBonus: 0
     pullStrengthBonus: 0
+    description: "[\uC774\uB3D9 \uC694\uC0C8] \uD68C\uC804 \uC911 \uC774\uB3D9 \uAC00\uB2A5"
   - level: 4
     durationBonusSeconds: 0
     cooldownDelta: 0
@@ -45,6 +48,7 @@ MonoBehaviour:
     prefabScaleBonusPercent: 0
     pullRadiusBonus: 0
     pullStrengthBonus: 0
+    description: "\uD53C\uD574\uB7C9 +25%"
   - level: 5
     durationBonusSeconds: 0
     cooldownDelta: 0
@@ -53,3 +57,5 @@ MonoBehaviour:
     prefabScaleBonusPercent: 0.5
     pullRadiusBonus: 3
     pullStrengthBonus: 3
+    description: "[\uAC70\uB300 \uD0DC\uD48D] \uBC94\uC704 \uC99D\uAC00+\uAC15\uD55C
+      \uD761\uC785"
