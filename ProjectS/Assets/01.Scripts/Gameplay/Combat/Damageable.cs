@@ -1,5 +1,6 @@
 using Photon.Pun;
 using PS.Core.Combat;
+using PS.Gameplay.Combat;
 using PS.Core.Skills;
 using PS.Gameplay.Stats;
 using PS.Networking;
@@ -7,12 +8,13 @@ using UnityEngine;
 
 namespace PS.Gameplay.Combat
 {
-    public class Damageable : MonoBehaviour, IDeathSyncTarget
+    public class Damageable : MonoBehaviour, IDeathSyncTarget, ICombatant
     {
         [SerializeField] private float maxHealth = 50f;
         [SerializeField] private float currentHealth;
         [SerializeField] private float xpReward = 5f;
         [SerializeField] private bool destroyOnDeath = true;
+        [SerializeField] private float deathDespawnDelay = 1f;
         [SerializeField] private bool isElite;
         [SerializeField] private bool isBoss;
         [SerializeField, Range(0f, 0.5f)] private float damageReductionPercent;
@@ -77,15 +79,19 @@ namespace PS.Gameplay.Combat
             resolvedInfo.Amount = finalAmount;
             DamageEvents.Raise(resolvedInfo);
 
+            EnemyMeleeAttackDriver enemyAnim = GetComponent<EnemyMeleeAttackDriver>() ?? GetComponentInParent<EnemyMeleeAttackDriver>();
+            if (enemyAnim != null)
+            {
+                enemyAnim.TriggerHitAnimation();
+            }
+
             if (!IsAlive)
             {
                 if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
                 {
                     EnemyResultSyncManager.Instance?.ReportLocalDeath(transform.position, xpReward, isElite, isBoss);
-                    if (destroyOnDeath)
-                    {
-                        Destroy(gameObject);
-                    }
+                    PlayDeathAnimation();
+                    DestroyAfterDelay();
                     return;
                 }
 
@@ -104,10 +110,8 @@ namespace PS.Gameplay.Combat
 
                 EnemyResultSyncManager.Instance?.BroadcastDeath(transform.position);
 
-                if (destroyOnDeath)
-                {
-                    Destroy(gameObject);
-                }
+                PlayDeathAnimation();
+                DestroyAfterDelay();
             }
         }
 
@@ -121,7 +125,32 @@ namespace PS.Gameplay.Combat
             Health = 0f;
             currentHealth = 0f;
 
-            if (destroyOnDeath)
+            PlayDeathAnimation();
+            DestroyAfterDelay();
+        }
+
+        private void PlayDeathAnimation()
+        {
+            EnemyMeleeAttackDriver enemyAnim = GetComponent<EnemyMeleeAttackDriver>() ?? GetComponentInParent<EnemyMeleeAttackDriver>();
+            if (enemyAnim != null)
+            {
+                enemyAnim.TriggerDieAnimation();
+            }
+        }
+
+        private void DestroyAfterDelay()
+        {
+            if (!destroyOnDeath)
+            {
+                return;
+            }
+
+            float delay = Mathf.Max(0f, deathDespawnDelay);
+            if (delay > 0f)
+            {
+                Destroy(gameObject, delay);
+            }
+            else
             {
                 Destroy(gameObject);
             }

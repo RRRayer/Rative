@@ -67,7 +67,8 @@ namespace PS.Gameplay.Skills.Behaviours
                     return;
                 }
 
-                GameObject effect = Object.Instantiate(effectPrefab, context.Origin.position, context.Origin.rotation);
+                Quaternion rotation = context.Owner != null ? context.Owner.transform.rotation : context.Origin.rotation;
+                GameObject effect = Object.Instantiate(effectPrefab, context.Origin.position, rotation);
                 float scale = effectScaleMultiplier;
                 if (effectScaleWithRange)
                 {
@@ -153,7 +154,8 @@ namespace PS.Gameplay.Skills.Behaviours
             float critMultiplier,
             float finalRange)
         {
-            GameObject effect = Object.Instantiate(effectPrefab, context.Origin.position, context.Origin.rotation);
+            Quaternion rotation = context.Owner != null ? context.Owner.transform.rotation : context.Origin.rotation;
+            GameObject effect = Object.Instantiate(effectPrefab, context.Origin.position, rotation);
             float scale = effectScaleMultiplier;
             if (effectScaleWithRange)
             {

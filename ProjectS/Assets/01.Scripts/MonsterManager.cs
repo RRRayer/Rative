@@ -111,8 +111,9 @@ namespace PS.Manager
                     GameObject monsterPrefab = normalMonsterPrefabs[Random.Range(0, normalMonsterPrefabs.Count)];
                     
                     // Determine a spawn position within the defined radius
+                    Vector3 centerPosition = GetSpawnCenter();
                     Vector3 randomDirection = Random.insideUnitSphere * spawnRadius;
-                    Vector3 spawnPosition = transform.position + new Vector3(randomDirection.x, 0f, randomDirection.z);
+                    Vector3 spawnPosition = centerPosition + new Vector3(randomDirection.x, 0f, randomDirection.z);
                     spawnPosition = ResolveGroundPosition(spawnPosition, normalSpawnHeightOffset);
 
                     if (Photon.Pun.PhotonNetwork.InRoom)
@@ -186,7 +187,7 @@ namespace PS.Manager
 
             // Spawn the boss at a designated point (e.g., the MonsterManager's position)
             // You might want a more specific spawn point.
-            Vector3 bossSpawnPosition = ResolveGroundPosition(transform.position, bossSpawnHeightOffset);
+            Vector3 bossSpawnPosition = ResolveGroundPosition(GetSpawnCenter(), bossSpawnHeightOffset);
             GameObject bossGO;
             if (Photon.Pun.PhotonNetwork.InRoom)
             {
@@ -281,6 +282,22 @@ namespace PS.Manager
             }
 
             return basePosition + Vector3.up * Mathf.Max(0f, heightOffset);
+        }
+
+        private Vector3 GetSpawnCenter()
+        {
+            if (PlayerManager.LocalPlayerInstance != null)
+            {
+                return PlayerManager.LocalPlayerInstance.transform.position;
+            }
+
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                return player.transform.position;
+            }
+
+            return transform.position;
         }
         private void ConfigurePrefabPool()
         {

@@ -10,11 +10,17 @@ namespace PS.Networking
         [SerializeField] private float xpAmount = 5f;
         [SerializeField] private bool rotate = true;
         [SerializeField] private float rotateSpeed = 90f;
+        [SerializeField] private float pickupDelaySeconds = 0.25f;
 
         private bool collected;
+        private float spawnTime;
+        private bool pickupEnabled;
 
         private void Awake()
         {
+            spawnTime = Time.time;
+            pickupEnabled = pickupDelaySeconds <= 0f;
+
             Collider physicsCollider = GetComponent<Collider>();
             if (physicsCollider != null)
             {
@@ -45,6 +51,11 @@ namespace PS.Networking
 
         private void Update()
         {
+            if (!pickupEnabled && (Time.time - spawnTime) >= pickupDelaySeconds)
+            {
+                pickupEnabled = true;
+            }
+
             if (rotate)
             {
                 transform.Rotate(Vector3.up, rotateSpeed * Time.deltaTime, Space.World);
@@ -68,6 +79,11 @@ namespace PS.Networking
         private void OnTriggerEnter(Collider other)
         {
             if (collected)
+            {
+                return;
+            }
+
+            if (!pickupEnabled)
             {
                 return;
             }

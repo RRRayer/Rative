@@ -12,11 +12,19 @@ namespace PS.Gameplay.Combat
         [SerializeField] private LayerMask targetLayers = ~0;
         [SerializeField] private float checkInterval = 0.1f;
         [SerializeField] private float turnSpeed = 360f;
+        [Header("Animation")]
+        [SerializeField] private Animator animator;
+        [SerializeField] private float moveThreshold = 0.05f;
 
         private float nextCheckTime;
         private ICombatant currentTarget;
         private Rigidbody body;
         private PhotonView photonView;
+
+        private static readonly int IsWalkHash = Animator.StringToHash("isWalk");
+        private static readonly int AttackHash = Animator.StringToHash("Attack");
+        private static readonly int HitHash = Animator.StringToHash("Hit");
+        private static readonly int DieHash = Animator.StringToHash("Die");
 
         private void Awake()
         {
@@ -27,6 +35,10 @@ namespace PS.Gameplay.Combat
 
             body = GetComponent<Rigidbody>();
             photonView = GetComponent<PhotonView>();
+            if (animator == null)
+            {
+                animator = GetComponentInChildren<Animator>(true);
+            }
         }
 
         private void Update()
@@ -49,6 +61,7 @@ namespace PS.Gameplay.Combat
 
             if (currentTarget == null)
             {
+                SetMovementAnimation(Vector3.zero);
                 return;
             }
 
@@ -70,6 +83,7 @@ namespace PS.Gameplay.Combat
 
             Vector3 moveDirection = direction;
             moveDirection.y = 0f;
+            SetMovementAnimation(moveDirection);
             if (moveDirection.sqrMagnitude > 0.01f)
             {
                 Vector3 nextPosition = transform.position + moveDirection.normalized * moveSpeed * Time.deltaTime;
@@ -83,7 +97,10 @@ namespace PS.Gameplay.Combat
                 }
             }
 
-            attack.TryAttack();
+            if (attack.TryAttack())
+            {
+                TriggerAttackAnimation();
+            }
         }
 
         private ICombatant FindClosestTarget()
@@ -120,5 +137,46 @@ namespace PS.Gameplay.Combat
 
             return closest;
         }
+        private void SetMovementAnimation(Vector3 moveDirection)
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            bool moving = moveDirection.sqrMagnitude > (moveThreshold * moveThreshold);
+            animator.SetBool(IsWalkHash, moving);
+        }
+
+        private void TriggerAttackAnimation()
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            animator.SetTrigger(AttackHash);
+        }
+
+        public void TriggerHitAnimation()
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            animator.SetTrigger(HitHash);
+        }
+
+        public void TriggerDieAnimation()
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            animator.SetTrigger(DieHash);
+        }
+
     }
 }

@@ -55,6 +55,7 @@ namespace PS.Networking
             Instance = this;
             DontDestroyOnLoad(gameObject);
             xpToNext = GetRequiredXpForLevel(level);
+            EnsureXpPickupRegistered();
         }
 
         private void OnEnable()
@@ -67,6 +68,30 @@ namespace PS.Networking
         {
             PhotonNetwork.RemoveCallbackTarget(this);
             KillEvents.Killed -= HandleKilled;
+        }
+
+        private void EnsureXpPickupRegistered()
+        {
+            if (string.IsNullOrEmpty(xpPickupPrefabName))
+            {
+                return;
+            }
+
+            GameObject prefab = Resources.Load<GameObject>(xpPickupPrefabName);
+            if (prefab == null)
+            {
+                Debug.LogError($"[SharedProgressionManager] Xp pickup prefab '{xpPickupPrefabName}' not found in Resources.");
+                return;
+            }
+
+            PunPrefabPool pool = PhotonNetwork.PrefabPool as PunPrefabPool;
+            if (pool == null)
+            {
+                pool = new PunPrefabPool();
+                PhotonNetwork.PrefabPool = pool;
+            }
+
+            pool.RegisterPrefab(prefab);
         }
 
         public void RequestPickup(int viewId, float xpAmount)
@@ -273,6 +298,12 @@ namespace PS.Networking
         public void SubmitSelection()
         {
             if (!PhotonNetwork.InRoom)
+            {
+                EndSelection();
+                return;
+            }
+
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.PlayerList.Length <= 1)
             {
                 EndSelection();
                 return;

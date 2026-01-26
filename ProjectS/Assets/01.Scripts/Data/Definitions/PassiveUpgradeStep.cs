@@ -12,5 +12,6 @@ namespace PS.Data.Definitions
         [Range(0f, 0.5f)] public float moveSpeedPerStackPercent;
         public int maxStacks;
         [Range(0f, 1f)] public float cooldownReductionAtMaxPercent;
+        [TextArea(2, 4)] public string description;
     }
 }
