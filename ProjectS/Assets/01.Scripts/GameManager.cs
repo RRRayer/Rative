@@ -259,7 +259,7 @@ namespace PS.Manager
 
             Log.D($"[GameManager] LocalPlayer spawned in {SceneManager.GetActiveScene().name}");
             EnsurePlayerPrefabRegistered();
-            PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, -15f), Quaternion.identity, 0);
+            PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(-133f, 5f, -133f), Quaternion.identity, 0);
         }
         
         public void LeaveRoom()

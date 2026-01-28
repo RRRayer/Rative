@@ -20,6 +20,8 @@ namespace PS.Gameplay.Combat
         private ICombatant currentTarget;
         private Rigidbody body;
         private PhotonView photonView;
+        private Vector3 desiredMove;
+        private Quaternion? desiredRotation;
 
         private static readonly int IsWalkHash = Animator.StringToHash("isWalk");
         private static readonly int AttackHash = Animator.StringToHash("Attack");
@@ -35,6 +37,10 @@ namespace PS.Gameplay.Combat
 
             body = GetComponent<Rigidbody>();
             photonView = GetComponent<PhotonView>();
+            if (body != null)
+            {
+                body.interpolation = RigidbodyInterpolation.Interpolate;
+            }
             if (animator == null)
             {
                 animator = GetComponentInChildren<Animator>(true);
@@ -62,6 +68,8 @@ namespace PS.Gameplay.Combat
             if (currentTarget == null)
             {
                 SetMovementAnimation(Vector3.zero);
+                desiredMove = Vector3.zero;
+                desiredRotation = null;
                 return;
             }
 
@@ -71,14 +79,11 @@ namespace PS.Gameplay.Combat
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction.normalized);
                 Quaternion nextRotation = Quaternion.RotateTowards(transform.rotation, lookRotation, turnSpeed * Time.deltaTime);
-                if (body != null)
-                {
-                    body.MoveRotation(nextRotation);
-                }
-                else
-                {
-                    transform.rotation = nextRotation;
-                }
+                desiredRotation = nextRotation;
+            }
+            else
+            {
+                desiredRotation = null;
             }
 
             Vector3 moveDirection = direction;
@@ -86,20 +91,50 @@ namespace PS.Gameplay.Combat
             SetMovementAnimation(moveDirection);
             if (moveDirection.sqrMagnitude > 0.01f)
             {
-                Vector3 nextPosition = transform.position + moveDirection.normalized * moveSpeed * Time.deltaTime;
-                if (body != null)
-                {
-                    body.MovePosition(nextPosition);
-                }
-                else
-                {
-                    transform.position = nextPosition;
-                }
+                desiredMove = moveDirection.normalized * moveSpeed;
+            }
+            else
+            {
+                desiredMove = Vector3.zero;
             }
 
             if (attack.TryAttack())
             {
                 TriggerAttackAnimation();
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (PhotonNetwork.InRoom && photonView != null && !photonView.IsMine)
+            {
+                return;
+            }
+
+            if (body != null)
+            {
+                if (desiredRotation.HasValue)
+                {
+                    body.MoveRotation(desiredRotation.Value);
+                }
+
+                if (desiredMove.sqrMagnitude > 0f)
+                {
+                    Vector3 nextPosition = body.position + desiredMove * Time.fixedDeltaTime;
+                    body.MovePosition(nextPosition);
+                }
+            }
+            else
+            {
+                if (desiredRotation.HasValue)
+                {
+                    transform.rotation = desiredRotation.Value;
+                }
+
+                if (desiredMove.sqrMagnitude > 0f)
+                {
+                    transform.position += desiredMove * Time.fixedDeltaTime;
+                }
             }
         }
 

@@ -111,7 +111,11 @@ namespace PS.Manager
                     GameObject monsterPrefab = normalMonsterPrefabs[Random.Range(0, normalMonsterPrefabs.Count)];
                     
                     // Determine a spawn position within the defined radius
-                    Vector3 centerPosition = GetSpawnCenter();
+                    if (!TryGetSpawnCenter(out Vector3 centerPosition))
+                    {
+                        yield return new WaitForSeconds(spawnInterval);
+                        continue;
+                    }
                     Vector3 randomDirection = Random.insideUnitSphere * spawnRadius;
                     Vector3 spawnPosition = centerPosition + new Vector3(randomDirection.x, 0f, randomDirection.z);
                     spawnPosition = ResolveGroundPosition(spawnPosition, normalSpawnHeightOffset);
@@ -187,7 +191,13 @@ namespace PS.Manager
 
             // Spawn the boss at a designated point (e.g., the MonsterManager's position)
             // You might want a more specific spawn point.
-            Vector3 bossSpawnPosition = ResolveGroundPosition(GetSpawnCenter(), bossSpawnHeightOffset);
+            if (!TryGetSpawnCenter(out Vector3 bossCenter))
+            {
+                Log.W("[MonsterManager] Boss spawn skipped: no player found.");
+                return;
+            }
+
+            Vector3 bossSpawnPosition = ResolveGroundPosition(bossCenter, bossSpawnHeightOffset);
             GameObject bossGO;
             if (Photon.Pun.PhotonNetwork.InRoom)
             {
@@ -284,20 +294,23 @@ namespace PS.Manager
             return basePosition + Vector3.up * Mathf.Max(0f, heightOffset);
         }
 
-        private Vector3 GetSpawnCenter()
+        private bool TryGetSpawnCenter(out Vector3 center)
         {
             if (PlayerManager.LocalPlayerInstance != null)
             {
-                return PlayerManager.LocalPlayerInstance.transform.position;
+                center = PlayerManager.LocalPlayerInstance.transform.position;
+                return true;
             }
 
             GameObject player = GameObject.FindWithTag("Player");
             if (player != null)
             {
-                return player.transform.position;
+                center = player.transform.position;
+                return true;
             }
 
-            return transform.position;
+            center = transform.position;
+            return false;
         }
         private void ConfigurePrefabPool()
         {
