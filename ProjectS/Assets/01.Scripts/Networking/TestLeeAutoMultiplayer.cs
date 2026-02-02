@@ -55,12 +55,22 @@ namespace PS.Networking
                 return;
             }
 
+            if (SceneManager.GetActiveScene().name != targetSceneName)
+            {
+                return;
+            }
+
             JoinRoom();
         }
 
         public override void OnJoinedRoom()
         {
             if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+
+            if (SceneManager.GetActiveScene().name != targetSceneName)
             {
                 return;
             }
