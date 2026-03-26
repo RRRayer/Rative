@@ -241,4 +241,4 @@ Project S
 - MVP 플레이 흐름 검증
 
 추후 업데이트는 아래 레포지토리에서 진행됩니다.
-https://github.com/RRRayer/AIBooster
+https://github.com/RRRayer/GGJ26
