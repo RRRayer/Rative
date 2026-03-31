@@ -15,6 +15,7 @@ namespace PS.Data.Definitions
         public float groundDotDuration;
         public float groundDotTickInterval;
         public float groundDotDamageMultiplier;
+        [TextArea(2, 4)] public string description;
     }
 
     [CreateAssetMenu(menuName = "PS/Definitions/Upgrade Tracks/Warrior/R")]
@@ -84,6 +85,24 @@ namespace PS.Data.Definitions
             }
 
             return state;
+        }
+
+        public override string GetStepDescription(int level)
+        {
+            if (steps == null)
+            {
+                return string.Empty;
+            }
+
+            for (int i = 0; i < steps.Length; i++)
+            {
+                if (steps[i].level == level)
+                {
+                    return steps[i].description;
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

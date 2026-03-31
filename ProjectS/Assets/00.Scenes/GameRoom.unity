@@ -1316,7 +1316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: PS.Networking::PS.Networking.WaitingRoomManager
   waitingRoomViewBehaviour: {fileID: 717412823}
   lobbySceneName: MainMenu
-  inGameSceneName: InGame
+  inGameSceneName: TestLee
 --- !u!4 &751373558
 Transform:
   m_ObjectHideFlags: 0

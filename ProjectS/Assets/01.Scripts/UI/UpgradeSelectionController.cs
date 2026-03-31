@@ -67,6 +67,9 @@ namespace PS.UI
 
         private void HandleSelectionStarted()
         {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
             IUpgradeProvider provider = FindLocalUpgradeProvider();
             if (provider == null)
             {
@@ -92,6 +95,8 @@ namespace PS.UI
         private void HandleSelectionEnded()
         {
             selectionView.Hide();
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private IUpgradeProvider FindLocalUpgradeProvider()

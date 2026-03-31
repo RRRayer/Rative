@@ -94,7 +94,7 @@ namespace PS.Gameplay.Skills
             {
                 Collider hit = hits[i];
                 Vector3 direction = (hit.transform.position - context.Origin.position);
-                if (Vector3.Angle(context.Origin.forward, direction) > angle * 0.5f)
+                if (Vector3.Angle((context.Owner != null ? context.Owner.transform.forward : context.Origin.forward), direction) > angle * 0.5f)
                 {
                     continue;
                 }
@@ -116,7 +116,7 @@ namespace PS.Gameplay.Skills
                     {
                         Amount = finalDamage,
                         Point = hit.ClosestPoint(context.Origin.position),
-                        Direction = context.Origin.forward,
+                        Direction = (context.Owner != null ? context.Owner.transform.forward : context.Origin.forward),
                         SourceId = context.SourceId,
                         Slot = context.Slot
                     };

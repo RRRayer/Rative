@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3d4e5f60718293a4b5c6d7e8f901ab2, type: 3}
+  m_Name: SkillBehaviour_WindTunnel
+  m_EditorClassIdentifier: PS.Gameplay.Skills.Behaviours::PS.Gameplay.Skills.Behaviours.DashSkillBehaviour
+  baseDamage: 20
+  prefab: {fileID: 0}
+  dashDistance: 5
+  dashDuration: 0.2
+  pullRadius: 2
+  pullStrength: 2

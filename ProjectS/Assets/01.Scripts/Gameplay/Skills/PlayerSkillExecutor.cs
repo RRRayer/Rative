@@ -34,6 +34,7 @@ namespace PS.Gameplay.Skills
         private float cooldownMultiplier = 1f;
         private float basicComboResetMultiplier = 1f;
         public event System.Action<SkillSlot> SkillExecuted;
+        public event System.Action<SkillSlot, bool> ChannelStateChanged;
 
         private void Awake()
         {
@@ -221,6 +222,7 @@ namespace PS.Gameplay.Skills
             }
 
             channelActive = true;
+            ChannelStateChanged?.Invoke(slot, true);
             channelSlot = slot;
             channelBehaviour = behaviour;
             channelMoveSpeedMultiplier = GetUpgradeState(slot).ChannelMoveSpeedMultiplier;
@@ -250,6 +252,7 @@ namespace PS.Gameplay.Skills
                 cooldownEndTimes[slot] = Time.time + GetCooldownDuration(slot, skillDefinition);
             }
 
+            ChannelStateChanged?.Invoke(slot, false);
             channelActive = false;
             channelBehaviour = null;
         }
@@ -407,7 +410,7 @@ namespace PS.Gameplay.Skills
             float distance = behaviour.dashDistance > 0f ? behaviour.dashDistance : 4f;
             float duration = behaviour.dashDuration > 0f ? behaviour.dashDuration : 0.15f;
             float elapsed = 0f;
-            Vector3 direction = spawnOrigin.forward;
+            Vector3 direction = transform.forward;
             float reductionMultiplier = 1f;
             if (skills.TryGetValue(SkillSlot.Q, out SkillDefinition skillDefinition)
                 && skillDefinition != null)

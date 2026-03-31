@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c2d3e4f5061728394a5b6c7d8e9f0a1, type: 3}
+  m_Name: Warrior_SkillUpgrade_Passive
+  m_EditorClassIdentifier: PS.Data::PS.Data.Definitions.PassiveUpgradeTrack
+  displayName: 
+  steps:
+  - level: 1
+    attackSpeedPerStackPercent: 0.04
+    stackDurationSeconds: 5
+    moveSpeedPerStackPercent: 0
+    maxStacks: 5
+    cooldownReductionAtMaxPercent: 0
+    description: "\uACF5\uC18D +4%"
+  - level: 2
+    attackSpeedPerStackPercent: 0.04
+    stackDurationSeconds: 8
+    moveSpeedPerStackPercent: 0
+    maxStacks: 5
+    cooldownReductionAtMaxPercent: 0
+    description: "\uC9C0\uC18D\uC2DC\uAC04 8\uCD08"
+  - level: 3
+    attackSpeedPerStackPercent: 0.04
+    stackDurationSeconds: 8
+    moveSpeedPerStackPercent: 0.02
+    maxStacks: 5
+    cooldownReductionAtMaxPercent: 0
+    description: "[\uAC00\uC18D] \uC2A4\uD0DD \uB2F9 \uC774\uC18D +2%"
+  - level: 4
+    attackSpeedPerStackPercent: 0.04
+    stackDurationSeconds: 8
+    moveSpeedPerStackPercent: 0.02
+    maxStacks: 7
+    cooldownReductionAtMaxPercent: 0
+    description: "\uCD5C\uB300\uC911\uCCA9 7\uD68C"
+  - level: 5
+    attackSpeedPerStackPercent: 0.04
+    stackDurationSeconds: 8
+    moveSpeedPerStackPercent: 0.02
+    maxStacks: 7
+    cooldownReductionAtMaxPercent: 0.2
+    description: "[\uBAB0\uC544\uCE58\uB294 \uD3ED\uD48D] \uD480\uC2A4\uD0DD\uC2DC
+      \uCFE8\uAC10 20%"

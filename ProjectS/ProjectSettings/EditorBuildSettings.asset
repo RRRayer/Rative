@@ -17,15 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/00.Scenes/Launcher.unity
     guid: 898f2cf076e648a4f8d5266278367d18
-  - enabled: 0
-    path: Assets/00.Scenes/RoomFor1.unity
-    guid: 1b7026a3c5dcdfb4e912c8de595129fe
-  - enabled: 0
-    path: Assets/00.Scenes/RoomFor2.unity
-    guid: c0d98dd89ef99604ba68f37af1f3716c
-  - enabled: 0
-    path: Assets/00.Scenes/RoomFor3.unity
-    guid: 29a30374ad372684f98fc2e5b8738bf7
+  - enabled: 1
+    path: Assets/00.Scenes/TestLee.unity
+    guid: 03edee6efba719a44934dec1045e8ff8
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

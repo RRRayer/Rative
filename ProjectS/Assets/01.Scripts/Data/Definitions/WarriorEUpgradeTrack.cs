@@ -14,6 +14,7 @@ namespace PS.Data.Definitions
         [Range(0f, 2f)] public float prefabScaleBonusPercent;
         public float pullRadiusBonus;
         public float pullStrengthBonus;
+        [TextArea(2, 4)] public string description;
     }
 
     [CreateAssetMenu(menuName = "PS/Definitions/Upgrade Tracks/Warrior/E")]
@@ -67,6 +68,24 @@ namespace PS.Data.Definitions
             }
 
             return state;
+        }
+
+        public override string GetStepDescription(int level)
+        {
+            if (steps == null)
+            {
+                return string.Empty;
+            }
+
+            for (int i = 0; i < steps.Length; i++)
+            {
+                if (steps[i].level == level)
+                {
+                    return steps[i].description;
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

@@ -41,6 +41,9 @@ namespace PS.Manager
         private ProgressionManager progression;
         private WarriorPassiveState passiveState;
         private StarterAssets.FirstPersonController firstPersonController;
+        [SerializeField] private Animator animator;
+        [SerializeField] private float remoteWalkSpeed = 0.1f;
+        [SerializeField] private float remoteRunSpeed = 2.5f;
         private float baseMoveSpeed;
         private float baseSprintSpeed;
         private bool hasMovementBaseline;
@@ -56,6 +59,15 @@ namespace PS.Manager
         private Vector3 networkPosition;
         private Quaternion networkRotation;
         private bool hasNetworkState;
+        private Vector3 lastPosition;
+        private bool hasLastPosition;
+        private static readonly int IsWalkHash = Animator.StringToHash("isWalk");
+        private static readonly int IsRunHash = Animator.StringToHash("isRun");
+        private static readonly int AttackHash = Animator.StringToHash("Attack");
+        private static readonly int SkillQHash = Animator.StringToHash("Q");
+        private static readonly int SkillEHash = Animator.StringToHash("E");
+        private static readonly int SkillRHash = Animator.StringToHash("R");
+        private static readonly int SkillPHash = Animator.StringToHash("Skill P");
 #if ENABLE_INPUT_SYSTEM
         private StarterAssetsInputs input;
         private PlayerInput playerInput;
@@ -69,6 +81,10 @@ namespace PS.Manager
         private void Awake()
         {
             Instances.Add(this);
+            if (animator == null)
+            {
+                animator = GetComponentInChildren<Animator>(true);
+            }
             if (photonView.IsMine)
             {
                 LocalPlayerInstance = gameObject;
@@ -165,6 +181,7 @@ namespace PS.Manager
             if (skillExecutor != null)
             {
                 skillExecutor.SkillExecuted += OnSkillExecuted;
+                skillExecutor.ChannelStateChanged += OnChannelStateChanged;
             }
         }
 
@@ -183,6 +200,7 @@ namespace PS.Manager
             if (skillExecutor != null)
             {
                 skillExecutor.SkillExecuted -= OnSkillExecuted;
+                skillExecutor.ChannelStateChanged -= OnChannelStateChanged;
             }
 
             // If this was the local player instance, clean up the static reference
@@ -212,6 +230,7 @@ namespace PS.Manager
             {
                 EnsureActionMap();
                 ProcessInput();
+                UpdateAnimatorMovement();
                 ApplyRuntimeModifiers();
                 if (!isDead && Health <= 0f)
                 {
@@ -224,6 +243,7 @@ namespace PS.Manager
             {
                 transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * 10f);
                 transform.rotation = Quaternion.Slerp(transform.rotation, networkRotation, Time.deltaTime * 10f);
+                UpdateAnimatorMovement();
             }
             if (bloodFrenzyStacks > 0 && Time.time >= bloodFrenzyExpiresAt)
             {
@@ -420,6 +440,7 @@ namespace PS.Manager
 
         private void OnSkillExecuted(SkillSlot slot)
         {
+            TriggerSkillAnimation(slot);
             if (slot != SkillSlot.R)
             {
                 return;
@@ -441,6 +462,16 @@ namespace PS.Manager
                 player.skillExecutor.ReduceCooldown(SkillSlot.Q, 5f);
                 player.skillExecutor.ReduceCooldown(SkillSlot.E, 5f);
             }
+        }
+
+        private void OnChannelStateChanged(SkillSlot slot, bool active)
+        {
+            if (slot != SkillSlot.E)
+            {
+                return;
+            }
+
+            SetChannelAnimationState(active);
         }
 
         private void ProcessInput()
@@ -542,6 +573,10 @@ namespace PS.Manager
                 {
                     bool used = TryUseSkill(SkillSlot.E);
                     Debug.Log($"Skill E pressed. Used={used}.");
+                    if (used)
+                    {
+                        TriggerSkillAnimation(SkillSlot.E);
+                    }
                 }
             }
 
@@ -562,6 +597,11 @@ namespace PS.Manager
             wasSkill1Held = skill1Pressed;
             wasSkill2Held = skill2Pressed;
             wasSkill3Held = skill3Pressed;
+
+            if (photonView.IsMine && skillExecutor != null && skillExecutor.IsChannelSkill(SkillSlot.E))
+            {
+                SetChannelAnimationState(skillExecutor.IsChanneling);
+            }
         }
 
 #if ENABLE_INPUT_SYSTEM
@@ -677,6 +717,7 @@ namespace PS.Manager
         private void OnPassiveChanged()
         {
             ApplyRuntimeModifiers();
+            TriggerPassiveAnimation();
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -922,18 +963,16 @@ namespace PS.Manager
         private UpgradeOption BuildBasicOption()
         {
             int nextLevel = Mathf.Clamp(GetSkillLevel(SkillSlot.Basic) + 1, 1, MaxUpgradeLevel);
-            WarriorBasicUpgradeTrack track = classState?.CurrentClass?.basicUpgradeTrack;
-            WarriorBasicUpgradeStep step = default;
-            string description = "¾÷±×·¹ÀÌµå";
-            if (track != null && track.TryGetStep(nextLevel, out step))
-            {
-                description = DescribeBasicStep(step);
-            }
+            ClassDefinition currentClass = classState != null ? classState.CurrentClass : null;
+            SkillDefinition skillDefinition = currentClass != null ? currentClass.basicAttack : null;
+            SkillUpgradeTrackBase track = ResolveUpgradeTrack(currentClass, SkillSlot.Basic);
+            string description = ResolveUpgradeDescription(track, nextLevel);
+            string title = GetSkillTitle(skillDefinition, "LMB");
 
             return new UpgradeOption
             {
                 Type = UpgradeType.Basic,
-                Title = $"°ÅÄ£ ¼û°á (LMB) Lv.{nextLevel}",
+                Title = $"{title} Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -941,18 +980,16 @@ namespace PS.Manager
         private UpgradeOption BuildQOption()
         {
             int nextLevel = Mathf.Clamp(GetSkillLevel(SkillSlot.Q) + 1, 1, MaxUpgradeLevel);
-            WarriorQUpgradeTrack track = classState?.CurrentClass?.skillQUpgradeTrack;
-            WarriorQUpgradeStep step = default;
-            string description = "¾÷±×·¹ÀÌµå";
-            if (track != null && track.TryGetStep(nextLevel, out step))
-            {
-                description = DescribeQStep(step);
-            }
+            ClassDefinition currentClass = classState != null ? classState.CurrentClass : null;
+            SkillDefinition skillDefinition = currentClass != null ? currentClass.skillQ : null;
+            SkillUpgradeTrackBase track = ResolveUpgradeTrack(currentClass, SkillSlot.Q);
+            string description = ResolveUpgradeDescription(track, nextLevel);
+            string title = GetSkillTitle(skillDefinition, "Q");
 
             return new UpgradeOption
             {
                 Type = UpgradeType.Q,
-                Title = $"À©µå ÅÍ³Î (Q) Lv.{nextLevel}",
+                Title = $"{title} Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -960,18 +997,16 @@ namespace PS.Manager
         private UpgradeOption BuildEOption()
         {
             int nextLevel = Mathf.Clamp(GetSkillLevel(SkillSlot.E) + 1, 1, MaxUpgradeLevel);
-            WarriorEUpgradeTrack track = classState?.CurrentClass?.skillEUpgradeTrack;
-            WarriorEUpgradeStep step = default;
-            string description = "¾÷±×·¹ÀÌµå";
-            if (track != null && track.TryGetStep(nextLevel, out step))
-            {
-                description = DescribeEStep(step);
-            }
+            ClassDefinition currentClass = classState != null ? classState.CurrentClass : null;
+            SkillDefinition skillDefinition = currentClass != null ? currentClass.skillE : null;
+            SkillUpgradeTrackBase track = ResolveUpgradeTrack(currentClass, SkillSlot.E);
+            string description = ResolveUpgradeDescription(track, nextLevel);
+            string title = GetSkillTitle(skillDefinition, "E");
 
             return new UpgradeOption
             {
                 Type = UpgradeType.E,
-                Title = $"ÅÂÇ³ÀÇ ´« (E) Lv.{nextLevel}",
+                Title = $"{title} Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -979,18 +1014,16 @@ namespace PS.Manager
         private UpgradeOption BuildROption()
         {
             int nextLevel = Mathf.Clamp(GetSkillLevel(SkillSlot.R) + 1, 1, MaxUpgradeLevel);
-            WarriorRUpgradeTrack track = classState?.CurrentClass?.skillRUpgradeTrack;
-            WarriorRUpgradeStep step = default;
-            string description = "¾÷±×·¹ÀÌµå";
-            if (track != null && track.TryGetStep(nextLevel, out step))
-            {
-                description = DescribeRStep(step);
-            }
+            ClassDefinition currentClass = classState != null ? classState.CurrentClass : null;
+            SkillDefinition skillDefinition = currentClass != null ? currentClass.skillR : null;
+            SkillUpgradeTrackBase track = ResolveUpgradeTrack(currentClass, SkillSlot.R);
+            string description = ResolveUpgradeDescription(track, nextLevel);
+            string title = GetSkillTitle(skillDefinition, "R");
 
             return new UpgradeOption
             {
                 Type = UpgradeType.R,
-                Title = $"ÅÛÆä½ºÆ® ¿§Áö (R) Lv.{nextLevel}",
+                Title = $"{title} Lv.{nextLevel}",
                 Description = description
             };
         }
@@ -998,20 +1031,59 @@ namespace PS.Manager
         private UpgradeOption BuildPassiveOption()
         {
             int nextLevel = Mathf.Clamp(GetPassiveLevel() + 1, 1, MaxUpgradeLevel);
-            PassiveUpgradeTrack track = classState?.CurrentClass?.passiveUpgradeTrack;
-            PassiveUpgradeStep step = default;
-            string description = "¾÷±×·¹ÀÌµå";
-            if (track != null && track.TryGetStep(nextLevel, out step))
-            {
-                description = DescribePassiveStep(step);
-            }
+            ClassDefinition currentClass = classState != null ? classState.CurrentClass : null;
+            PassiveUpgradeTrack track = currentClass != null ? currentClass.passiveUpgradeTrack : null;
+            string description = ResolvePassiveDescription(track, nextLevel);
+            string title = GetPassiveTitle(track);
 
             return new UpgradeOption
             {
                 Type = UpgradeType.Passive,
-                Title = $"ÆøÇ³ÀÇ ±â¼¼ (P) Lv.{nextLevel}",
+                Title = $"{title} Lv.{nextLevel}",
                 Description = description
             };
+        }
+
+        private string GetSkillTitle(SkillDefinition skillDefinition, string fallbackLabel)
+        {
+            if (skillDefinition != null && !string.IsNullOrWhiteSpace(skillDefinition.displayName))
+            {
+                return skillDefinition.displayName;
+            }
+
+            return fallbackLabel;
+        }
+
+        private string GetPassiveTitle(PassiveUpgradeTrack track)
+        {
+            if (track != null && !string.IsNullOrWhiteSpace(track.displayName))
+            {
+                return track.displayName;
+            }
+
+            return "Passive";
+        }
+
+        private string ResolveUpgradeDescription(SkillUpgradeTrackBase track, int level)
+        {
+            if (track == null)
+            {
+                return "íš¨ê³¼ ì—†ìŒ";
+            }
+
+            string description = track.GetStepDescription(level);
+            return string.IsNullOrWhiteSpace(description) ? "íš¨ê³¼ ì—†ìŒ" : description;
+        }
+
+        private string ResolvePassiveDescription(PassiveUpgradeTrack track, int level)
+        {
+            if (track == null)
+            {
+                return "íš¨ê³¼ ì—†ìŒ";
+            }
+
+            string description = track.GetStepDescription(level);
+            return string.IsNullOrWhiteSpace(description) ? "íš¨ê³¼ ì—†ìŒ" : description;
         }
 
         private int GetSkillLevel(SkillSlot slot)
@@ -1043,122 +1115,6 @@ namespace PS.Manager
 
             passiveState.SetLevel(Mathf.Clamp(level, 0, MaxUpgradeLevel));
             ApplyRuntimeModifiers();
-        }
-
-        private string DescribeBasicStep(WarriorBasicUpgradeStep step)
-        {
-            if (step.damageBonusPercent > 0f)
-            {
-                return $"ÇÇÇØ·® +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
-            }
-            if (step.comboResetMultiplier > 0f && step.comboResetMultiplier < 1f)
-            {
-                float reduction = (1f - step.comboResetMultiplier) * 100f;
-                return $"ÈÄµô·¹ÀÌ -{Mathf.RoundToInt(reduction)}%";
-            }
-            if (step.prefabScaleBonusPercent > 0f)
-            {
-                return $"°ËÇ³ ¹üÀ§ {Mathf.RoundToInt(step.prefabScaleBonusPercent * 100f)}% Áõ°¡";
-            }
-            if (step.finisherFixedDamage)
-            {
-                return "Áø°ø º£±â: ¸¶Áö¸· 3Å¸ °íÁ¤ ÇÇÇØ";
-            }
-            return "¾÷±×·¹ÀÌµå";
-        }
-
-        private string DescribeQStep(WarriorQUpgradeStep step)
-        {
-            if (step.cooldownDelta < 0f)
-            {
-                return $"ÄðÅ¸ÀÓ {step.cooldownDelta}ÃÊ";
-            }
-            if (step.damageBonusPercent > 0f)
-            {
-                return $"ÇÇÇØ·® +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
-            }
-            if (step.dashDamageReductionMultiplier > 0f && step.dashDamageReductionMultiplier < 1f)
-            {
-                float reduction = (1f - step.dashDamageReductionMultiplier) * 100f;
-                return $"½ÃÀü Áß µô°¨ {Mathf.RoundToInt(reduction)}%";
-            }
-            if (step.resetCooldownOnKill)
-            {
-                return "Ã³Ä¡ ½Ã ÄðÅ¸ÀÓ ÃÊ±âÈ­";
-            }
-            return "¾÷±×·¹ÀÌµå";
-        }
-
-        private string DescribeEStep(WarriorEUpgradeStep step)
-        {
-            if (step.durationBonusSeconds > 0f)
-            {
-                return $"Áö¼Ó½Ã°£ +{step.durationBonusSeconds}ÃÊ";
-            }
-            if (step.cooldownDelta < 0f)
-            {
-                return $"ÄðÅ¸ÀÓ {step.cooldownDelta}ÃÊ";
-            }
-            if (step.channelMoveSpeedMultiplier > 0f)
-            {
-                int percent = Mathf.RoundToInt(step.channelMoveSpeedMultiplier * 100f);
-                return $"È¸Àü Áß ÀÌµ¿ °¡´É ({percent}%)";
-            }
-            if (step.damageBonusPercent > 0f)
-            {
-                return $"ÇÇÇØ·® +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
-            }
-            if (step.prefabScaleBonusPercent > 0f || step.pullRadiusBonus > 0f)
-            {
-                return "°Å´ë ÅÂÇ³: ¹üÀ§ Áõ°¡ + °­ÇÑ ÈíÀÔ";
-            }
-            return "¾÷±×·¹ÀÌµå";
-        }
-
-        private string DescribeRStep(WarriorRUpgradeStep step)
-        {
-            if (step.damageBonusPercent > 0f)
-            {
-                return $"ÇÇÇØ·® +{Mathf.RoundToInt(step.damageBonusPercent * 100f)}%";
-            }
-            if (step.rangeBonusPercent > 0f)
-            {
-                return $"¹üÀ§ +{Mathf.RoundToInt(step.rangeBonusPercent * 100f)}%";
-            }
-            if (step.groundDotDuration > 0f)
-            {
-                return "ÆøÇ³ÀÇ ¿©ÆÄ: ¹Ù´Ú ÀåÆÇµô »ý¼º";
-            }
-            if (step.enableDoubleHit)
-            {
-                return "½ÖµÕÀÌ ÆøÇ³: 2È¸ ¹ß»ç";
-            }
-            return "¾÷±×·¹ÀÌµå";
-        }
-
-        private string DescribePassiveStep(PassiveUpgradeStep step)
-        {
-            if (step.attackSpeedPerStackPercent > 0f && step.stackDurationSeconds <= 5f)
-            {
-                return $"°ø¼Ó +{Mathf.RoundToInt(step.attackSpeedPerStackPercent * 100f)}%";
-            }
-            if (step.stackDurationSeconds > 5f)
-            {
-                return $"Áö¼Ó½Ã°£ {Mathf.RoundToInt(step.stackDurationSeconds)}ÃÊ";
-            }
-            if (step.moveSpeedPerStackPercent > 0f)
-            {
-                return $"½ºÅÃ´ç ÀÌµ¿¼Óµµ +{Mathf.RoundToInt(step.moveSpeedPerStackPercent * 100f)}%";
-            }
-            if (step.maxStacks > 5)
-            {
-                return $"ÃÖ´ë ÁßÃ¸ {step.maxStacks}È¸";
-            }
-            if (step.cooldownReductionAtMaxPercent > 0f)
-            {
-                return $"Ç®½ºÅÃ½Ã Äð°¨ {Mathf.RoundToInt(step.cooldownReductionAtMaxPercent * 100f)}%";
-            }
-            return "¾÷±×·¹ÀÌµå";
         }
 
         private void ConfigurePassiveTrack(ClassDefinition definition)
@@ -1197,5 +1153,82 @@ namespace PS.Manager
             }
             ApplyRuntimeModifiers();
         }
+        private void UpdateAnimatorMovement()
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            float deltaTime = Mathf.Max(Time.deltaTime, 0.0001f);
+            if (photonView.IsMine && input != null)
+            {
+                Vector2 move = input.move;
+                bool moving = move.sqrMagnitude > 0.01f;
+                bool running = moving && input.sprint;
+                animator.SetBool(IsWalkHash, moving && !running);
+                animator.SetBool(IsRunHash, running);
+                return;
+            }
+
+            Vector3 currentPosition = transform.position;
+            float speed = 0f;
+            if (hasLastPosition)
+            {
+                speed = Vector3.Distance(currentPosition, lastPosition) / deltaTime;
+            }
+            lastPosition = currentPosition;
+            hasLastPosition = true;
+
+            bool remoteMoving = speed > remoteWalkSpeed;
+            bool remoteRunning = speed > remoteRunSpeed;
+            animator.SetBool(IsWalkHash, remoteMoving && !remoteRunning);
+            animator.SetBool(IsRunHash, remoteRunning);
+        }
+
+        private void TriggerSkillAnimation(SkillSlot slot)
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            switch (slot)
+            {
+                case SkillSlot.Basic:
+                    animator.SetTrigger(AttackHash);
+                    break;
+                case SkillSlot.Q:
+                    animator.SetTrigger(SkillQHash);
+                    break;
+                case SkillSlot.R:
+                    animator.SetTrigger(SkillRHash);
+                    break;
+            }
+        }
+
+        private void SetChannelAnimationState(bool isActive)
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            animator.SetBool(SkillEHash, isActive);
+        }
+
+        private void TriggerPassiveAnimation()
+        {
+            if (animator == null || passiveState == null)
+            {
+                return;
+            }
+
+            if (passiveState.CurrentLevel > 0)
+            {
+                animator.SetTrigger(SkillPHash);
+            }
+        }
+
     }
 }
